@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import '../../api/api/common.dart';
+import '../../utils/storage.dart';
 import '../../components/raisedButton.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,15 +19,37 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _userName.text = '';
-    _password.text = '';
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              _initState();
+            }));
   }
 
-  _login() {
-    print(this._userName.text);
-    print(this._password.text);
-    // Navigator.pop(context);
-    // Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+  _initState() async {
+    _userName.text = await getStorage('userName');
+    _password.text = await getStorage('password');
+  }
+
+  _login() async {
+    if (this._rememberPaw) {
+      await saveStringStorage('userName', this._userName.text);
+      await saveStringStorage('password', this._password.text);
+    } else {
+      await saveStringStorage('userName', '');
+      await saveStringStorage('password', '');
+    }
+    var res;
+    try {
+      res = await Common.loginApi(
+          {'userName': this._userName.text, 'password': this._password.text});
+    } catch (e) {
+      print(e);
+    }
+
+    print("res${res['code']}");
+    Navigator.pop(context);
+    Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
     // Navigator.pushNamed(context, '/home');
   }
 
@@ -73,11 +99,6 @@ class _LoginPageState extends State<LoginPage> {
                         hintStyle: TextStyle(color: Colors.white),
                       ),
                       controller: _userName,
-                      onChanged: (value) => {
-                        setState(() {
-                          _userName.text = value;
-                        })
-                      },
                     ),
                   ),
                   SizedBox(height: 10),
@@ -93,31 +114,31 @@ class _LoginPageState extends State<LoginPage> {
                         hintStyle: TextStyle(color: Colors.white),
                       ),
                       controller: _password,
-                      onChanged: (value) => {
-                        setState(() {
-                          _password.text = value;
-                        })
-                      },
                     ),
                   ),
-                  SizedBox(height: 95),
                   Row(
                     children: <Widget>[
                       Checkbox(
+                          activeColor: Color.fromRGBO(0, 0, 0, 0),
                           value: this._rememberPaw,
                           onChanged: (v) {
                             setState(() {
                               _rememberPaw = v;
                             });
-                          })
+                          }),
+                      Text(
+                        "记住密码",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      )
                     ],
-                  )
+                  ),
+                  SizedBox(height: 95),
                 ],
               ),
             ),
             MdsWidthButton(
               text: '登录',
-              onPressed: this._login(),
+              onPressed: this._login,
             )
           ],
         ),

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import './env.dart';
+import './httpCode.dart';
 
 class HttpManager {
   final String _baseUrl = HostAddress.DEV_API;
@@ -19,6 +20,7 @@ class HttpManager {
       _instance = HttpManager();
       return _instance;
     }
+    return _instance;
   }
 
   HttpManager() {
@@ -29,6 +31,8 @@ class HttpManager {
     );
 
     _dio = new Dio(_options);
+
+    _dio.options.headers['Authorization'] = '111';
 
     _dio.interceptors.add(CookieManager(CookieJar()));
     _dio.interceptors.add(LogsInterceptors());
@@ -42,7 +46,7 @@ class HttpManager {
     } on DioError catch (e) {
       formatError(e);
     }
-    return response;
+    return response.data;
   }
 
   post(url, {params, options, withLoading = true}) async {
@@ -53,7 +57,7 @@ class HttpManager {
     } on DioError catch (e) {
       formatError(e);
     }
-    return response;
+    return response.data;
   }
 
   void formatError(DioError e) {
@@ -74,7 +78,7 @@ class HttpManager {
 }
 
 // 日志拦截
-class LogsInterceptors extends InterceptorsWrapper {
+class LogsInterceptors extends Interceptor {
   @override
   Future onRequest(RequestOptions options) {
     return super.onRequest(options);
@@ -82,12 +86,13 @@ class LogsInterceptors extends InterceptorsWrapper {
 
   @override
   Future onResponse(Response response) {
-    print(response);
+    print(response.request.uri);
     return super.onResponse(response);
   }
 
   @override
   Future onError(DioError err) {
+    print('error');
     return super.onError(err);
   }
 }
@@ -95,7 +100,7 @@ class LogsInterceptors extends InterceptorsWrapper {
 // 响应拦截
 class ResponseInterceptors extends InterceptorsWrapper {
   @override
-  Future onResponse(Response response) {
+  onResponse(Response response) {
     return super.onResponse(response);
   }
 }
