@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import './env.dart';
 import './httpCode.dart';
+import '../../utils/storage.dart';
 
 class HttpManager {
   final String _baseUrl = HostAddress.DEV_API;
@@ -23,6 +25,7 @@ class HttpManager {
     return _instance;
   }
 
+  // 初始化
   HttpManager() {
     _options = BaseOptions(
       baseUrl: _baseUrl,
@@ -32,13 +35,12 @@ class HttpManager {
 
     _dio = new Dio(_options);
 
-    _dio.options.headers['Authorization'] = '111';
-
     _dio.interceptors.add(CookieManager(CookieJar()));
     _dio.interceptors.add(LogsInterceptors());
     _dio.interceptors.add(ResponseInterceptors());
   }
 
+  // get
   get(url, {params, options, withLoading = true}) async {
     Response response;
     try {
@@ -46,18 +48,36 @@ class HttpManager {
     } on DioError catch (e) {
       formatError(e);
     }
-    return response.data;
+    return onRequest(response);
   }
 
+  // post
   post(url, {params, options, withLoading = true}) async {
     Response response;
     try {
-      response =
-          await _dio.post(url, queryParameters: params, options: options);
+      response = await _dio.post(url, data: params, options: options);
     } on DioError catch (e) {
       formatError(e);
     }
-    return response.data;
+    return onRequest(response);
+  }
+
+  // ignore: missing_return
+  Future updateToken() async {
+    _dio.options.headers['Authorization'] = await getStorage('token');
+  }
+
+  // 响应拦截
+  Future onRequest(response) {
+    final _com = Completer();
+    final _future = _com.future;
+    if (response.data['code'] == ResultCode.SUCCESS) {
+      _com.complete(response.data);
+      return _future;
+    } else {
+      _com.completeError(response);
+      return _future;
+    }
   }
 
   void formatError(DioError e) {
@@ -80,19 +100,50 @@ class HttpManager {
 // 日志拦截
 class LogsInterceptors extends Interceptor {
   @override
-  Future onRequest(RequestOptions options) {
+  Future onRequest(RequestOptions options) async {
+    if (options.headers['Authorization'] is String) {
+    } else if (await getStorage('token') is String) {
+      await HttpManager.getInstance().updateToken();
+      options.headers['Authorization'] = await getStorage('token');
+    }
+
+    String requestStr = "\n==================== REQUEST ====================\n"
+        "- URL:${options.baseUrl + options.path}\n"
+        "- METHOD: ${options.method}\n";
+    requestStr += "- HEADER:\n${options.headers}\n";
+    final data = options.data;
+    if (data != null) {
+      if (data is Map)
+        requestStr += "- BODY:\n$data\n";
+      else if (data is FormData) {
+        final formDataMap = Map()
+          ..addEntries(data.fields)
+          ..addEntries(data.files);
+        requestStr += "- BODY:\n$formDataMap\n";
+      } else
+        requestStr += "- BODY:\n${data.toString()}\n";
+    }
+    print(requestStr);
     return super.onRequest(options);
   }
 
   @override
   Future onResponse(Response response) {
-    print(response.request.uri);
+    String responseStr =
+        "\n==================== RESPONSE ====================\n"
+        "- URL:${response.request.uri}\n";
+
+    if (response.data != null) {
+      responseStr += "- BODY:\n ${response.data}";
+    }
+    print(responseStr);
     return super.onResponse(response);
   }
 
   @override
   Future onError(DioError err) {
-    print('error');
+    print('\n==================== ERROR ====================\n');
+    print(err);
     return super.onError(err);
   }
 }

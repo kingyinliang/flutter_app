@@ -29,3 +29,8 @@ Future getStorage(key) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   return sharedPreferences.get(key);
 }
+
+Future clear() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  return sharedPreferences.clear();
+}

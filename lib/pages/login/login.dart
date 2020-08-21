@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import '../../api/api/common.dart';
 import '../../utils/storage.dart';
 import '../../components/raisedButton.dart';
+import '../../api/http/dio.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -16,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   var _userName = new TextEditingController();
   var _password = new TextEditingController();
   var _rememberPaw = true;
+  var _eye = true;
   @override
   void initState() {
     super.initState();
@@ -39,18 +39,21 @@ class _LoginPageState extends State<LoginPage> {
       await saveStringStorage('userName', '');
       await saveStringStorage('password', '');
     }
-    var res;
     try {
-      res = await Common.loginApi(
-          {'userName': this._userName.text, 'password': this._password.text});
+      var res = await Common.loginApi({
+        'userName': this._userName.text,
+        'password': this._password.text,
+        'loginSystem': 'MDS'
+      });
+      print(res['data']['token']);
+      await saveStringStorage('token', res['data']['token']);
+      await HttpManager.getInstance().updateToken();
+      Navigator.pop(context);
+      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
     } catch (e) {
+      print('catchError');
       print(e);
     }
-
-    print("res${res['code']}");
-    Navigator.pop(context);
-    Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
-    // Navigator.pushNamed(context, '/home');
   }
 
   @override
@@ -88,33 +91,52 @@ class _LoginPageState extends State<LoginPage> {
                   Text("MDS制造管理系统",
                       style: TextStyle(color: Colors.white, fontSize: 32)),
                   SizedBox(height: 30),
-                  InputContainer(
-                    inputWidget: TextField(
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                        icon: Icon(Icons.people, color: Colors.white),
-                        hintText: '账号/工号',
-                        hintStyle: TextStyle(color: Colors.white),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      fillColor: Color(0x7F000000),
+                      filled: true,
+                      prefixIcon: Icon(Icons.person, color: Colors.white),
+                      suffixIcon: InkWell(
+                        child: Icon(Icons.close, color: Colors.white),
+                        onTap: () => {
+                          setState(() {
+                            _userName.text = '';
+                          })
+                        },
                       ),
-                      controller: _userName,
+                      contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+                      border: OutlineInputBorder(borderSide: BorderSide.none),
+                      hintText: '账号/工号',
+                      hintStyle: TextStyle(color: Colors.white),
                     ),
+                    controller: _userName,
                   ),
                   SizedBox(height: 10),
-                  InputContainer(
-                    inputWidget: TextField(
-                      obscureText: true,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                        icon: Icon(Icons.people, color: Colors.white),
-                        hintText: '密码',
-                        hintStyle: TextStyle(color: Colors.white),
+                  TextField(
+                    obscureText: _eye,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      fillColor: Color(0x7F000000),
+                      filled: true,
+                      prefixIcon: Icon(Icons.lock, color: Colors.white),
+                      suffixIcon: InkWell(
+                        child: Icon(
+                            _eye ? Icons.visibility_off : Icons.remove_red_eye,
+                            color: Colors.white),
+                        onTap: () => {
+                          setState(() {
+                            _eye = !_eye;
+                          })
+                        },
                       ),
-                      controller: _password,
+                      contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+                      border: OutlineInputBorder(borderSide: BorderSide.none),
+                      hintText: '密码',
+                      hintStyle: TextStyle(color: Colors.white),
                     ),
+                    controller: _password,
                   ),
                   Row(
                     children: <Widget>[
@@ -147,30 +169,6 @@ class _LoginPageState extends State<LoginPage> {
                 image: AssetImage('lib/assets/images/loginBg.png'),
                 fit: BoxFit.cover)),
       ),
-    );
-  }
-}
-
-class InputContainer extends StatefulWidget {
-  final Widget inputWidget;
-  InputContainer({Key key, this.inputWidget}) : super(key: key);
-
-  @override
-  _InputContainerState createState() => _InputContainerState();
-}
-
-class _InputContainerState extends State<InputContainer> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 52.0,
-      padding: EdgeInsets.fromLTRB(18, 0, 18, 0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        color: Color(0x7F000000),
-      ),
-      child: widget.inputWidget,
     );
   }
 }

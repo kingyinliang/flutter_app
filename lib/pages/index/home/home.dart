@@ -8,18 +8,67 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  double _opacity = 0;
+  _onScroll(offset) {
+    double alpha = offset / 80;
+    if (alpha > 1) {
+      alpha = 1;
+    }
+    setState(() {
+      _opacity = alpha;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xFFF5F5F5),
-      child: ListView(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          HomeHead(),
-          HomeMenu(),
-        ],
-      ),
+    return Stack(
+      children: <Widget>[
+        Container(
+          color: Color(0xFFF5F5F5),
+          child: NotificationListener(
+            onNotification: (ScrollNotification notification) {
+              if (notification is ScrollUpdateNotification &&
+                  notification.depth == 0) {
+                _onScroll(notification.metrics.pixels);
+              }
+              return true;
+            },
+            child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              children: <Widget>[
+                HomeHead(),
+                HomeMenu(),
+              ],
+            ),
+          ),
+        ),
+        Opacity(
+          opacity: _opacity,
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(72, 123, 255, 1),
+                  Color.fromRGBO(156, 183, 253, 1)
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: Center(
+              child: Text(
+                "欣和企业-杀菌一车间",
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -98,13 +147,13 @@ class _HomeMenuState extends State<HomeMenu> {
           menuColor: 0xFFE86452,
           menuTitle: '半成品领用',
           menuSubTitle: 'Semi-finished goods',
-          menuIcon: Icons.pages,
+          menuIcon: IconData(0xe622, fontFamily: 'MdsIcon'),
         ),
         MenuItem(
           menuColor: 0xFFF6BD16,
           menuTitle: '半成品异常',
           menuSubTitle: 'Abnormal records',
-          menuIcon: Icons.access_time,
+          menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
         ),
         MenuItem(
           menuColor: 0xFF1E9493,
@@ -116,7 +165,7 @@ class _HomeMenuState extends State<HomeMenu> {
           menuColor: 0xFF5D7092,
           menuTitle: '工艺异常',
           menuSubTitle: 'Abnormal records',
-          menuIcon: Icons.ac_unit,
+          menuIcon: IconData(0xe623, fontFamily: 'MdsIcon'),
         ),
         MenuItem(
           menuColor: 0xFF1677FF,
@@ -128,7 +177,7 @@ class _HomeMenuState extends State<HomeMenu> {
           menuColor: 0xFF454955,
           menuTitle: '辅料异常',
           menuSubTitle: 'Abnormal records',
-          menuIcon: Icons.account_box,
+          menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
         ),
         MenuItem(
           menuColor: 0xFFE86452,
@@ -168,47 +217,52 @@ class MenuItem extends StatefulWidget {
 class _MenuItemState extends State<MenuItem> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(12, 14, 12, 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        color: Color(widget.menuColor),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            widget.menuTitle,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-            ),
-          ),
-          Text(
-            widget.menuSubTitle,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Icon(
-                    widget.menuIcon,
-                    size: 55,
-                  )
-                ],
+    return InkWell(
+      child: Container(
+        padding: EdgeInsets.fromLTRB(12, 14, 12, 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          color: Color(widget.menuColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              widget.menuTitle,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
               ),
             ),
-          ),
-        ],
+            Text(
+              widget.menuSubTitle,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Icon(
+                      widget.menuIcon,
+                      size: 62,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
+      onTap: () {
+        print('object');
+      },
     );
   }
 }
