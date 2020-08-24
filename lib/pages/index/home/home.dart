@@ -202,8 +202,10 @@ class MenuItem extends StatefulWidget {
   final IconData menuIcon;
   final String menuTitle;
   final String menuSubTitle;
+  final String url;
   MenuItem(
       {Key key,
+      this.url,
       this.menuColor,
       this.menuIcon,
       this.menuTitle,
@@ -262,6 +264,7 @@ class _MenuItemState extends State<MenuItem> {
       ),
       onTap: () {
         print('object');
+        Navigator.pushNamed(context, widget.url);
       },
     );
   }

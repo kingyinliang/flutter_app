@@ -11,7 +11,7 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController mControll3= TextEditingController();
+    TextEditingController mControll3 = TextEditingController();
     //Scaffold是Material中主要的布局组件.
     return new Scaffold(
       backgroundColor: Color(0xffF5F5F5),
@@ -20,16 +20,13 @@ class _ListPageState extends State<ListPage> {
           icon: Icon(Icons.arrow_back_ios),
           color: Colors.blue,
           tooltip: 'Back',
-          onPressed: (){
+          onPressed: () {
             print('Back');
           },
         ),
         title: Text(
           '工艺控制',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w400
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -63,97 +60,98 @@ class _ListPageState extends State<ListPage> {
       ),
       //body占屏幕的大部分
 //      body: ListViewDemo(),
-      body: Column(
-        children: <Widget>[
-          Container(
+      body: Column(children: <Widget>[
+        Container(
             child: Container(
-              height: 60.0,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                child: Card(
-                  child: Container(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(width: 5.0,),
-                        Icon(Icons.search, color: Colors.grey,),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: TextField(
-                              controller: mControll3,
-                              decoration: new InputDecoration(
-                                  contentPadding: EdgeInsets.only(top: -16.0),
-                                  hintText: '锅序号', border: InputBorder.none),
-                              // onChanged: onSearchTextChanged,
+                height: 60.0,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                  child: Card(
+                    child: Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: TextField(
+                                controller: mControll3,
+                                decoration: new InputDecoration(
+                                    contentPadding: EdgeInsets.only(top: -16.0),
+                                    hintText: '锅序号',
+                                    border: InputBorder.none),
+                                // onChanged: onSearchTextChanged,
+                              ),
                             ),
                           ),
-                        ),
-                        new IconButton(
-                          icon: new Icon(Icons.cancel),
-                          color: Colors.grey,
-                          iconSize: 18.0,
-                          onPressed: () {
-                            print('test');
-                            mControll3.clear();
-                          },
-                        ),
-                      ],
+                          new IconButton(
+                            icon: new Icon(Icons.cancel),
+                            color: Colors.grey,
+                            iconSize: 18.0,
+                            onPressed: () {
+                              print('test');
+                              mControll3.clear();
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            )
-          ),
-          Container(
+                ))),
+        Container(
 //            height: 50.0,
 //            color: Colors.white,
-            decoration:  BoxDecoration(
+          decoration: BoxDecoration(
               color: Colors.white,
-              border: Border(bottom: BorderSide(width: 1,color: Color(0xffD5D5D5)))
-            ),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                          padding: EdgeInsets.all(5.0),
-                          child: Text(
-                            '未录入',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Color(0xff1778FF),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )
-                      ),
-                      Container(
-                        height: 2.0,
-                        color: Color(0xff1778FF),
-                        width: 60.0,
-                      )
-                    ],
-                  ),
-                  flex: 1,
+              border: Border(
+                  bottom: BorderSide(width: 1, color: Color(0xffD5D5D5)))),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                        padding: EdgeInsets.all(5.0),
+                        child: Text(
+                          '未录入',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xff1778FF),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )),
+                    Container(
+                      height: 2.0,
+                      color: Color(0xff1778FF),
+                      width: 60.0,
+                    )
+                  ],
                 ),
-                Expanded(
-                  child: Container(
+                flex: 1,
+              ),
+              Expanded(
+                child: Container(
                     padding: EdgeInsets.all(5.0),
-                      child: Text(
+                    child: Text(
                       '已保存',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600,
                       ),
-                    )
-                  ),
-                  flex: 1,
-                ),
-                Expanded(
-                  child: Container(
+                    )),
+                flex: 1,
+              ),
+              Expanded(
+                child: Container(
                     padding: EdgeInsets.all(5.0),
                     child: Text(
                       '已提交',
@@ -162,18 +160,16 @@ class _ListPageState extends State<ListPage> {
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600,
                       ),
-                    )
-                  ),
-                  flex: 1,
-                ),
-              ],
-            ),
+                    )),
+                flex: 1,
+              ),
+            ],
           ),
-          Expanded(
-            child: ListViewDemo(),
-          )
-        ]
-      ),
+        ),
+        Expanded(
+          child: ListViewDemo(),
+        )
+      ]),
 //      floatingActionButton: FloatingActionButton(
 //        tooltip: 'Add', // used by assistive technologies
 //        child: Icon(Icons.add),
@@ -182,7 +178,7 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  @override // 右上角下拉
+  // 右上角下拉
   SelectView(IconData icon, String text, String id) {
     return PopupMenuItem<String>(
         value: id,
@@ -192,8 +188,7 @@ class _ListPageState extends State<ListPage> {
             Icon(icon, color: Colors.white),
             Text(text),
           ],
-        )
-    );
+        ));
   }
 }
 
@@ -203,9 +198,9 @@ class ListViewDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 1000,
-        itemBuilder: (context, idx) {
-          return Container(
+      itemCount: 1000,
+      itemBuilder: (context, idx) {
+        return Container(
             color: Colors.white,
             padding: EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
             margin: EdgeInsets.only(bottom: 6.0),
@@ -220,30 +215,24 @@ class ListViewDemo extends StatelessWidget {
 //                )
 //              ),
               title: Column(
-                crossAxisAlignment:  CrossAxisAlignment.start,
-                textDirection: TextDirection.ltr,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        '第${idx}锅',
-                        style: TextStyle(
-                          fontSize: 17.0
-                        )
-                      ),
-                      Text(
-                        ' - 保温20m',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.red,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: TextDirection.ltr,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text('第${idx}锅', style: TextStyle(fontSize: 17.0)),
+                        Text(
+                          ' - 保温20m',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.red,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ]
-              ),
+                      ],
+                    ),
+                  ]),
               subtitle: Column(
-                crossAxisAlignment:  CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
                   Text('SP05060101杀菌完黄豆酱'),
@@ -251,7 +240,7 @@ class ListViewDemo extends StatelessWidget {
                 ],
               ),
               trailing: Icon(Icons.keyboard_arrow_right),
-              onTap: (){
+              onTap: () {
                 print('详情${_items[idx]}');
               },
 //              onTap: () {
@@ -271,9 +260,8 @@ class ListViewDemo extends StatelessWidget {
 //                  },
 //                );
 //              },
-            )
-          );
-        },
+            ));
+      },
     );
   }
 }
