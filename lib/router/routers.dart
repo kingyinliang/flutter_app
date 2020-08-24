@@ -7,5 +7,5 @@ Map<String, Function> routers = {
   '/': (contxt, {arguments}) => LoginPage(),
   '/home': (contxt, {arguments}) => IndexPage(),
   '/sterilizeCraftList': (contxt, {arguments}) => ListPage(),
-  '/acceAddList': (contxt, {arguments}) => AcceAddListPage(),
+  '/sterilize/acceAddList': (contxt, {arguments}) => AcceAddListPage(),
 };

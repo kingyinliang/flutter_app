@@ -168,6 +168,7 @@ class _HomeMenuState extends State<HomeMenu> {
           menuIcon: IconData(0xe623, fontFamily: 'MdsIcon'),
         ),
         MenuItem(
+          url: '/sterilize/acceAddList',
           menuColor: 0xFF1677FF,
           menuTitle: '辅料添加',
           menuSubTitle: 'Accessories add',

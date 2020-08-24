@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../components/appBar.dart';
 
 class AcceAddListPage extends StatefulWidget {
   AcceAddListPage({Key key}) : super(key: key);
@@ -10,8 +11,8 @@ class AcceAddListPage extends StatefulWidget {
 class _AcceAddListPageState extends State<AcceAddListPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('data'),
+    return Scaffold(
+      appBar: MdsAppBarWidget(),
     );
   }
 }
