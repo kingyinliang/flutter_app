@@ -75,10 +75,13 @@ class _ListPageState extends State<ListPage> {
         Container(
 //            height: 50.0,
 //            color: Colors.white,
-          decoration: BoxDecoration(
+          decoration:
+            BoxDecoration(
               color: Colors.white,
               border: Border(
-                  bottom: BorderSide(width: 1, color: Color(0xffD5D5D5)))),
+                bottom: BorderSide(width: 1, color: Color(0xffD5D5D5))
+              )
+            ),
           child: Row(
             children: <Widget>[
               Expanded(
@@ -143,19 +146,6 @@ class _ListPageState extends State<ListPage> {
 //        onPressed: null,
 //      ),
     );
-  }
-
-  // 右上角下拉
-  SelectView(IconData icon, String text, String id) {
-    return PopupMenuItem<String>(
-        value: id,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Icon(icon, color: Colors.white),
-            Text(text),
-          ],
-        ));
   }
 }
 

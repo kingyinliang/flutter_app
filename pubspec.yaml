@@ -53,6 +53,7 @@ flutter:
     - lib/assets/images/loginBg.png
     - lib/assets/images/loginLogo.png
     - lib/assets/images/pot.jpg
+    - lib/assets/images/potDetail.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
