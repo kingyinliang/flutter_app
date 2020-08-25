@@ -21,55 +21,105 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          color: Color(0xFFF5F5F5),
-          child: NotificationListener(
-            onNotification: (ScrollNotification notification) {
-              if (notification is ScrollUpdateNotification &&
-                  notification.depth == 0) {
-                _onScroll(notification.metrics.pixels);
-              }
-              return true;
-            },
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              children: <Widget>[
-                HomeHead(),
-                HomeMenu(),
-              ],
-            ),
-          ),
-        ),
-        Opacity(
-          opacity: _opacity,
-          child: Container(
-            height: 50,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(72, 123, 255, 1),
-                  Color.fromRGBO(156, 183, 253, 1)
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "欣和企业-杀菌一车间",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            // ignore: deprecated_member_use
+            child: SliverAppBar(
+              backgroundColor: Color(0xFF5E8AFB),
+              pinned: true,
+              expandedHeight: 130.0,
+              flexibleSpace: new FlexibleSpaceBar(
+                title: Container(
+                    padding: EdgeInsets.fromLTRB(18, 0, 0, 0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          "欣和企业-",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "杀菌一车间",
+                          style: TextStyle(
+                            height: 2.0,
+                            fontSize: 12.0,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    )),
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF5684FD), Color(0xFFB9CBFA)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
                 ),
+                centerTitle: true,
+                collapseMode: CollapseMode.pin,
               ),
             ),
-          ),
-        ),
-      ],
+          )
+        ];
+      },
+      body: Container(
+        padding: EdgeInsets.fromLTRB(0, 80, 0, 0),
+        child: HomeMenu(),
+      ),
     );
+    // Stack(
+    //   children: <Widget>[
+    //     NotificationListener(
+    //       onNotification: (ScrollNotification notification) {
+    //         if (notification is ScrollUpdateNotification &&
+    //             notification.depth == 0) {
+    //           _onScroll(notification.metrics.pixels);
+    //         }
+    //         return true;
+    //       },
+    //       child: ListView(
+    //         shrinkWrap: true,
+    //         scrollDirection: Axis.vertical,
+    //         children: <Widget>[
+    //           HomeHead(),
+    //           HomeMenu(),
+    //         ],
+    //       ),
+    //     ),
+    //     Opacity(
+    //       opacity: _opacity,
+    //       child: Container(
+    //         height: 50,
+    //         decoration: BoxDecoration(
+    //           gradient: LinearGradient(
+    //             colors: [
+    //               Color.fromRGBO(72, 123, 255, 1),
+    //               Color.fromRGBO(156, 183, 253, 1)
+    //             ],
+    //             begin: Alignment.topCenter,
+    //             end: Alignment.bottomCenter,
+    //           ),
+    //         ),
+    //         child: Center(
+    //           child: Text(
+    //             "欣和企业-杀菌一车间",
+    //             style: TextStyle(
+    //               fontSize: 16.0,
+    //               color: Colors.white,
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 }
 
@@ -168,7 +218,7 @@ class _HomeMenuState extends State<HomeMenu> {
           menuIcon: IconData(0xe623, fontFamily: 'MdsIcon'),
         ),
         MenuItem(
-          url: '/sterilize/acceAddList',
+          url: '/sterilize/acceAddHome',
           menuColor: 0xFF1677FF,
           menuTitle: '辅料添加',
           menuSubTitle: 'Accessories add',

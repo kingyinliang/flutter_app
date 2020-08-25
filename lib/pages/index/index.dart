@@ -22,6 +22,7 @@ class _IndexPageState extends State<IndexPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: this._pageList[this._currentIndex],
+      backgroundColor: Color(0xFFF5F5F5),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: this._currentIndex,
         items: [
