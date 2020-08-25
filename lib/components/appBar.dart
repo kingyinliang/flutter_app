@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MdsAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  MdsAppBarWidget({Key key}) : super(key: key);
+  MdsAppBarWidget({Key key, this.titleData, this.callBack}) : super(key: key);
+  final String titleData;
+  final callBack;
 
   @override
   _MdsAppBarWidgetState createState() => _MdsAppBarWidgetState();
@@ -35,7 +37,7 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
         },
       ),
       title: Text(
-        '工艺控制',
+        '${widget.titleData}',
         style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
       ),
       centerTitle: true,

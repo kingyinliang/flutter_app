@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../components/appBar.dart';
 
 class ListPage extends StatefulWidget {
   ListPage({Key key}) : super(key: key);
@@ -13,51 +14,17 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     TextEditingController mControll3 = TextEditingController();
     //Scaffold是Material中主要的布局组件.
+
+    String titleData = '工艺控制';
+    void onChanged(val){
+      setState(() {
+        titleData = val;
+      });
+    }
+
     return new Scaffold(
       backgroundColor: Color(0xffF5F5F5),
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          color: Colors.blue,
-          tooltip: 'Back',
-          onPressed: () {
-            print('Back');
-          },
-        ),
-        title: Text(
-          '工艺控制',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-//          new IconButton(
-//            icon: Icon(Icons.more_horiz),
-//            color: Colors.blue,
-//            tooltip: 'More',
-//            onPressed: () {}
-//          ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_horiz, color: Colors.blue),
-            color: Colors.blue,
-            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-              this.SelectView(Icons.home, '首页', '1'),
-              this.SelectView(Icons.person, '我的', '2'),
-            ],
-            onSelected: (String action) {
-              // 点击选项的时候
-              switch (action) {
-                case '1':
-                  print("首页");
-                  break;
-                case '2':
-                  print("我的");
-                  break;
-              }
-            },
-          ),
-        ],
-      ),
+      appBar: MdsAppBarWidget(titleData: titleData,callBack: (value) => onChanged(value)),
       //body占屏幕的大部分
 //      body: ListViewDemo(),
       body: Column(children: <Widget>[
@@ -108,10 +75,13 @@ class _ListPageState extends State<ListPage> {
         Container(
 //            height: 50.0,
 //            color: Colors.white,
-          decoration: BoxDecoration(
+          decoration:
+            BoxDecoration(
               color: Colors.white,
               border: Border(
-                  bottom: BorderSide(width: 1, color: Color(0xffD5D5D5)))),
+                bottom: BorderSide(width: 1, color: Color(0xffD5D5D5))
+              )
+            ),
           child: Row(
             children: <Widget>[
               Expanded(
@@ -176,19 +146,6 @@ class _ListPageState extends State<ListPage> {
 //        onPressed: null,
 //      ),
     );
-  }
-
-  // 右上角下拉
-  SelectView(IconData icon, String text, String id) {
-    return PopupMenuItem<String>(
-        value: id,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Icon(icon, color: Colors.white),
-            Text(text),
-          ],
-        ));
   }
 }
 
