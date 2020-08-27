@@ -2,15 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../components/appBar.dart';
 
-class headerDetail extends StatefulWidget {
-  headerDetail({Key key, this.detialArray, this.callBack}) : super(key: key);
+class HeaderDetail extends StatefulWidget {
+  HeaderDetail({Key key, this.detialArray, this.callBack}) : super(key: key);
   final List detialArray;
   final callBack;
   @override
-  _headerDetailState createState() => _headerDetailState();
+  _HeaderDetailState createState() => _HeaderDetailState();
 }
 
-class _headerDetailState extends State<headerDetail> {
+class _HeaderDetailState extends State<HeaderDetail> {
   @override
   Widget build(BuildContext context) {
     return Container(
