@@ -25,6 +25,7 @@ class _IndexPageState extends State<IndexPage> {
       backgroundColor: Color(0xFFF5F5F5),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: this._currentIndex,
+        selectedItemColor: Color(0xFF487BFF),
         items: [
           BottomNavigationBarItem(
               icon: Icon(IconData(0xe6a7, fontFamily: 'MdsIcon')),

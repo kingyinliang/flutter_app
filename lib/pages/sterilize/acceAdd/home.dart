@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../components/appBar.dart';
+import '../../../components/raisedButton.dart';
+import '../../../components/card.dart';
+import '../common/slideButton.dart';
+import '../common/sliverTabBar.dart';
 
 class AcceAddHomePage extends StatefulWidget {
   AcceAddHomePage({Key key}) : super(key: key);
@@ -9,19 +13,81 @@ class AcceAddHomePage extends StatefulWidget {
 }
 
 class _AcceAddHomePageState extends State<AcceAddHomePage> {
+  bool _floatingActionButtonFlag = true;
+  int _tabIndex = 0;
+
+  // 获取tab切换index
+  void setFloatingActionButtonFlag(int index) {
+    _floatingActionButtonFlag = index == 1 ? false : true;
+    _tabIndex = index;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: MdsAppBarWidget(),
+        appBar: MdsAppBarWidget(titleData: '辅料添加'),
         backgroundColor: Color(0xFFF5F5F5),
-        body: TabsWidget(),
+        body: SliverTabBarWidget(
+          tabChange: setFloatingActionButtonFlag,
+          children: <Widget>[
+            SizedBox(height: 5),
+            PageHead(),
+            SizedBox(height: 5),
+          ],
+          tabBarChildren: <Widget>[
+            Tab(text: '煮料锅'),
+            Tab(text: '辅料领用'),
+            Tab(text: '增补料'),
+          ],
+          tabBarViewChildren: <Widget>[
+            PotListWidget(),
+            AcceReceiveTab(),
+            MaterialAddTab(),
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Container(
+          width: double.infinity,
+          height: 130,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                alignment: Alignment.bottomRight,
+                margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
+                child: _floatingActionButtonFlag
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          if (_tabIndex == 0) {
+                            Navigator.pushNamed(context, '/sterilize/potAdd');
+                          } else {
+                            Navigator.pushNamed(
+                                context, '/sterilize/materialAdd');
+                          }
+                        },
+                        child: Icon(Icons.add),
+                      )
+                    : SizedBox(),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: MdsWidthButton(
+                  text: '提交',
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
+// 表头
 class PageHead extends StatefulWidget {
   PageHead({Key key}) : super(key: key);
 
@@ -68,75 +134,7 @@ class _PageHeadState extends State<PageHead> {
   }
 }
 
-class TabsWidget extends StatefulWidget {
-  TabsWidget({Key key}) : super(key: key);
-
-  @override
-  _TabsWidgetState createState() => _TabsWidgetState();
-}
-
-class _TabsWidgetState extends State<TabsWidget>
-    with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(vsync: this, length: 3);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return <Widget>[
-          SliverToBoxAdapter(
-            child: SizedBox(height: 5),
-          ),
-          SliverToBoxAdapter(
-            child: PageHead(),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(height: 5),
-          ),
-          //中间悬浮subtitle
-          SliverOverlapAbsorber(
-            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            // ignore: deprecated_member_use
-            child: SliverAppBar(
-              backgroundColor: Colors.white,
-              automaticallyImplyLeading: false,
-              pinned: true,
-              title: TabBar(
-                controller: _tabController,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorColor: Color(0xFF1677FF),
-                labelColor: Color(0xFF1677FF),
-                unselectedLabelColor: Color(0xFF333333),
-                tabs: <Widget>[
-                  Tab(text: '煮料锅'),
-                  Tab(text: '辅料领用'),
-                  Tab(text: '增补料'),
-                ],
-              ),
-            ),
-          )
-        ];
-      },
-      body: Container(
-        padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
-        child: TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            PotListWidget(),
-            Text('data2'),
-            Text('data3'),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
+// 煮料锅tab
 class PotListWidget extends StatefulWidget {
   PotListWidget({Key key}) : super(key: key);
 
@@ -145,30 +143,153 @@ class PotListWidget extends StatefulWidget {
 }
 
 class _PotListWidgetState extends State<PotListWidget> {
-  Widget potListItem() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 14, 10, 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 3.0),
-            color: Color(0x0C000000),
-            blurRadius: 4.0,
-            spreadRadius: 0,
-          )
-        ],
+  List<SlideButton> list;
+  List listWidget;
+  List potArr = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+  ];
+
+  Widget removeBtn(index) {
+    return InkWell(
+      child: Container(
+        width: 70.0,
+        height: double.infinity,
+        margin: EdgeInsets.fromLTRB(5, 0, 0, 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 3.0),
+              color: Color(0x0C000000),
+              blurRadius: 4.0,
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Center(
+          child: Container(
+            height: 40,
+            child: RaisedButton(
+                color: Colors.red,
+                shape: CircleBorder(side: BorderSide(color: Colors.red)),
+                child: Icon(IconData(0xe674, fontFamily: 'MdsIcon'),
+                    color: Colors.white, size: 30),
+                onPressed: () {}),
+          ),
+        ),
       ),
+      onTap: () {
+        potArr.removeAt(index);
+        setState(() {});
+      },
+    );
+  }
+
+  close() {
+    for (int i = 0; i < listWidget.length; i++) {
+      if (listWidget[i].currentState.translateX != 0) {
+        listWidget[i].currentState.close();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    listWidget = List<LabeledGlobalKey<SlideButtonState>>();
+    return ListView.builder(
+      padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+      itemCount: potArr.length,
+      itemBuilder: (context, index) {
+        var key = GlobalKey<SlideButtonState>();
+        listWidget.add(key);
+        return SlideButton(
+          key: key,
+          singleButtonWidth: 70,
+          child: ItemCard(carTitle: '煮料锅领用数量'),
+          buttons: <Widget>[
+            removeBtn(index),
+          ],
+          onDown: () => close(),
+        );
+      },
+    );
+  }
+}
+
+// 辅料领用tab
+class AcceReceiveTab extends StatefulWidget {
+  AcceReceiveTab({Key key}) : super(key: key);
+
+  @override
+  _AcceReceiveTabState createState() => _AcceReceiveTabState();
+}
+
+class _AcceReceiveTabState extends State<AcceReceiveTab> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('data11'),
+    );
+  }
+}
+
+// 增补料tab
+class MaterialAddTab extends StatefulWidget {
+  MaterialAddTab({Key key}) : super(key: key);
+
+  @override
+  _MaterialAddTabState createState() => _MaterialAddTabState();
+}
+
+class _MaterialAddTabState extends State<MaterialAddTab> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('data'),
+    );
+  }
+}
+
+// 单个card
+class ItemCard extends StatefulWidget {
+  final String carTitle;
+  ItemCard({Key key, this.carTitle}) : super(key: key);
+
+  @override
+  _ItemCardState createState() => _ItemCardState();
+}
+
+class _ItemCardState extends State<ItemCard> {
+  @override
+  Widget build(BuildContext context) {
+    return MdsCard(
       child: Stack(
         children: <Widget>[
+          Positioned(
+              right: 0,
+              top: 0,
+              child: Icon(
+                IconData(0xe62c, fontFamily: 'MdsIcon'),
+                size: 16,
+                color: Color(0xFF487BFF),
+              )),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('892',
+                  Text('11',
                       style: TextStyle(
                           height: 1.0,
                           fontSize: 40.0,
@@ -207,69 +328,12 @@ class _PotListWidgetState extends State<PotListWidget> {
                         borderRadius: BorderRadius.all(Radius.circular(17))),
                     child: Text('data'),
                   ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCDDDFD),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text('data'),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCDDDFD),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text('data'),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCDDDFD),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text('data'),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCDDDFD),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text('data'),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCDDDFD),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text('data'),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCDDDFD),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text('data'),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCDDDFD),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text('data'),
-                  ),
                 ],
-              )
+              ),
             ],
           )
         ],
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-      children: <Widget>[potListItem()],
     );
   }
 }

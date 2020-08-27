@@ -33,7 +33,7 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
         color: Colors.blue,
         tooltip: 'Back',
         onPressed: () {
-          print('Back');
+          Navigator.pop(context);
         },
       ),
       title: Text(
