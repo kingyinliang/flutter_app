@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../components/appBar.dart';
 import '../../../components/raisedButton.dart';
-import '../common/formItem.dart';
+import '../../../components/input.dart';
+import '../../../components/select.dart';
 
 class PotAddPage extends StatefulWidget {
   PotAddPage({Key key}) : super(key: key);
@@ -12,6 +13,11 @@ class PotAddPage extends StatefulWidget {
 
 class _PotAddPageState extends State<PotAddPage> {
   String input = '1';
+  List potList = [
+    {'label': '我是1', 'val': '1'},
+    {'label': '我是2', 'val': '2'},
+    {'label': '我是3', 'val': '3'}
+  ];
   Widget formWidget() {
     return Container(
       color: Colors.white,
@@ -19,38 +25,64 @@ class _PotAddPageState extends State<PotAddPage> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(
         children: <Widget>[
-          FormItem(
-              type: 'select', label: '煮料锅号', prop: input, requiredFlg: true),
-          FormItem(
-              type: 'select', label: '配置日期', prop: input, requiredFlg: true),
-          FormItem(
-              type: 'select', label: '煮料锅序', prop: input, requiredFlg: true),
-          FormItem(
-              type: 'input',
+          SelectWidget(
+            label: '煮料锅号',
+            prop: input,
+            requiredFlg: true,
+            options: potList,
+            optionsLabel: 'label',
+            optionsval: 'val',
+            onChange: (val) {
+              input = val['label'];
+              setState(() {});
+            },
+          ),
+          SelectWidget(
+            label: '配置日期',
+            prop: input,
+            requiredFlg: true,
+            options: potList,
+            optionsLabel: 'label',
+            optionsval: 'val',
+            onChange: (val) {
+              input = val['label'];
+              setState(() {});
+            },
+          ),
+          SelectWidget(
+            label: '煮料锅序',
+            prop: input,
+            requiredFlg: true,
+            options: potList,
+            optionsLabel: 'label',
+            optionsval: 'val',
+            onChange: (val) {
+              input = val['label'];
+              setState(() {});
+            },
+          ),
+          InputWidget(
               label: '煮料锅单',
               prop: input,
               onChange: (val) {
                 input = val;
                 setState(() {});
               }),
-          FormItem(
-              type: 'input',
+          InputWidget(
               label: '生产物料',
               prop: input,
               onChange: (val) {
                 input = val;
                 setState(() {});
               }),
-          FormItem(
-              type: 'input',
+          InputWidget(
               label: '剩余锅数',
               prop: input,
               onChange: (val) {
                 input = val;
                 setState(() {});
               }),
-          FormItem(
-              type: 'input',
+          InputWidget(
               label: '领用数量',
               prop: input,
               requiredFlg: true,
@@ -58,27 +90,44 @@ class _PotAddPageState extends State<PotAddPage> {
                 input = val;
                 setState(() {});
               }),
-          FormItem(
-              type: 'input',
+          InputWidget(
               label: '剩余库存',
               prop: input,
               onChange: (val) {
                 input = val;
                 setState(() {});
               }),
-          FormItem(
-              type: 'input',
+          InputWidget(
               label: '单位',
               prop: input,
               onChange: (val) {
                 input = val;
                 setState(() {});
               }),
-          FormItem(
-              type: 'select', label: '添加时间', prop: input, requiredFlg: true),
-          FormItem(type: 'select', label: '转运罐号', prop: input),
-          FormItem(
-              type: 'input',
+          SelectWidget(
+            label: '添加时间',
+            prop: input,
+            requiredFlg: true,
+            options: potList,
+            optionsLabel: 'label',
+            optionsval: 'val',
+            onChange: (val) {
+              input = val['label'];
+              setState(() {});
+            },
+          ),
+          SelectWidget(
+            label: '转运罐号',
+            prop: input,
+            options: potList,
+            optionsLabel: 'label',
+            optionsval: 'val',
+            onChange: (val) {
+              input = val['label'];
+              setState(() {});
+            },
+          ),
+          InputWidget(
               label: '备注',
               prop: input,
               onChange: (val) {
