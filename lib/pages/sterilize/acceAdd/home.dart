@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../components/appBar.dart';
 import '../../../components/raisedButton.dart';
 import '../../../components/card.dart';
-import '../common/slideButton.dart';
-import '../common/sliverTabBar.dart';
+import '../../../components/slide_button.dart';
+import '../../../components/sliver_tab_bar.dart';
 
 List potArr = [
   {

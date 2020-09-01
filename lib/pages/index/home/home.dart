@@ -140,10 +140,7 @@ class _HomeHeadState extends State<HomeHead> {
       height: 125.0,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color.fromRGBO(72, 123, 255, 1),
-            Color.fromRGBO(245, 245, 245, 1)
-          ],
+          colors: [Color(0xFF4E7FFE), Color(0xFF83A5FC), Color(0xFF9CB7FD)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
