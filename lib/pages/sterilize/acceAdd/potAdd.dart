@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/appBar.dart';
 import '../../../components/raisedButton.dart';
-import '../../../components/input.dart';
-import '../../../components/select.dart';
+import '../../../components/form.dart';
 
 class PotAddPage extends StatefulWidget {
   PotAddPage({Key key}) : super(key: key);
@@ -12,7 +11,7 @@ class PotAddPage extends StatefulWidget {
 }
 
 class _PotAddPageState extends State<PotAddPage> {
-  String input = '1';
+  String input = '2020-08-01 09:21';
   List potList = [
     {'label': '我是1', 'val': '1'},
     {'label': '我是2', 'val': '2'},
@@ -104,15 +103,12 @@ class _PotAddPageState extends State<PotAddPage> {
                 input = val;
                 setState(() {});
               }),
-          SelectWidget(
+          DataPickerWidget(
             label: '添加时间',
             prop: input,
             requiredFlg: true,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
             onChange: (val) {
-              input = val['label'];
+              input = val;
               setState(() {});
             },
           ),
