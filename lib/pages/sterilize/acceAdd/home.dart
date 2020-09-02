@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../components/appBar.dart';
 import '../../../components/raisedButton.dart';
-import '../../../components/card.dart';
+import '../common/page_head.dart';
 import '../../../components/slide_button.dart';
 import '../../../components/sliver_tab_bar.dart';
+import '../common/item_card.dart';
+import '../common/remove_btn.dart';
 
 List potArr = [
   {
@@ -110,7 +112,12 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
           tabChange: setFloatingActionButtonFlag,
           children: <Widget>[
             SizedBox(height: 5),
-            PageHead(),
+            PageHead(
+              title: '1#锅 第2锅',
+              subTitle: '杀菌完黄豆酱',
+              orderNo: '83300023456',
+              potNo: '83300023456',
+            ),
             SizedBox(height: 5),
           ],
           tabBarChildren: <Widget>[
@@ -138,10 +145,11 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
                     ? FloatingActionButton(
                         onPressed: () {
                           if (_tabIndex == 0) {
-                            Navigator.pushNamed(context, '/sterilize/potAdd');
+                            Navigator.pushNamed(
+                                context, '/sterilize/acceAdd/potAdd');
                           } else {
                             Navigator.pushNamed(
-                                context, '/sterilize/materialAdd');
+                                context, '/sterilize/acceAdd/materialAdd');
                           }
                         },
                         child: Icon(Icons.add),
@@ -158,53 +166,6 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// 表头
-class PageHead extends StatefulWidget {
-  PageHead({Key key}) : super(key: key);
-
-  @override
-  _PageHeadState createState() => _PageHeadState();
-}
-
-class _PageHeadState extends State<PageHead> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-      color: Colors.white,
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 92,
-            height: 100,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(4.0)),
-              color: Color(0xF2F2F2FF),
-            ),
-          ),
-          SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('1#锅 第2锅',
-                  style: TextStyle(fontSize: 18.0, color: Color(0xFF333333))),
-              SizedBox(height: 6),
-              Text('杀菌完黄豆酱',
-                  style: TextStyle(fontSize: 15.0, color: Color(0xFF333333))),
-              SizedBox(height: 6),
-              Text('生产订单：83300023456',
-                  style: TextStyle(fontSize: 12.0, color: Color(0xFF666666))),
-              SizedBox(height: 6),
-              Text('锅单号：83300023456',
-                  style: TextStyle(fontSize: 12.0, color: Color(0xFF666666))),
-            ],
-          )
-        ],
       ),
     );
   }
@@ -469,156 +430,6 @@ class _MaterialAddTabState extends State<MaterialAddTab> {
           onDown: () => close(),
         );
       },
-    );
-  }
-}
-
-// 删除按钮
-class CardRemoveBtn extends StatefulWidget {
-  final Function removeOnTab;
-  CardRemoveBtn({Key key, this.removeOnTab}) : super(key: key);
-
-  @override
-  _CardRemoveBtnState createState() => _CardRemoveBtnState();
-}
-
-class _CardRemoveBtnState extends State<CardRemoveBtn> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Container(
-        width: 70.0,
-        height: double.infinity,
-        margin: EdgeInsets.fromLTRB(5, 0, 0, 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 3.0),
-              color: Color(0x0C000000),
-              blurRadius: 4.0,
-              spreadRadius: 0,
-            )
-          ],
-        ),
-        child: Center(
-          child: Container(
-            height: 40,
-            child: RaisedButton(
-                color: Colors.red,
-                shape: CircleBorder(side: BorderSide(color: Colors.red)),
-                child: Icon(IconData(0xe674, fontFamily: 'MdsIcon'),
-                    color: Colors.white, size: 30),
-                onPressed: widget.removeOnTab),
-          ),
-        ),
-      ),
-      onTap: widget.removeOnTab,
-    );
-  }
-}
-
-// 单个card
-class ItemCard extends StatefulWidget {
-  final String carTitle;
-  final String title;
-  final String subTitle;
-  final Map cardMap;
-  final List wrapList;
-  ItemCard(
-      {Key key,
-      this.carTitle = '',
-      this.cardMap,
-      this.title,
-      this.subTitle,
-      this.wrapList})
-      : super(key: key);
-
-  @override
-  _ItemCardState createState() => _ItemCardState();
-}
-
-class _ItemCardState extends State<ItemCard> {
-  List colorList = [0xFFCDDDFD, 0xFFD3EEF9, 0xFFF8D0CB, 0xFFCDF3E4, 0xFFFCEBB9];
-  int index = -1;
-  @override
-  Widget build(BuildContext context) {
-    return MdsCard(
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-              right: 0,
-              top: 0,
-              child: Icon(
-                IconData(0xe62c, fontFamily: 'MdsIcon'),
-                size: 16,
-                color: Color(0xFF487BFF),
-              )),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                      widget.cardMap[widget.title] == null
-                          ? ''
-                          : widget.cardMap[widget.title],
-                      style: TextStyle(
-                          height: 1.0,
-                          fontSize: 40.0,
-                          color: Color(0xFF242446),
-                          fontWeight: FontWeight.w500)),
-                  Text(
-                      widget.cardMap[widget.subTitle] == null
-                          ? ''
-                          : widget.cardMap[widget.subTitle],
-                      style: TextStyle(
-                          fontSize: 12.0,
-                          color: Color(0xFF333333),
-                          height: 3.0)),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    IconData(0xe621, fontFamily: 'MdsIcon'),
-                    size: 12.0,
-                    color: Color(0xFF999999),
-                  ),
-                  SizedBox(width: 3.0),
-                  Text(widget.carTitle,
-                      style:
-                          TextStyle(fontSize: 12.0, color: Color(0xFF666666))),
-                ],
-              ),
-              SizedBox(height: 14),
-              Wrap(
-                spacing: 10,
-                runSpacing: 8,
-                children: widget.wrapList.asMap().keys.map((i) {
-                  if (index > 3) {
-                    index = -1;
-                  }
-                  index++;
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(colorList[index]),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text(widget.wrapList[i]['label'] +
-                        (widget.cardMap[widget.wrapList[i]['value']] == null
-                            ? ''
-                            : widget.cardMap[widget.wrapList[i]['value']])),
-                  );
-                }).toList(),
-              ),
-            ],
-          )
-        ],
-      ),
     );
   }
 }

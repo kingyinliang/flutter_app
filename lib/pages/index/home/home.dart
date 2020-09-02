@@ -192,6 +192,7 @@ class _HomeMenuState extends State<HomeMenu> {
       childAspectRatio: 1.06,
       children: <Widget>[
         MenuItem(
+          url: '/sterilize/semiReceive/home',
           menuColor: 0xFFE86452,
           menuTitle: '半成品领用',
           menuSubTitle: 'Semi-finished goods',
@@ -216,7 +217,7 @@ class _HomeMenuState extends State<HomeMenu> {
           menuIcon: IconData(0xe623, fontFamily: 'MdsIcon'),
         ),
         MenuItem(
-          url: '/sterilize/acceAddHome',
+          url: '/sterilize/acceAdd/home',
           menuColor: 0xFF1677FF,
           menuTitle: '辅料添加',
           menuSubTitle: 'Accessories add',
