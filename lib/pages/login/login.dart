@@ -45,8 +45,15 @@ class _LoginPageState extends State<LoginPage> {
         'password': this._password.text,
         'loginSystem': 'MDS'
       });
-      print(res['data']['token']);
+      String deptName = '';
+      res['data']['sysDept'].forEach((element) {
+        if (element['deptName'] != '欣和总部') {
+          deptName = deptName + element['deptName'] + '/';
+        }
+      });
       await saveStringStorage('token', res['data']['token']);
+      await saveStringStorage('deptName', deptName);
+      await saveMapStorage('userData', res['data']);
       await HttpManager.getInstance().updateToken();
       Navigator.pop(context);
       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);

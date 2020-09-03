@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../utils/storage.dart';
+import '../../../api/api/index.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -8,6 +10,35 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  Map userData = {'sex': 'M', 'realName': ''};
+  String deptName;
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              _initState();
+            }));
+  }
+
+  _initState() async {
+    deptName = await getStorage('deptName');
+    userData = await getMapStorage('userData');
+  }
+
+  _quit() async {
+    try {
+      await Common.quitLoginApi();
+      Navigator.pop(context);
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+    } catch (e) {}
+  }
+
+  _switchUser() {
+    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +68,9 @@ class _UserPageState extends State<UserPage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: AssetImage('lib/assets/images/man.png'),
+                      image: this.userData['sex'] == 'F'
+                          ? AssetImage('lib/assets/images/feman.png')
+                          : AssetImage('lib/assets/images/man.png'),
                     ),
                   ),
                 ),
@@ -46,13 +79,13 @@ class _UserPageState extends State<UserPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('黄阿峰',
+                    Text(this.userData['realName'] ?? '',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 24,
                             fontWeight: FontWeight.w600)),
                     SizedBox(height: 6),
-                    Text('济南宜和/制造一处/杀菌一车间',
+                    Text(this.deptName ?? '',
                         style: TextStyle(color: Colors.white, fontSize: 15)),
                   ],
                 )
@@ -111,7 +144,7 @@ class _UserPageState extends State<UserPage> {
                   '切换用户',
                   style: TextStyle(fontSize: 18.0),
                 ),
-                onPressed: () {},
+                onPressed: _switchUser,
               ),
             ),
           ),
@@ -138,7 +171,7 @@ class _UserPageState extends State<UserPage> {
                   '退出登录',
                   style: TextStyle(fontSize: 18.0),
                 ),
-                onPressed: () {},
+                onPressed: _quit,
               ),
             ),
           )

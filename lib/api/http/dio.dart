@@ -5,6 +5,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import './env.dart';
 import './httpCode.dart';
 import '../../utils/storage.dart';
+import '../../main.dart';
 
 class HttpManager {
   final String _baseUrl = HostAddress.DEV_API;
@@ -74,6 +75,11 @@ class HttpManager {
     if (response.data['code'] == ResultCode.SUCCESS) {
       _com.complete(response.data);
       return _future;
+    } else if (response.data['code'] == ResultCode.EXPIRED_TOKEN) {
+      Router.navigatorKey.currentState
+          .pushNamedAndRemoveUntil('/', (route) => false);
+      _com.complete(response.data);
+      return _future;
     } else {
       _com.completeError(response);
       return _future;
@@ -113,9 +119,9 @@ class LogsInterceptors extends Interceptor {
     requestStr += "- HEADER:\n${options.headers}\n";
     final data = options.data;
     if (data != null) {
-      if (data is Map)
+      if (data is Map) {
         requestStr += "- BODY:\n$data\n";
-      else if (data is FormData) {
+      } else if (data is FormData) {
         final formDataMap = Map()
           ..addEntries(data.fields)
           ..addEntries(data.files);

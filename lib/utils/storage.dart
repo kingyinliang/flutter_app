@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future saveStringStorage(key, value) async {
@@ -23,6 +24,16 @@ Future saveDoubleStorage(key, value) async {
 Future saveStringListStorage(key, value) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.setStringList(key, value);
+}
+
+Future saveMapStorage(key, value) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  sharedPreferences.setString(key, jsonEncode(value).toString());
+}
+
+Future getMapStorage(key) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  return jsonDecode(sharedPreferences.get(key));
 }
 
 Future getStorage(key) async {

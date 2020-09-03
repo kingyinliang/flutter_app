@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../api/api/index.dart';
+import '../../../utils/index.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -9,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   double _opacity = 0;
+  List menuList = [];
   _onScroll(offset) {
     double alpha = offset / 80;
     if (alpha > 1) {
@@ -19,63 +22,29 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  _initState() async {
+    var a = 0xe622;
+    print(a.runtimeType.toString());
+    try {
+      var res = await Common.getMenuApi();
+      menuList = res['data']['menuList'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              _initState();
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return
-        // NestedScrollView(
-        //   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        //     return <Widget>[
-        //       SliverOverlapAbsorber(
-        //         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-        //         // ignore: deprecated_member_use
-        //         child: SliverAppBar(
-        //           backgroundColor: Color(0xFF5E8AFB),
-        //           pinned: true,
-        //           expandedHeight: 130.0,
-        //           flexibleSpace: new FlexibleSpaceBar(
-        //             title: Container(
-        //                 padding: EdgeInsets.fromLTRB(18, 0, 0, 0),
-        //                 child: Row(
-        //                   children: <Widget>[
-        //                     Text(
-        //                       "欣和企业-",
-        //                       style: TextStyle(
-        //                         fontSize: 20.0,
-        //                         color: Colors.white,
-        //                       ),
-        //                     ),
-        //                     Text(
-        //                       "杀菌一车间",
-        //                       style: TextStyle(
-        //                         height: 2.0,
-        //                         fontSize: 12.0,
-        //                         color: Colors.white,
-        //                       ),
-        //                     )
-        //                   ],
-        //                 )),
-        //             background: Container(
-        //               decoration: BoxDecoration(
-        //                 gradient: LinearGradient(
-        //                   colors: [Color(0xFF5684FD), Color(0xFFB9CBFA)],
-        //                   begin: Alignment.topCenter,
-        //                   end: Alignment.bottomCenter,
-        //                 ),
-        //               ),
-        //             ),
-        //             centerTitle: true,
-        //             collapseMode: CollapseMode.pin,
-        //           ),
-        //         ),
-        //       )
-        //     ];
-        //   },
-        //   body: Container(
-        //     padding: EdgeInsets.fromLTRB(0, 80, 0, 0),
-        //     child: HomeMenu(),
-        //   ),
-        // );
-        Stack(
+    return Stack(
       children: <Widget>[
         NotificationListener(
           onNotification: (ScrollNotification notification) {
@@ -90,7 +59,9 @@ class _HomePageState extends State<HomePage> {
             scrollDirection: Axis.vertical,
             children: <Widget>[
               HomeHead(),
-              HomeMenu(),
+              HomeMenu(
+                menu: menuList,
+              ),
             ],
           ),
         ),
@@ -173,7 +144,8 @@ class _HomeHeadState extends State<HomeHead> {
 
 // 首页菜单widget
 class HomeMenu extends StatefulWidget {
-  HomeMenu({Key key}) : super(key: key);
+  final List menu;
+  HomeMenu({Key key, this.menu}) : super(key: key);
 
   @override
   _HomeMenuState createState() => _HomeMenuState();
@@ -182,54 +154,67 @@ class HomeMenu extends StatefulWidget {
 class _HomeMenuState extends State<HomeMenu> {
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
+    return GridView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(8, 10, 8, 10),
-      crossAxisSpacing: 6,
-      mainAxisSpacing: 8,
-      crossAxisCount: 2,
-      childAspectRatio: 1.06,
-      children: <Widget>[
-        MenuItem(
-          url: '/sterilize/semiReceive/home',
-          menuColor: 0xFFE86452,
-          menuTitle: '半成品领用',
-          menuSubTitle: 'Semi-finished goods',
-          menuIcon: IconData(0xe622, fontFamily: 'MdsIcon'),
-        ),
-        MenuItem(
-          menuColor: 0xFFF6BD16,
-          menuTitle: '半成品异常',
-          menuSubTitle: 'Abnormal records',
-          menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
-        ),
-        MenuItem(
-          menuColor: 0xFF1E9493,
-          menuTitle: '工艺控制',
-          menuSubTitle: 'Process control',
-          menuIcon: IconData(0xe61e, fontFamily: 'MdsIcon'),
-        ),
-        MenuItem(
-          menuColor: 0xFF5D7092,
-          menuTitle: '工艺异常',
-          menuSubTitle: 'Abnormal records',
-          menuIcon: IconData(0xe623, fontFamily: 'MdsIcon'),
-        ),
-        MenuItem(
-          url: '/sterilize/acceAdd/home',
-          menuColor: 0xFF1677FF,
-          menuTitle: '辅料添加',
-          menuSubTitle: 'Accessories add',
-          menuIcon: IconData(0xe61d, fontFamily: 'MdsIcon'),
-        ),
-        MenuItem(
-          menuColor: 0xFF454955,
-          menuTitle: '辅料异常',
-          menuSubTitle: 'Abnormal records',
-          menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
-        ),
-      ],
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisSpacing: 6,
+        mainAxisSpacing: 8,
+        crossAxisCount: 2,
+        childAspectRatio: 1.06,
+      ),
+      itemCount: widget.menu.length,
+      itemBuilder: (context, index) {
+        return MenuItem(
+          url: widget.menu[index]['menuUrl'],
+          menuColor: getColorFromHex(widget.menu[index]['permission']),
+          menuTitle: widget.menu[index]['menuName'],
+          menuSubTitle: widget.menu[index]['remark'],
+          menuIcon: IconData(getColorFromHex(widget.menu[index]['menuIcon']),
+              fontFamily: 'MdsIcon'),
+        );
+      },
+      // children: <Widget>[
+      //   MenuItem(
+      //     url: '/sterilize/semiReceive/home',
+      //     menuColor: 0xFFE86452,
+      //     menuTitle: '半成品领用',
+      //     menuSubTitle: 'Semi-finished goods',
+      //     menuIcon: IconData(0xe622, fontFamily: 'MdsIcon'),
+      //   ),
+      //   MenuItem(
+      //     menuColor: 0xFFF6BD16,
+      //     menuTitle: '半成品异常',
+      //     menuSubTitle: 'Abnormal records',
+      //     menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
+      //   ),
+      //   MenuItem(
+      //     menuColor: 0xFF1E9493,
+      //     menuTitle: '工艺控制',
+      //     menuSubTitle: 'Process control',
+      //     menuIcon: IconData(0xe61e, fontFamily: 'MdsIcon'),
+      //   ),
+      //   MenuItem(
+      //     menuColor: 0xFF5D7092,
+      //     menuTitle: '工艺异常',
+      //     menuSubTitle: 'Abnormal records',
+      //     menuIcon: IconData(0xe623, fontFamily: 'MdsIcon'),
+      //   ),
+      //   MenuItem(
+      //     url: '/sterilize/acceAdd/home',
+      //     menuColor: 0xFF1677FF,
+      //     menuTitle: '辅料添加',
+      //     menuSubTitle: 'Accessories add',
+      //     menuIcon: IconData(0xe61d, fontFamily: 'MdsIcon'),
+      //   ),
+      //   MenuItem(
+      //     menuColor: 0xFF454955,
+      //     menuTitle: '辅料异常',
+      //     menuSubTitle: 'Abnormal records',
+      //     menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
+      //   ),
+      // ],
     );
   }
 }
