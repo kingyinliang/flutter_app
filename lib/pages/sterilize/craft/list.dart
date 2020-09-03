@@ -90,7 +90,7 @@ class _ListPageState extends State<ListPage> {
                     Container(
                         padding: EdgeInsets.all(5.0),
                         child: Text(
-                          '未录入',
+                          '待维护',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 18.0,
