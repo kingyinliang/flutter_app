@@ -1,11 +1,31 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import './env.dart';
 import './httpCode.dart';
-import '../../utils/storage.dart';
-import '../../main.dart';
+import 'package:dfmdsapp/utils/storage.dart';
+import 'package:dfmdsapp/main.dart';
+
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      height: 50,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('lib/assets/images/loading.gif'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
 
 class HttpManager {
   final String _baseUrl = HostAddress.DEV_API;
@@ -28,6 +48,12 @@ class HttpManager {
 
   // 初始化
   HttpManager() {
+    EasyLoading.instance..loadingStyle = EasyLoadingStyle.custom;
+    EasyLoading.instance..backgroundColor = Color(0x66000000);
+    EasyLoading.instance..textColor = Colors.white;
+    EasyLoading.instance..userInteractions = false;
+    EasyLoading.instance..indicatorColor = Colors.white;
+    EasyLoading.instance..progressColor = Colors.white;
     _options = BaseOptions(
       baseUrl: _baseUrl,
       connectTimeout: _connectTimeout,
@@ -43,10 +69,19 @@ class HttpManager {
 
   // get
   get(url, {params, options, withLoading = true}) async {
+    if (withLoading) {
+      EasyLoading.show(status: '加载中...', indicator: LoadingWidget());
+    }
     Response response;
     try {
       response = await _dio.get(url, queryParameters: params, options: options);
+      if (withLoading) {
+        EasyLoading.dismiss();
+      }
     } on DioError catch (e) {
+      if (withLoading) {
+        EasyLoading.dismiss();
+      }
       formatError(e);
     }
     return onRequest(response);
@@ -54,10 +89,19 @@ class HttpManager {
 
   // post
   post(url, {params, options, withLoading = true}) async {
+    if (withLoading) {
+      EasyLoading.show(status: '加载中...', indicator: LoadingWidget());
+    }
     Response response;
     try {
       response = await _dio.post(url, data: params, options: options);
+      if (withLoading) {
+        EasyLoading.dismiss();
+      }
     } on DioError catch (e) {
+      if (withLoading) {
+        EasyLoading.dismiss();
+      }
       formatError(e);
     }
     return onRequest(response);

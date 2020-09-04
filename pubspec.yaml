@@ -32,6 +32,7 @@ dependencies:
   dio_cookie_manager: ^1.0.0 
   shared_preferences: ^0.5.8
   flutter_picker: ^1.1.5
+  flutter_easyloading: ^1.1.4
   date_format: ^1.0.8
   english_words: ^3.1.5
 
@@ -54,6 +55,7 @@ flutter:
   assets:
     - lib/assets/images/loginBg.png
     - lib/assets/images/loginLogo.png
+    - lib/assets/images/loading.gif
     - lib/assets/images/man.png
     - lib/assets/images/feman.png
     - lib/assets/images/pot.jpg

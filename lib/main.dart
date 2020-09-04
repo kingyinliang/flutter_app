@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'router/index.dart';
 
 class Router {
@@ -9,19 +10,19 @@ void main() {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: Router.navigatorKey,
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/sterilize/craft/exceptionAdd',
-      onGenerateRoute: onGenerateRoute,
+    return FlutterEasyLoading(
+      child: MaterialApp(
+        navigatorKey: Router.navigatorKey,
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        onGenerateRoute: onGenerateRoute,
+      ),
     );
   }
 }
-
 
 //typedef _ClickCallBack = void Function(int selectIndex, String selectText);
 //

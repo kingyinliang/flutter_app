@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../api/api/index.dart';
-import '../../../utils/index.dart';
+import 'package:dfmdsapp/api/api/index.dart';
+import 'package:dfmdsapp/utils/index.dart';
+import 'package:dfmdsapp/utils/storage.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -12,6 +13,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double _opacity = 0;
   List menuList = [];
+  String factoryName = '';
+  String workShopName = '';
+
   _onScroll(offset) {
     double alpha = offset / 80;
     if (alpha > 1) {
@@ -23,8 +27,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   _initState() async {
-    var a = 0xe622;
-    print(a.runtimeType.toString());
+    factoryName = await getStorage('factory');
+    workShopName = await getStorage('workShop');
     try {
       var res = await Common.getMenuApi();
       menuList = res['data']['menuList'];
@@ -58,7 +62,10 @@ class _HomePageState extends State<HomePage> {
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             children: <Widget>[
-              HomeHead(),
+              HomeHead(
+                factoryName: factoryName,
+                workShopName: workShopName,
+              ),
               HomeMenu(
                 menu: menuList,
               ),
@@ -81,7 +88,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Center(
               child: Text(
-                "欣和企业-杀菌一车间",
+                "$factoryName-$workShopName",
                 style: TextStyle(
                   fontSize: 16.0,
                   color: Colors.white,
@@ -97,7 +104,9 @@ class _HomePageState extends State<HomePage> {
 
 // 首页头部widget
 class HomeHead extends StatefulWidget {
-  HomeHead({Key key}) : super(key: key);
+  final factoryName;
+  final workShopName;
+  HomeHead({Key key, this.factoryName, this.workShopName}) : super(key: key);
 
   @override
   _HomeHeadState createState() => _HomeHeadState();
@@ -123,14 +132,14 @@ class _HomeHeadState extends State<HomeHead> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                "欣和企业",
+                widget.factoryName ?? '',
                 style: TextStyle(
                   fontSize: 28.0,
                   color: Colors.white,
                 ),
               ),
               Text(
-                "杀菌一车间",
+                widget.workShopName ?? '',
                 style: TextStyle(
                   fontSize: 12.0,
                   color: Colors.white,

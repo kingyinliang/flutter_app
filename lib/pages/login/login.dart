@@ -50,6 +50,12 @@ class _LoginPageState extends State<LoginPage> {
         if (element['deptName'] != '欣和总部') {
           deptName = deptName + element['deptName'] + '/';
         }
+        if (element['deptType'] == 'FACTORY') {
+          saveStringStorage('factory', element['deptName']);
+        }
+        if (element['deptType'] == 'WORK_SHOP') {
+          saveStringStorage('workShop', element['deptName']);
+        }
       });
       await saveStringStorage('token', res['data']['token']);
       await saveStringStorage('deptName', deptName);

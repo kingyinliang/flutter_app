@@ -2,8 +2,8 @@ import '../pages/login/login.dart';
 import '../pages/index/index.dart';
 import '../pages/sterilize/craft/list.dart';
 import '../pages/sterilize/craft/materialList.dart';
-import '../pages/sterilize/craft/materialAdd.dart';
-import '../pages/sterilize/craft/timeAdd.dart';
+// import '../pages/sterilize/craft/materialAdd.dart';
+// import '../pages/sterilize/craft/timeAdd.dart';
 import '../pages/sterilize/exception/add.dart';
 import '../pages/sterilize/acceAdd/list.dart';
 import '../pages/sterilize/acceAdd/home.dart';
@@ -18,10 +18,10 @@ Map<String, Function> routers = {
   '/home': (contxt, {arguments}) => IndexPage(),
   '/sterilize/craft/list': (contxt, {arguments}) => ListPage(),
   '/sterilize/craft/materialList': (contxt, {arguments}) => MaterialList(),
-  '/sterilize/craft/materialAdd': (contxt, {arguments}) => MaterialAdd(),
-  '/sterilize/craft/timeAdd': (contxt, {arguments}) => TimeAdd(),
+  // '/sterilize/craft/materialAdd': (contxt, {arguments}) => MaterialAdd(),
+  // '/sterilize/craft/timeAdd': (contxt, {arguments}) => TimeAdd(),
   '/sterilize/craft/exceptionAdd': (contxt, {arguments}) => ExceptionAdd(),
-  '/sterilize/acceAddList': (contxt, {arguments}) => AcceAddListPage(),
+  '/sterilize/acceAdd/list': (contxt, {arguments}) => AcceAddListPage(),
   '/sterilize/acceAdd/home': (contxt, {arguments}) => AcceAddHomePage(),
   '/sterilize/acceAdd/potAdd': (contxt, {arguments}) => PotAddPage(),
   '/sterilize/acceAdd/acceReceive': (contxt, {arguments}) => AcceReceivePage(),

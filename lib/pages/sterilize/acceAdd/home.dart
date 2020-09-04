@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../components/appBar.dart';
-import '../../../components/raisedButton.dart';
+import 'package:dfmdsapp/components/appBar.dart';
+import 'package:dfmdsapp/components/raisedButton.dart';
+import 'package:dfmdsapp/components/slide_button.dart';
+import 'package:dfmdsapp/components/sliver_tab_bar.dart';
+import 'package:dfmdsapp/api/api/index.dart';
 import '../common/page_head.dart';
-import '../../../components/slide_button.dart';
-import '../../../components/sliver_tab_bar.dart';
 import '../common/item_card.dart';
 import '../common/remove_btn.dart';
 
@@ -99,6 +100,27 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
     _floatingActionButtonFlag = index == 1 ? false : true;
     _tabIndex = index;
     setState(() {});
+  }
+
+  _initState() async {
+    try {
+      var res = await Sterilize.acceAddHomeApi({
+        "materialCode": "SP04020002",
+        "orderNo": "853000000514",
+        "potOrderNo": "853000000514001"
+      });
+      print(res);
+    } catch (e) {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              _initState();
+            }));
   }
 
   @override
