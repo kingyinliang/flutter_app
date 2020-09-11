@@ -14,24 +14,67 @@ class _MessagePageState extends State<MessagePage> {
   List messageOne = [
     {'id': '1', 'title': '1#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
     {'id': '2', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '3', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '4', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '5', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '6', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '7', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '8', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '9', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '10', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '11', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '12', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '13', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '14', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '15', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '16', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '3', 'title': '3#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '4', 'title': '4#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '5', 'title': '5#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '6', 'title': '6#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '7', 'title': '7#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '8', 'title': '8#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '9', 'title': '9#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '10', 'title': '10#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '11', 'title': '11#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '12', 'title': '12#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '13', 'title': '13#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '14', 'title': '14#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '15', 'title': '15#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {'id': '16', 'title': '16#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
   ];
   List messageTwo = [
-    {'id': '1111', 'title': '1#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
-    {'id': '2222', 'title': '2#锅第一锅', 'subTitle': '851000029046 工艺审核通过，请确认！'},
+    {
+      'id': '1111',
+      'title': '1111#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '2222',
+      'title': '2222#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '3333',
+      'title': '3333#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '4444',
+      'title': '4444#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '5555',
+      'title': '5555#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '6666',
+      'title': '6666#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '7777',
+      'title': '7777#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '8888',
+      'title': '8888#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
+    {
+      'id': '9999',
+      'title': '9999#锅第一锅',
+      'subTitle': '851000029046 工艺审核通过，请确认！'
+    },
   ];
   @override
   Widget build(BuildContext context) {
@@ -101,13 +144,17 @@ class MessageTab extends StatefulWidget {
   _MessageTabState createState() => _MessageTabState();
 }
 
-class _MessageTabState extends State<MessageTab> {
+class _MessageTabState extends State<MessageTab>
+    with AutomaticKeepAliveClientMixin {
   bool _checkboxVal = false;
 
   onTap() {
     this._checkboxVal = !this._checkboxVal;
     widget.changeCheckbox(false, this._checkboxVal, 1);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -135,6 +182,7 @@ class _MessageTabState extends State<MessageTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Stack(
       children: <Widget>[
         ListView.builder(

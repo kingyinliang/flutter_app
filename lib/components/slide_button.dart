@@ -1,8 +1,20 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:event_bus/event_bus.dart';
+
+/// 创建EventBus
+EventBus eventBus = EventBus();
+
+/// Event 修改点击第几个
+class IndexEvent {
+  var index;
+
+  IndexEvent(this.index);
+}
 
 // ignore: must_be_immutable
 class SlideButton extends StatefulWidget {
+  var index;
   Widget child;
   List<Widget> buttons;
   GlobalKey<SlideButtonState> key;
@@ -17,10 +29,10 @@ class SlideButton extends StatefulWidget {
 
   SlideButton(
       {this.key,
+      @required this.index,
       @required this.child,
       @required this.singleButtonWidth,
       @required this.buttons,
-      this.onDown,
       this.onSlideStarted,
       this.onSlideCompleted,
       this.onSlideCanceled})
@@ -34,6 +46,7 @@ class SlideButtonState extends State<SlideButton>
     with TickerProviderStateMixin {
   double translateX = 0;
   double maxDragDistance;
+  var eventListen;
   final Map<Type, GestureRecognizerFactory> gestures =
       <Type, GestureRecognizerFactory>{};
 
@@ -42,6 +55,9 @@ class SlideButtonState extends State<SlideButton>
   @override
   void initState() {
     super.initState();
+    eventListen = eventBus.on<IndexEvent>().listen((event) {
+      close();
+    });
     maxDragDistance = widget.singleButtonWidth * widget.buttons.length;
     gestures[HorizontalDragGestureRecognizer] =
         GestureRecognizerFactoryWithHandlers<HorizontalDragGestureRecognizer>(
@@ -102,7 +118,8 @@ class SlideButtonState extends State<SlideButton>
   }
 
   void onHorizontalDragDown(DragDownDetails details) {
-    widget.onDown();
+    // widget.onDown();
+    eventBus.fire(IndexEvent(widget.index));
     if (widget.onSlideStarted != null) widget.onSlideStarted.call();
   }
 
@@ -143,6 +160,8 @@ class SlideButtonState extends State<SlideButton>
   @override
   void dispose() {
     animationController.dispose();
+    //取消订阅
+    eventListen.cancel();
     super.dispose();
   }
 }

@@ -177,68 +177,28 @@ class _HomeMenuState extends State<HomeMenu> {
       itemBuilder: (context, index) {
         return MenuItem(
           url: widget.menu[index]['menuUrl'],
-          menuColor: getColorFromHex(widget.menu[index]['permission']),
+          menuData: widget.menu[index]['remark'],
           menuTitle: widget.menu[index]['menuName'],
           menuSubTitle: widget.menu[index]['remark'],
           menuIcon: IconData(getColorFromHex(widget.menu[index]['menuIcon']),
               fontFamily: 'MdsIcon'),
         );
       },
-      // children: <Widget>[
-      //   MenuItem(
-      //     url: '/sterilize/semiReceive/home',
-      //     menuColor: 0xFFE86452,
-      //     menuTitle: '半成品领用',
-      //     menuSubTitle: 'Semi-finished goods',
-      //     menuIcon: IconData(0xe622, fontFamily: 'MdsIcon'),
-      //   ),
-      //   MenuItem(
-      //     menuColor: 0xFFF6BD16,
-      //     menuTitle: '半成品异常',
-      //     menuSubTitle: 'Abnormal records',
-      //     menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
-      //   ),
-      //   MenuItem(
-      //     menuColor: 0xFF1E9493,
-      //     menuTitle: '工艺控制',
-      //     menuSubTitle: 'Process control',
-      //     menuIcon: IconData(0xe61e, fontFamily: 'MdsIcon'),
-      //   ),
-      //   MenuItem(
-      //     menuColor: 0xFF5D7092,
-      //     menuTitle: '工艺异常',
-      //     menuSubTitle: 'Abnormal records',
-      //     menuIcon: IconData(0xe623, fontFamily: 'MdsIcon'),
-      //   ),
-      //   MenuItem(
-      //     url: '/sterilize/acceAdd/home',
-      //     menuColor: 0xFF1677FF,
-      //     menuTitle: '辅料添加',
-      //     menuSubTitle: 'Accessories add',
-      //     menuIcon: IconData(0xe61d, fontFamily: 'MdsIcon'),
-      //   ),
-      //   MenuItem(
-      //     menuColor: 0xFF454955,
-      //     menuTitle: '辅料异常',
-      //     menuSubTitle: 'Abnormal records',
-      //     menuIcon: IconData(0xe625, fontFamily: 'MdsIcon'),
-      //   ),
-      // ],
     );
   }
 }
 
 // 首页单个菜单widget
 class MenuItem extends StatefulWidget {
-  final menuColor;
   final IconData menuIcon;
   final String menuTitle;
   final String menuSubTitle;
   final String url;
+  final String menuData;
   MenuItem(
       {Key key,
       this.url,
-      this.menuColor,
+      this.menuData,
       this.menuIcon,
       this.menuTitle,
       this.menuSubTitle})
@@ -249,6 +209,67 @@ class MenuItem extends StatefulWidget {
 }
 
 class _MenuItemState extends State<MenuItem> {
+  Map menu = {};
+
+  _initState() {
+    switch (widget.menuData) {
+      case 'semi':
+        menu = {
+          'menuColor': 0xFFE86452,
+          'workingType': 'semi',
+          'menuSubTitle': 'Semi-finished goods',
+        };
+        break;
+      case 'semiAbnormal':
+        menu = {
+          'menuColor': 0xFFF6BD16,
+          'workingType': 'semiAbnormal',
+          'menuSubTitle': 'Abnormal records',
+        };
+        break;
+      case 'material':
+        menu = {
+          'menuColor': 0xFF1677FF,
+          'workingType': 'material',
+          'menuSubTitle': 'Accessories add',
+        };
+        break;
+      case 'materialAbnormal':
+        menu = {
+          'menuColor': 0xFF454955,
+          'workingType': 'materialAbnormal',
+          'menuSubTitle': 'Abnormal records',
+        };
+        break;
+      case 'processor':
+        menu = {
+          'menuColor': 0xFF1E9493,
+          'workingType': 'processor',
+          'menuSubTitle': 'Process control',
+        };
+        break;
+      case 'processorAbnormal':
+        menu = {
+          'menuColor': 0xFF5D7092,
+          'workingType': 'processorAbnormal',
+          'menuSubTitle': 'Abnormal records',
+        };
+        break;
+      default:
+        menu = {
+          'menuColor': 0xFFE86452,
+          'workingType': '',
+          'menuSubTitle': '',
+        };
+    }
+  }
+
+  @override
+  void initState() {
+    _initState();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -256,7 +277,7 @@ class _MenuItemState extends State<MenuItem> {
         padding: EdgeInsets.fromLTRB(12, 14, 12, 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Color(widget.menuColor),
+          color: Color(menu['menuColor']),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +290,7 @@ class _MenuItemState extends State<MenuItem> {
               ),
             ),
             Text(
-              widget.menuSubTitle,
+              menu['menuSubTitle'],
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
@@ -295,8 +316,15 @@ class _MenuItemState extends State<MenuItem> {
         ),
       ),
       onTap: () {
-        print('object');
-        Navigator.pushNamed(context, widget.url);
+        Navigator.pushNamed(
+          context,
+          '/sterilize/barcode',
+          arguments: {
+            'url': widget.url,
+            'workingType': menu['workingType'],
+            'title': widget.menuTitle,
+          },
+        );
       },
     );
   }

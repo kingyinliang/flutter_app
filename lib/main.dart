@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         navigatorKey: Router.navigatorKey,
         debugShowCheckedModeBanner: false,
-        initialRoute: '/',
+        initialRoute: '/home',
         onGenerateRoute: onGenerateRoute,
       ),
     );

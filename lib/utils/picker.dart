@@ -23,6 +23,8 @@ class PickerTool {
     String title,
     @required String label,
     @required String value,
+    String label1 = '',
+    String label2 = '',
     String selectVal,
     PickerDataAdapter adapter,
     @required clickCallBack,
@@ -32,12 +34,12 @@ class PickerTool {
         adapter: PickerDataAdapter(
             data: data.asMap().keys.map((index) {
               Map<dynamic, dynamic> it = data[index] as Map;
-              if (it[label] == selectVal) {
+              if (it[value].toString() == selectVal) {
                 selectIndex = index;
               }
               return PickerItem(
-                text: Text(it[label]),
-                value: it[value],
+                text: Text(label1 + it[label].toString() + label2),
+                value: it[value].toString(),
               );
             }).toList(),
             isArray: false), clickCallBack: (Picker picker, value) {

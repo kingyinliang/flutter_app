@@ -6,12 +6,14 @@ class DataPickerWidget extends StatefulWidget {
   final String label;
   final String prop;
   final bool requiredFlg;
+  final String valueFormat;
   final Function onChange;
   DataPickerWidget(
       {Key key,
       @required this.label,
       @required this.prop,
       @required this.onChange,
+      this.valueFormat = 'yyyy-mm-dd HH:nn',
       this.requiredFlg = false})
       : super(key: key);
 
@@ -21,10 +23,16 @@ class DataPickerWidget extends StatefulWidget {
 
 class _DataPickerWidgetState extends State<DataPickerWidget> {
   onTap() {
+    var dateType;
+    if (widget.valueFormat == 'yyyy-mm-dd') {
+      dateType = DateType.YMD;
+    } else {
+      dateType = DateType.YMD_HM;
+    }
     PickerTool.showDatePicker(context,
-        dateType: DateType.YMD_HM,
+        dateType: dateType,
         value: widget.prop,
-        valueFormat: 'yyyy-mm-dd hh:nn', clickCallback: (val) {
+        valueFormat: widget.valueFormat, clickCallback: (val) {
       widget.onChange(val);
     });
   }

@@ -52,9 +52,11 @@ class _LoginPageState extends State<LoginPage> {
         }
         if (element['deptType'] == 'FACTORY') {
           saveStringStorage('factory', element['deptName']);
+          saveStringStorage('factoryId', element['id']);
         }
         if (element['deptType'] == 'WORK_SHOP') {
           saveStringStorage('workShop', element['deptName']);
+          saveStringStorage('workShopId', element['id']);
         }
       });
       await saveStringStorage('token', res['data']['token']);

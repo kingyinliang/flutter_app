@@ -1,121 +1,102 @@
 import 'package:flutter/material.dart';
-import '../../../components/appBar.dart';
-import '../../../components/raisedButton.dart';
+import 'package:dfmdsapp/components/appBar.dart';
+import 'package:dfmdsapp/components/raisedButton.dart';
+import 'package:dfmdsapp/components/slide_button.dart';
+import 'package:dfmdsapp/api/api/index.dart';
+
 import '../common/page_head.dart';
-import '../../../components/slide_button.dart';
 import '../common/item_card.dart';
 import '../common/remove_btn.dart';
 
-List potArr = [
-  {
-    'num1': '55',
-    'util': 'KG',
-    'name': '1#煮料锅',
-    'name1': '第3锅',
-    'name2': '3#转运罐',
-    'name3': '杀菌完黄豆酱',
-    'name4': '2020052185001',
-    'name5': '2020-05-26',
-    'name6': '09:35',
-    'name7': '12311公斤',
-    'name8': '张三',
-    'name9': '2020.05.21 18:29:20',
-    'name10': '运转正常',
-  },
-  {
-    'num1': '892',
-    'util': 'KG',
-    'name': '1#煮料锅',
-    'name1': '第3锅',
-    'name2': '3#转运罐',
-    'name3': '杀菌完黄豆酱',
-    'name4': '2020052185001',
-    'name5': '2020-05-26',
-    'name6': '09:35',
-    'name7': '12311公斤',
-    'name8': '张三',
-    'name9': '2020.05.21 18:29:20',
-    'name10': '运转正常',
-  },
-  {
-    'num1': '785',
-    'util': 'KG',
-    'name': '1#煮料锅',
-    'name1': '第3锅',
-    'name2': '3#转运罐',
-    'name3': '杀菌完黄豆酱',
-    'name4': '2020052185001',
-    'name5': '2020-05-26',
-    'name6': '09:35',
-    'name7': '12311公斤',
-    'name8': '张三',
-    'name9': '2020.05.21 18:29:20',
-    'name10': '运转正常',
-  },
-  {
-    'num1': '892',
-    'util': 'KG',
-    'name': '1#煮料锅',
-    'name1': '第3锅',
-    'name2': '3#转运罐',
-    'name3': '杀菌完黄豆酱',
-    'name4': '2020052185001',
-    'name5': '2020-05-26',
-    'name6': '09:35',
-    'name7': '12311公斤',
-    'name8': '张三',
-    'name9': '2020.05.21 18:29:20',
-    'name10': '运转正常',
-  }
-];
-List wrapList = [
-  {'label': '', 'value': 'name'},
-  {'label': '', 'value': 'name1'},
-  {'label': '', 'value': 'name2'},
-  {'label': '', 'value': 'name3'},
-  {'label': '', 'value': 'name4'},
-  {'label': '配置日期：', 'value': 'name5'},
-  {'label': '添加时间', 'value': 'name6'},
-  {'label': '剩余库存', 'value': 'name7'},
-  {'label': '', 'value': 'name8'},
-  {'label': '', 'value': 'name9'},
-  {'label': '备注：', 'value': 'name10'},
-];
-
 class SemiReceivePage extends StatefulWidget {
-  SemiReceivePage({Key key}) : super(key: key);
+  final arguments;
+  SemiReceivePage({Key key, this.arguments}) : super(key: key);
 
   @override
   _SemiReceivePageState createState() => _SemiReceivePageState();
 }
 
 class _SemiReceivePageState extends State<SemiReceivePage> {
+  List wrapList = [
+    {'label': '', 'value': 'fermentPotNo'},
+    {'label': '', 'value': 'materialName'},
+    {'label': '', 'value': 'consumeBatch'},
+    {'label': '发酵罐库存', 'value': 'fermentStorage'},
+    {'label': '', 'value': 'tankNo'},
+    {'label': '', 'value': 'changer'},
+    {'label': '', 'value': 'changed'},
+    {'label': '备注：', 'value': 'remark'},
+  ];
+
+  List semiList = [];
   getListCard() {
     List listWidget = [];
-    listWidget = potArr.asMap().keys.map((index) {
-      var key = GlobalKey<SlideButtonState>();
+    listWidget = semiList.asMap().keys.map((index) {
       return SlideButton(
-        key: key,
+        index: index,
         singleButtonWidth: 70,
         child: ItemCard(
-          carTitle: '煮料锅领用数量',
-          cardMap: potArr[index],
-          title: 'num1',
-          subTitle: 'util',
+          carTitle: '半成品领用领用数量',
+          cardMap: semiList[index],
+          title: 'consumeAmount',
+          subTitle: 'consumeUnit',
           wrapList: wrapList,
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/sterilize/semiReceive/add',
+              arguments: {
+                'orderNo': widget.arguments['potNum']['orderNo'],
+                'stePotNo': widget.arguments['potNum']['pot'],
+                'potOrderNo': widget.arguments['potNum']['potNo'],
+                'potOrderId': widget.arguments['potNum']['potOrderId'],
+                'data': semiList[index],
+              },
+            ).then((value) => value != null ? _initState() : null);
+          },
         ),
         buttons: <Widget>[
           CardRemoveBtn(
-            removeOnTab: () {
-              potArr.removeAt(index);
-              setState(() {});
-            },
+            removeOnTab: () => _semiDel(index),
           ),
         ],
-        onDown: () {},
       );
     }).toList();
     return listWidget;
+  }
+
+  _semiDel(index) async {
+    try {
+      await Sterilize.semiDelApi({
+        'ids': [semiList[index]['id']],
+        'potOrderNo': widget.arguments['potNum']['potNo'],
+      });
+      semiList.removeAt(index);
+      setState(() {});
+    } catch (e) {}
+    setState(() {});
+  }
+
+  _initState() async {
+    try {
+      var res = await Sterilize.semiHomeApi({
+        "orderNo": widget.arguments['potNum']['orderNo'],
+        "potOrderNo": widget.arguments['potNum']['potNo']
+      });
+      semiList = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
   }
 
   @override
@@ -135,7 +116,16 @@ class _SemiReceivePageState extends State<SemiReceivePage> {
               margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
               child: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/sterilize/semiReceive/add');
+                  Navigator.pushNamed(
+                    context,
+                    '/sterilize/semiReceive/add',
+                    arguments: {
+                      'orderNo': widget.arguments['potNum']['orderNo'],
+                      'stePotNo': widget.arguments['pot'],
+                      'potOrderNo': widget.arguments['potNum']['potNo'],
+                      'potOrderId': widget.arguments['potNum']['potOrderId'],
+                    },
+                  ).then((value) => value != null ? _initState() : null);
                 },
                 child: Icon(Icons.add),
               ),
@@ -154,10 +144,11 @@ class _SemiReceivePageState extends State<SemiReceivePage> {
         children: <Widget>[
           SizedBox(height: 5),
           PageHead(
-            title: '1#锅 第2锅',
-            subTitle: '杀菌完黄豆酱',
-            orderNo: '83300023456',
-            potNo: '83300023456',
+            title:
+                '${widget.arguments['potName']} 第${widget.arguments['potNum']['potOrder']}锅',
+            subTitle: '${widget.arguments['potNum']['materialName']}',
+            orderNo: '${widget.arguments['potNum']['orderNo']}',
+            potNo: '${widget.arguments['potNum']['potNo']}',
           ),
           SizedBox(height: 5),
           Container(

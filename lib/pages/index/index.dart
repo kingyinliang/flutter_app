@@ -13,7 +13,7 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   int _currentIndex = 0;
-  List _pageList = [
+  List<Widget> _pageList = [
     HomePage(),
     MessagePage(),
     UserPage(),
@@ -21,7 +21,10 @@ class _IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: this._pageList[this._currentIndex],
+      body: IndexedStack(
+        index: this._currentIndex,
+        children: this._pageList,
+      ),
       backgroundColor: Color(0xFFF5F5F5),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: this._currentIndex,

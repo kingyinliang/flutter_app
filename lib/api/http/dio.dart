@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -28,60 +29,80 @@ class LoadingWidget extends StatelessWidget {
 }
 
 class HttpManager {
-  final String _baseUrl = HostAddress.DEV_API;
-  final int _connectTimeout = 5000;
+  final String _addressBaseUrl = HostAddress.APP_API;
+  final int _connectTimeout = 60000;
   final int _receiveTimeout = 3000;
+  int netLoadingCount = 0;
 
-  static HttpManager _instance;
+  static HttpManager _instance = HttpManager._internal();
   Dio _dio;
   BaseOptions _options;
 
   // 单例模式
+  factory HttpManager() => _instance;
   // ignore: missing_return
-  static HttpManager getInstance() {
-    if (null == _instance) {
-      _instance = HttpManager();
-      return _instance;
+  static HttpManager getInstance({String baseUrl}) {
+    if (baseUrl == null) {
+      return _instance._normal();
+    } else {
+      return _instance._baseUrl(baseUrl);
     }
-    return _instance;
   }
 
   // 初始化
-  HttpManager() {
-    EasyLoading.instance..loadingStyle = EasyLoadingStyle.custom;
-    EasyLoading.instance..backgroundColor = Color(0x66000000);
-    EasyLoading.instance..textColor = Colors.white;
-    EasyLoading.instance..userInteractions = false;
-    EasyLoading.instance..indicatorColor = Colors.white;
-    EasyLoading.instance..progressColor = Colors.white;
-    _options = BaseOptions(
-      baseUrl: _baseUrl,
-      connectTimeout: _connectTimeout,
-      receiveTimeout: _receiveTimeout,
-    );
+  // ignore: unused_element
+  HttpManager._internal() {
+    if (null == _dio) {
+      EasyLoading.instance
+        ..displayDuration = const Duration(milliseconds: 2000);
+      EasyLoading.instance..loadingStyle = EasyLoadingStyle.custom;
+      EasyLoading.instance..backgroundColor = Color(0x66000000);
+      EasyLoading.instance..textColor = Colors.white;
+      EasyLoading.instance..userInteractions = false;
+      EasyLoading.instance..indicatorColor = Colors.white;
+      EasyLoading.instance..progressColor = Colors.white;
+      _options = BaseOptions(
+        baseUrl: _addressBaseUrl,
+        connectTimeout: _connectTimeout,
+        receiveTimeout: _receiveTimeout,
+      );
 
-    _dio = new Dio(_options);
+      _dio = new Dio(_options);
 
-    _dio.interceptors.add(CookieManager(CookieJar()));
-    _dio.interceptors.add(LogsInterceptors());
-    _dio.interceptors.add(ResponseInterceptors());
+      _dio.interceptors.add(CookieManager(CookieJar()));
+      _dio.interceptors.add(LogsInterceptors());
+      _dio.interceptors.add(ResponseInterceptors());
+    }
+  }
+
+  //用于指定特定域名
+  HttpManager _baseUrl(String baseUrl) {
+    if (_dio != null) {
+      _dio.options.baseUrl = baseUrl;
+    }
+    return this;
+  }
+
+  //一般请求，默认域名
+  HttpManager _normal() {
+    if (_dio != null) {
+      if (_dio.options.baseUrl != _addressBaseUrl) {
+        _dio.options.baseUrl = _addressBaseUrl;
+      }
+    }
+    return this;
   }
 
   // get
   get(url, {params, options, withLoading = true}) async {
-    if (withLoading) {
-      EasyLoading.show(status: '加载中...', indicator: LoadingWidget());
-    }
+    showLoading(withLoading);
     Response response;
     try {
       response = await _dio.get(url, queryParameters: params, options: options);
-      if (withLoading) {
-        EasyLoading.dismiss();
-      }
+      hideLoading(withLoading);
     } on DioError catch (e) {
-      if (withLoading) {
-        EasyLoading.dismiss();
-      }
+      endLoading();
+      EasyLoading.showInfo('未知错误', duration: Duration(milliseconds: 2000));
       formatError(e);
     }
     return onRequest(response);
@@ -89,19 +110,14 @@ class HttpManager {
 
   // post
   post(url, {params, options, withLoading = true}) async {
-    if (withLoading) {
-      EasyLoading.show(status: '加载中...', indicator: LoadingWidget());
-    }
+    showLoading(withLoading);
     Response response;
     try {
       response = await _dio.post(url, data: params, options: options);
-      if (withLoading) {
-        EasyLoading.dismiss();
-      }
+      hideLoading(withLoading);
     } on DioError catch (e) {
-      if (withLoading) {
-        EasyLoading.dismiss();
-      }
+      endLoading();
+      EasyLoading.showInfo('未知错误', duration: Duration(milliseconds: 2000));
       formatError(e);
     }
     return onRequest(response);
@@ -110,6 +126,27 @@ class HttpManager {
   // ignore: missing_return
   Future updateToken() async {
     _dio.options.headers['Authorization'] = await getStorage('token');
+  }
+
+  // loding
+  showLoading(withLoading) {
+    if (withLoading && netLoadingCount == 0) {
+      EasyLoading.show(status: '加载中...', indicator: LoadingWidget());
+    }
+    netLoadingCount++;
+  }
+
+  hideLoading(withLoading) {
+    if (netLoadingCount <= 0) return;
+    netLoadingCount--;
+    if (withLoading && netLoadingCount == 0) {
+      endLoading();
+    }
+  }
+
+  endLoading() {
+    netLoadingCount = 0;
+    EasyLoading.dismiss();
   }
 
   // 响应拦截
@@ -125,6 +162,11 @@ class HttpManager {
       _com.complete(response.data);
       return _future;
     } else {
+      endLoading();
+      Future.delayed(Duration(milliseconds: 500), () {
+        EasyLoading.showInfo('${response.data['msg']}',
+            duration: Duration(milliseconds: 2000));
+      });
       _com.completeError(response);
       return _future;
     }
@@ -179,14 +221,13 @@ class LogsInterceptors extends Interceptor {
 
   @override
   Future onResponse(Response response) {
-    String responseStr =
-        "\n==================== RESPONSE ====================\n"
-        "- URL:${response.request.uri}\n";
-
-    if (response.data != null) {
-      responseStr += "- BODY:\n ${response.data}";
-    }
-    print(responseStr);
+    Map httpLogMap = Map();
+    httpLogMap.putIfAbsent("requestUrl", () => "${response.request.uri}");
+    httpLogMap.putIfAbsent(
+        "requestQueryParameters", () => response.request.queryParameters);
+    httpLogMap.putIfAbsent("respondData", () => response.data);
+    print('\n==================== RESPONSE ====================\n');
+    printJson(httpLogMap);
     return super.onResponse(response);
   }
 
@@ -195,6 +236,24 @@ class LogsInterceptors extends Interceptor {
     print('\n==================== ERROR ====================\n');
     print(err);
     return super.onError(err);
+  }
+
+  //带有首行缩进的Json格式
+  static JsonEncoder encoder = JsonEncoder.withIndent('  ');
+
+  /// 单纯的Json格式输出打印
+  static void printJson(Object object) {
+    try {
+      var encoderString = encoder.convert(object);
+      // print(encoderString);
+      // 不使用print()方法是因为这是单条输出，如果过长无法显示全
+      // 所以使用debugPrint()
+      debugPrint(encoderString);
+      // 下面这语句的效果与debugPrint 相同
+      //encoderString.split('\n').forEach((element) => print(element));
+    } catch (e) {
+      print(e);
+    }
   }
 }
 

@@ -1,22 +1,143 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import '../../../components/appBar.dart';
-import '../../../components/raisedButton.dart';
-import '../../../components/form.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:dfmdsapp/components/appBar.dart';
+import 'package:dfmdsapp/components/raisedButton.dart';
+import 'package:dfmdsapp/components/form.dart';
+import 'package:dfmdsapp/api/api/index.dart';
+import 'package:dfmdsapp/utils/storage.dart';
 
 class PotAddPage extends StatefulWidget {
-  PotAddPage({Key key}) : super(key: key);
+  final arguments;
+  PotAddPage({Key key, this.arguments}) : super(key: key);
 
   @override
   _PotAddPageState createState() => _PotAddPageState();
 }
 
 class _PotAddPageState extends State<PotAddPage> {
-  String input = '2020-08-01 09:21';
-  List potList = [
-    {'label': '我是1', 'val': '1'},
-    {'label': '我是2', 'val': '2'},
-    {'label': '我是3', 'val': '3'}
-  ];
+  Map<String, dynamic> formMap = {
+    'potOrderNo': '',
+    'potOrderId': '',
+    'potNo': '',
+    'configDate': '',
+    'cookingNum': '',
+    'cookingOrderNo': '',
+    'cookingMaterialCode': '',
+    'remainderPot': '',
+    'consumeAmount': '',
+    'remainderAmount': '',
+    'unit': '',
+    'addDate': '',
+    'transferTank': '',
+    'remark': '',
+  };
+  List potList = [];
+  List cookingNum = [];
+  List transferTank = [];
+
+  _submitForm() async {
+    if (formMap['potNo'] == null || formMap['potNo'] == '') {
+      EasyLoading.showError('请填写煮料锅号');
+      return;
+    }
+    if (formMap['configDate'] == null || formMap['configDate'] == '') {
+      EasyLoading.showError('请填写配置日期');
+      return;
+    }
+    if (formMap['cookingNum'] == null || formMap['cookingNum'] == '') {
+      EasyLoading.showError('请填写煮料锅序');
+      return;
+    }
+    if (formMap['addDate'] == null || formMap['addDate'] == '') {
+      EasyLoading.showError('请填写添加时间');
+      return;
+    }
+    if (formMap['id'] != null) {
+      try {
+        await Sterilize.acceAddPotUpdateApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await Sterilize.acceAddPotAddApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
+
+  _getCookingNum() async {
+    var workShop = await getStorage('workShopId');
+    try {
+      var res = await Sterilize.cookingNoApi({
+        'workShop': workShop,
+        'configStartDate': formMap['configDate'],
+        'potNo': formMap['potNo']
+      });
+      cookingNum = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _cookingNumChange(data) async {
+    formMap['cookingId'] = data['id'];
+    formMap['cookingOrderNo'] = data['cookingNo'];
+    formMap['cookingMaterialCode'] = data['productMaterial'];
+    formMap['cookingMaterialName'] = data['productMaterialName'];
+    formMap['remainderPot'] = data['configPotCount'] - data['usePotCount'];
+    formMap['remainderAmount'] = data['remainder'];
+    try {
+      var res = await Common.materialUnitQuery(
+          {'materialCode': data['productMaterial']});
+      formMap['unit'] = res['data'][0]['unit'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _getPotList() async {
+    var workShop = await getStorage('workShopId');
+    try {
+      var res = await Common.holderDropDownQuery(
+          {'deptId': workShop, 'holderType': '020'});
+      potList = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _getTransferTank() async {
+    var workShop = await getStorage('workShopId');
+    try {
+      var res = await Common.holderDropDownQuery(
+          {'deptId': workShop, 'holderType': '022'});
+      transferTank = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  @override
+  void initState() {
+    if (widget.arguments['data'] != null) {
+      formMap = jsonDecode(jsonEncode(widget.arguments['data']));
+      Future.delayed(
+        Duration.zero,
+        () => setState(() {
+          _getCookingNum();
+        }),
+      );
+    }
+    formMap['potOrderNo'] = widget.arguments['potOrderNo'];
+    formMap['potOrderId'] = widget.arguments['potOrderId'];
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _getPotList();
+        _getTransferTank();
+      }),
+    );
+    super.initState();
+  }
+
   Widget formWidget() {
     return Container(
       color: Colors.white,
@@ -26,108 +147,96 @@ class _PotAddPageState extends State<PotAddPage> {
         children: <Widget>[
           SelectWidget(
             label: '煮料锅号',
-            prop: input,
+            prop: formMap['potNo'],
             requiredFlg: true,
             options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            optionsLabel: 'holderName',
+            optionsval: 'holderNo',
             onChange: (val) {
-              input = val['label'];
+              formMap['potNo'] = val['holderNo'];
+              _getCookingNum();
               setState(() {});
             },
           ),
-          SelectWidget(
+          DataPickerWidget(
             label: '配置日期',
-            prop: input,
+            prop: formMap['configDate'],
+            valueFormat: 'yyyy-mm-dd',
             requiredFlg: true,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
             onChange: (val) {
-              input = val['label'];
+              formMap['configDate'] = val;
+              _getCookingNum();
               setState(() {});
             },
           ),
           SelectWidget(
             label: '煮料锅序',
-            prop: input,
+            prop: formMap['cookingNum'].toString(),
             requiredFlg: true,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            options: cookingNum,
+            optionsLabel: 'potOrder',
+            optionsLabel1: '第',
+            optionsLabel2: '锅',
+            optionsval: 'potOrder',
             onChange: (val) {
-              input = val['label'];
+              formMap['cookingNum'] = val['potOrder'];
+              _cookingNumChange(val);
               setState(() {});
             },
           ),
-          InputWidget(
-              label: '煮料锅单',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '生产物料',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '剩余锅数',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
+          FormTextWidget(
+            label: '煮料锅单',
+            prop: formMap['cookingOrderNo'].toString(),
+          ),
+          FormTextWidget(
+            label: '生产物料',
+            prop: formMap['cookingMaterialCode'].toString(),
+          ),
+          FormTextWidget(
+            label: '剩余锅数',
+            prop: formMap['remainderPot'].toString(),
+          ),
           InputWidget(
               label: '领用数量',
-              prop: input,
+              prop: formMap['consumeAmount'].toString(),
               requiredFlg: true,
               onChange: (val) {
-                input = val;
+                formMap['consumeAmount'] = val;
                 setState(() {});
               }),
-          InputWidget(
-              label: '剩余库存',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '单位',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
+          FormTextWidget(
+            label: '剩余库存',
+            prop: formMap['remainderAmount'].toString(),
+          ),
+          FormTextWidget(
+            label: '单位',
+            prop: formMap['unit'].toString(),
+          ),
           DataPickerWidget(
             label: '添加时间',
-            prop: input,
+            prop: formMap['addDate'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              input = val;
+              formMap['addDate'] = val;
               setState(() {});
             },
           ),
           SelectWidget(
             label: '转运罐号',
-            prop: input,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            prop: formMap['transferTank'].toString(),
+            options: transferTank,
+            optionsLabel: 'holderName',
+            optionsval: 'holderNo',
             onChange: (val) {
-              input = val['label'];
+              formMap['transferTank'] = val['holderNo'];
               setState(() {});
             },
           ),
           InputWidget(
               label: '备注',
-              prop: input,
+              prop: formMap['remark'].toString(),
               onChange: (val) {
-                input = val;
+                formMap['remark'] = val;
                 setState(() {});
               }),
         ],
@@ -138,7 +247,8 @@ class _PotAddPageState extends State<PotAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: '煮料锅新增'),
+      appBar:
+          MdsAppBarWidget(titleData: formMap['id'] == null ? '煮料锅新增' : '煮料锅修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[
@@ -146,10 +256,7 @@ class _PotAddPageState extends State<PotAddPage> {
           SizedBox(height: 34),
           MdsWidthButton(
             text: '确定',
-            onPressed: () {
-              input = '111';
-              setState(() {});
-            },
+            onPressed: _submitForm,
           ),
           SizedBox(height: 34),
         ],

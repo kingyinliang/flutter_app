@@ -1,22 +1,108 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../../../components/appBar.dart';
-import '../../../components/raisedButton.dart';
-import '../../../components/form.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:dfmdsapp/components/appBar.dart';
+import 'package:dfmdsapp/components/raisedButton.dart';
+import 'package:dfmdsapp/components/form.dart';
+import 'package:dfmdsapp/api/api/index.dart';
+import 'package:dfmdsapp/utils/storage.dart';
 
 class AddSemiReceivePage extends StatefulWidget {
-  AddSemiReceivePage({Key key}) : super(key: key);
+  final arguments;
+  AddSemiReceivePage({Key key, this.arguments}) : super(key: key);
 
   @override
   _AddSemiReceivePageState createState() => _AddSemiReceivePageState();
 }
 
 class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
-  String input = '2020-08-01 09:21';
-  List potList = [
-    {'label': '我是1', 'val': '1'},
-    {'label': '我是2', 'val': '2'},
-    {'label': '我是3', 'val': '3'}
+  Map<String, dynamic> formMap = {
+    'consumeType': '1',
+    'fermentPotNo': '',
+    'materialCode': '',
+    'consumeUnit': '',
+    'consumeAmount': '',
+    'consumeBatch': '',
+    'fermentStorage': '',
+    'tankNo': '',
+    'remark': '',
+  };
+
+  List potList = [];
+  List materialList = [];
+  List transferTank = [];
+  List consumeType = [
+    {
+      'label': '是',
+      'val': '1',
+    },
+    {
+      'label': '否',
+      'val': '0',
+    }
   ];
+
+  _submitForm() async {
+    if (formMap['fermentPotNo'] == null || formMap['fermentPotNo'] == '') {
+      EasyLoading.showError('请填写发酵罐号');
+      return;
+    }
+    if (formMap['materialCode'] == null || formMap['materialCode'] == '') {
+      EasyLoading.showError('请填写领用物料');
+      return;
+    }
+    if (formMap['consumeAmount'] == null || formMap['consumeAmount'] == '') {
+      EasyLoading.showError('请填写领用数量');
+      return;
+    }
+    if (formMap['consumeBatch'] == null || formMap['consumeBatch'] == '') {
+      EasyLoading.showError('请填写领用批次');
+      return;
+    }
+    if (formMap['id'] != null) {
+      try {
+        await Sterilize.semiUpdateApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await Sterilize.semiAddApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
+
+  _getPotList() async {
+    var factoryId = await getStorage('factoryId');
+    try {
+      var res = await Common.holderDropDownQuery(
+          {'factory': factoryId, 'holderType': '001'});
+      potList = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _getMaterial() async {
+    try {
+      var res = await Common.orderBoom({
+        'materialType': 'ZHAL',
+        'orderNoList': [widget.arguments['orderNo']]
+      });
+      materialList = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _getTransferTank() async {
+    var workShop = await getStorage('workShopId');
+    try {
+      var res = await Common.holderDropDownQuery(
+          {'deptId': workShop, 'holderType': '022'});
+      transferTank = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
   Widget formWidget() {
     return Container(
       color: Colors.white,
@@ -25,109 +111,87 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
       child: Column(
         children: <Widget>[
           SelectWidget(
+            label: '发酵罐领用',
+            prop: formMap['consumeType'].toString(),
+            requiredFlg: true,
+            options: consumeType,
+            optionsLabel: 'label',
+            optionsval: 'val',
+            onChange: (val) {
+              formMap['consumeType'] = val['val'];
+              setState(() {});
+            },
+          ),
+          SelectWidget(
             label: '发酵罐号',
-            prop: input,
+            prop: formMap['fermentPotNo'].toString(),
             requiredFlg: true,
             options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            optionsLabel: 'holderName',
+            optionsval: 'holderNo',
             onChange: (val) {
-              input = val['label'];
+              formMap['fermentPotNo'] = val['holderNo'];
+              formMap['fermentStorage'] = val['holderVolume'];
               setState(() {});
             },
           ),
           SelectWidget(
-            label: '配置日期',
-            prop: input,
+            label: '领用物料',
+            prop: formMap['materialCode'].toString(),
             requiredFlg: true,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            options: materialList,
+            optionsLabel: 'materialName',
+            optionsval: 'matnr',
             onChange: (val) {
-              input = val['label'];
+              formMap['materialCode'] = val['matnr'];
+              formMap['consumeUnit'] = val['erfme'];
+              formMap['materialName'] = val['materialName'];
+              formMap['materialType'] = val['materialType'];
               setState(() {});
             },
           ),
-          SelectWidget(
-            label: '煮料锅序',
-            prop: input,
+          FormTextWidget(
+            label: '单位',
+            prop: formMap['consumeUnit'].toString(),
+          ),
+          InputWidget(
+            label: '领用数量',
+            prop: formMap['consumeAmount'].toString(),
             requiredFlg: true,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
             onChange: (val) {
-              input = val['label'];
+              formMap['consumeAmount'] = val;
               setState(() {});
             },
           ),
           InputWidget(
-              label: '煮料锅单',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '生产物料',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '剩余锅数',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '领用数量',
-              prop: input,
-              requiredFlg: true,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '剩余库存',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          InputWidget(
-              label: '单位',
-              prop: input,
-              onChange: (val) {
-                input = val;
-                setState(() {});
-              }),
-          DataPickerWidget(
-            label: '添加时间',
-            prop: input,
+            label: '领用批次',
+            prop: formMap['consumeBatch'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              input = val;
+              formMap['consumeBatch'] = val;
               setState(() {});
             },
+          ),
+          FormTextWidget(
+            label: '发酵罐库存',
+            prop: formMap['fermentStorage'].toString(),
           ),
           SelectWidget(
             label: '转运罐号',
-            prop: input,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            prop: formMap['tankNo'].toString(),
+            options: transferTank,
+            optionsLabel: 'holderName',
+            optionsval: 'holderNo',
             onChange: (val) {
-              input = val['label'];
+              formMap['tankNo'] = val['holderNo'];
               setState(() {});
             },
           ),
           InputWidget(
               label: '备注',
-              prop: input,
+              prop: formMap['remark'],
               onChange: (val) {
-                input = val;
+                formMap['remark'] = val;
                 setState(() {});
               }),
         ],
@@ -136,9 +200,30 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
   }
 
   @override
+  void initState() {
+    if (widget.arguments['data'] != null) {
+      formMap = jsonDecode(jsonEncode(widget.arguments['data']));
+    }
+    formMap['potOrderNo'] = widget.arguments['potOrderNo'];
+    formMap['potOrderId'] = widget.arguments['potOrderId'];
+    formMap['stePotNo'] = widget.arguments['stePotNo'];
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _getPotList();
+        _getMaterial();
+        _getTransferTank();
+      }),
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: '半成品领用新增'),
+      appBar: MdsAppBarWidget(
+          titleData: formMap['id'] == null ? '半成品领用新增' : '半成品领用修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[
@@ -146,10 +231,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
           SizedBox(height: 34),
           MdsWidthButton(
             text: '确定',
-            onPressed: () {
-              input = '111';
-              setState(() {});
-            },
+            onPressed: _submitForm,
           ),
           SizedBox(height: 34),
         ],

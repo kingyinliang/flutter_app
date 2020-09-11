@@ -1,24 +1,99 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../../../components/appBar.dart';
-import '../../../components/raisedButton.dart';
-import '../../../components/input.dart';
-import '../../../components/select.dart';
-import '../../../components/form_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:dfmdsapp/components/appBar.dart';
+import 'package:dfmdsapp/components/raisedButton.dart';
+import 'package:dfmdsapp/components/form.dart';
+import 'package:dfmdsapp/api/api/index.dart';
 
 class MaterialAddPage extends StatefulWidget {
-  MaterialAddPage({Key key}) : super(key: key);
+  final arguments;
+  MaterialAddPage({Key key, this.arguments}) : super(key: key);
 
   @override
   _MaterialAddPageState createState() => _MaterialAddPageState();
 }
 
 class _MaterialAddPageState extends State<MaterialAddPage> {
-  String input = '1';
-  List potList = [
-    {'label': '我是1', 'val': '1'},
-    {'label': '我是2', 'val': '2'},
-    {'label': '我是3', 'val': '3'}
-  ];
+  Map<String, dynamic> formMap = {
+    'potOrderNo': '',
+    'potOrderId': '',
+    'useMaterialCode': '',
+    'useMaterialName': '',
+    'useUnit': '',
+    'useAmount': '',
+    'useBatch': '',
+    'addDate': '',
+    'remark': '',
+    'splitFlag': 'N',
+  };
+  List useMaterial = [];
+  List useUnit = [];
+
+  _getUseMaterial() async {
+    try {
+      var res = await Common.dictDropDownQuery({
+        'dictType': 'STE_SUP_MATERIAL',
+      });
+      useMaterial = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _getUseUnit() async {
+    try {
+      var res = await Common.dictDropDownQuery({
+        'dictType': 'COMMON_UNIT',
+      });
+      useUnit = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submitForm() async {
+    if (formMap['useAmount'] == null || formMap['useAmount'] == '') {
+      EasyLoading.showError('请填写领用数量');
+      return;
+    }
+    if (formMap['useBatch'] == null || formMap['useBatch'] == '') {
+      EasyLoading.showError('请填写领用批次');
+      return;
+    }
+    if (formMap['addDate'] == null || formMap['addDate'] == '') {
+      EasyLoading.showError('请填写添加时间');
+      return;
+    }
+    formMap['useType'] = '2';
+    if (formMap['id'] != null) {
+      try {
+        await Sterilize.acceAddMaterialUpdateApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await Sterilize.acceAddMaterialAddApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.arguments['data'] != null) {
+      formMap = jsonDecode(jsonEncode(widget.arguments['data']));
+    }
+    formMap['potOrderNo'] = widget.arguments['potOrderNo'];
+    formMap['potOrderId'] = widget.arguments['potOrderId'];
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _getUseMaterial();
+        _getUseUnit();
+      }),
+    );
+  }
+
   Widget formWidget() {
     return Container(
       color: Colors.white,
@@ -28,52 +103,57 @@ class _MaterialAddPageState extends State<MaterialAddPage> {
         children: <Widget>[
           SelectWidget(
             label: '领用物料',
-            prop: input,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            prop: formMap['useMaterialCode'].toString(),
+            options: useMaterial,
+            optionsLabel: 'dictValue',
+            optionsval: 'dictCode',
             onChange: (val) {
-              input = val['label'];
+              formMap['useMaterialCode'] = val['dictCode'];
+              formMap['useMaterialName'] = val['dictValue'];
               setState(() {});
             },
           ),
-          FormTextWidget(
+          SelectWidget(
             label: '单位',
-            prop: input,
+            prop: formMap['useUnit'].toString(),
+            options: useUnit,
+            optionsLabel: 'dictValue',
+            optionsval: 'dictCode',
+            onChange: (val) {
+              formMap['useUnit'] = val['dictCode'];
+              setState(() {});
+            },
           ),
           InputWidget(
               label: '领用数量',
-              prop: input,
+              prop: formMap['useAmount'].toString(),
               requiredFlg: true,
               onChange: (val) {
-                input = val;
+                formMap['useAmount'] = val;
                 setState(() {});
               }),
           InputWidget(
               label: '领用批次',
-              prop: input,
+              prop: formMap['useBatch'].toString(),
               requiredFlg: true,
               onChange: (val) {
-                input = val;
+                formMap['useBatch'] = val;
                 setState(() {});
               }),
-          SelectWidget(
+          DataPickerWidget(
             label: '添加时间',
-            prop: input,
+            prop: formMap['addDate'].toString(),
             requiredFlg: true,
-            options: potList,
-            optionsLabel: 'label',
-            optionsval: 'val',
             onChange: (val) {
-              input = val['label'];
+              formMap['addDate'] = val;
               setState(() {});
             },
           ),
           InputWidget(
               label: '备注',
-              prop: input,
+              prop: formMap['remark'].toString(),
               onChange: (val) {
-                input = val;
+                formMap['remark'] = val;
                 setState(() {});
               }),
         ],
@@ -84,7 +164,8 @@ class _MaterialAddPageState extends State<MaterialAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: '增补料新增'),
+      appBar:
+          MdsAppBarWidget(titleData: formMap['id'] == null ? '增补料新增' : '增补料修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[
@@ -92,10 +173,7 @@ class _MaterialAddPageState extends State<MaterialAddPage> {
           SizedBox(height: 34),
           MdsWidthButton(
             text: '确定',
-            onPressed: () {
-              input = '111';
-              setState(() {});
-            },
+            onPressed: _submitForm,
           ),
           SizedBox(height: 34),
         ],

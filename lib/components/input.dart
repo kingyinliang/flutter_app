@@ -37,7 +37,17 @@ class _InputWidgetState extends State<InputWidget> {
   Widget build(BuildContext context) {
     return FormItem(
       child: TextField(
-        controller: inputVal,
+        controller: TextEditingController.fromValue(
+          TextEditingValue(
+            text: inputVal.text,
+            selection: TextSelection.fromPosition(
+              TextPosition(
+                affinity: TextAffinity.downstream,
+                offset: inputVal.text.length,
+              ),
+            ),
+          ),
+        ),
         textAlign: TextAlign.end,
         style: TextStyle(color: Color(0xFF999999)),
         decoration: InputDecoration(border: InputBorder.none),

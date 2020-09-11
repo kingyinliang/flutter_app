@@ -3,6 +3,7 @@ import '../../../components/card.dart';
 
 // 单个card
 class ItemCard extends StatefulWidget {
+  final Function onTap;
   final String carTitle;
   final String title;
   final String subTitle;
@@ -11,6 +12,7 @@ class ItemCard extends StatefulWidget {
   ItemCard(
       {Key key,
       this.carTitle = '',
+      this.onTap,
       this.cardMap,
       this.title,
       this.subTitle,
@@ -30,13 +32,17 @@ class _ItemCardState extends State<ItemCard> {
       child: Stack(
         children: <Widget>[
           Positioned(
-              right: 0,
-              top: 0,
+            right: 0,
+            top: 0,
+            child: InkWell(
+              onTap: widget.onTap,
               child: Icon(
                 IconData(0xe62c, fontFamily: 'MdsIcon'),
                 size: 16,
                 color: Color(0xFF487BFF),
-              )),
+              ),
+            ),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -46,7 +52,7 @@ class _ItemCardState extends State<ItemCard> {
                   Text(
                       widget.cardMap[widget.title] == null
                           ? ''
-                          : widget.cardMap[widget.title],
+                          : widget.cardMap[widget.title].toString(),
                       style: TextStyle(
                           height: 1.0,
                           fontSize: 40.0,
@@ -55,7 +61,7 @@ class _ItemCardState extends State<ItemCard> {
                   Text(
                       widget.cardMap[widget.subTitle] == null
                           ? ''
-                          : widget.cardMap[widget.subTitle],
+                          : widget.cardMap[widget.subTitle].toString(),
                       style: TextStyle(
                           fontSize: 12.0,
                           color: Color(0xFF333333),
@@ -85,16 +91,26 @@ class _ItemCardState extends State<ItemCard> {
                     index = -1;
                   }
                   index++;
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                    decoration: BoxDecoration(
-                        color: Color(colorList[index]),
-                        borderRadius: BorderRadius.all(Radius.circular(17))),
-                    child: Text(widget.wrapList[i]['label'] +
-                        (widget.cardMap[widget.wrapList[i]['value']] == null
-                            ? ''
-                            : widget.cardMap[widget.wrapList[i]['value']])),
-                  );
+                  return widget.cardMap[widget.wrapList[i]['value']] == null ||
+                          widget.cardMap[widget.wrapList[i]['value']] == ''
+                      ? Text('')
+                      : Container(
+                          padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
+                          decoration: BoxDecoration(
+                            color: Color(colorList[index]),
+                            borderRadius: BorderRadius.all(Radius.circular(17)),
+                          ),
+                          child: Text(
+                            widget.wrapList[i]['label'] +
+                                (widget.cardMap[widget.wrapList[i]['value']] ==
+                                        null
+                                    ? ''
+                                    : widget
+                                        .cardMap[widget.wrapList[i]['value']]
+                                        .toString()),
+                            style: TextStyle(fontSize: 13, height: 1.4),
+                          ),
+                        );
                 }).toList(),
               ),
             ],

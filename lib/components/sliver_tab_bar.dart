@@ -26,7 +26,9 @@ class _SliverTabBarWidgetState extends State<SliverTabBarWidget>
     _tabController =
         TabController(vsync: this, length: widget.tabBarChildren.length);
     _tabController.addListener(() {
-      widget.tabChange(_tabController.index);
+      if (widget.tabChange != null) {
+        widget.tabChange(_tabController.index);
+      }
     });
   }
 
