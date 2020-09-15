@@ -87,9 +87,12 @@ class SlideButtonState extends State<SlideButton>
           children: <Widget>[
             Positioned.fill(
               right: -maxDragDistance - translateX,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: widget.buttons,
+              child: InkWell(
+                onTap: close,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: widget.buttons,
+                ),
               ),
             ),
             RawGestureDetector(
@@ -118,7 +121,6 @@ class SlideButtonState extends State<SlideButton>
   }
 
   void onHorizontalDragDown(DragDownDetails details) {
-    // widget.onDown();
     eventBus.fire(IndexEvent(widget.index));
     if (widget.onSlideStarted != null) widget.onSlideStarted.call();
   }

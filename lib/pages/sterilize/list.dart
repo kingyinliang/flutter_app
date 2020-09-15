@@ -19,56 +19,59 @@ class _AcceAddListPageState extends State<AcceAddListPage> {
       child: Scaffold(
         appBar: MdsAppBarWidget(titleData: widget.arguments['title']),
         backgroundColor: Color(0xFFF5F5F5),
-        body: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xFFF5F5F5),
-            automaticallyImplyLeading: false,
-            title: HeadSearchWidget(),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(42),
-              child: Material(
-                color: Colors.white,
-                child: TabBar(
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorColor: Color(0xFF1677FF),
-                  labelColor: Color(0xFF1677FF),
-                  labelStyle: TextStyle(fontSize: 17),
-                  unselectedLabelColor: Color(0xFF333333),
-                  unselectedLabelStyle: TextStyle(fontSize: 17),
-                  tabs: <Widget>[
-                    Tab(text: '未录入'),
-                    Tab(text: '已保存'),
-                    Tab(text: '已提交'),
-                  ],
+        body: Container(
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Color(0xFFF5F5F5),
+              automaticallyImplyLeading: false,
+              title: HeadSearchWidget(),
+              elevation: 1.5,
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(42),
+                child: Material(
+                  color: Colors.white,
+                  child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorColor: Color(0xFF1677FF),
+                    labelColor: Color(0xFF1677FF),
+                    labelStyle: TextStyle(fontSize: 17),
+                    unselectedLabelColor: Color(0xFF333333),
+                    unselectedLabelStyle: TextStyle(fontSize: 17),
+                    tabs: <Widget>[
+                      Tab(text: '未录入'),
+                      Tab(text: '已保存'),
+                      Tab(text: '已提交'),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          backgroundColor: Color(0xFFF5F5F5),
-          body: TabBarView(
-            children: <Widget>[
-              ListItemWidget(
-                type: 'not',
-                url: widget.arguments['url'],
-                pot: widget.arguments['pot'],
-                potName: widget.arguments['potName'],
-                workingType: widget.arguments['workingType'],
-              ),
-              ListItemWidget(
-                type: 'save',
-                url: widget.arguments['url'],
-                pot: widget.arguments['pot'],
-                potName: widget.arguments['potName'],
-                workingType: widget.arguments['workingType'],
-              ),
-              ListItemWidget(
-                type: 'submit',
-                url: widget.arguments['url'],
-                pot: widget.arguments['pot'],
-                potName: widget.arguments['potName'],
-                workingType: widget.arguments['workingType'],
-              ),
-            ],
+            backgroundColor: Color(0xFFF5F5F5),
+            body: TabBarView(
+              children: <Widget>[
+                ListItemWidget(
+                  type: 'not',
+                  url: widget.arguments['url'],
+                  pot: widget.arguments['pot'],
+                  potName: widget.arguments['potName'],
+                  workingType: widget.arguments['workingType'],
+                ),
+                ListItemWidget(
+                  type: 'save',
+                  url: widget.arguments['url'],
+                  pot: widget.arguments['pot'],
+                  potName: widget.arguments['potName'],
+                  workingType: widget.arguments['workingType'],
+                ),
+                ListItemWidget(
+                  type: 'submit',
+                  url: widget.arguments['url'],
+                  pot: widget.arguments['pot'],
+                  potName: widget.arguments['potName'],
+                  workingType: widget.arguments['workingType'],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -91,13 +94,18 @@ class _HeadSearchWidgetState extends State<HeadSearchWidget> {
       height: 44,
       color: Color(0xFFF5F5F5),
       child: Container(
-        color: Color(0x0A000000),
+        decoration: BoxDecoration(
+          color: Color(0x0A000000),
+          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+        ),
         child: TextField(
           style: TextStyle(color: Color(0xFF999999), fontSize: 13),
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 0.0),
             prefixIcon: Icon(Icons.search, color: Color(0xFF999999)),
-            border: OutlineInputBorder(borderSide: BorderSide.none),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+            ),
             hintText: '锅序号',
             fillColor: Color(0xFF999999),
           ),

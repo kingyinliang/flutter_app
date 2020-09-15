@@ -18,10 +18,22 @@ class Sterilize {
         .post('/ste/steSemiMaterial/query', params: params);
   }
 
+// 半成品领用-提交
+  static semiSubmitApi(params) {
+    return HttpManager.getInstance()
+        .post('/ste/steSemiMaterial/mobileSubmit', params: params);
+  }
+
 // 半成品领用-新增
   static semiAddApi(params) {
     return HttpManager.getInstance()
         .post('/ste/steSemiMaterial/insert', params: params);
+  }
+
+// 半成品领用-复制
+  static semiCopyApi(params) {
+    return HttpManager.getInstance()
+        .post('/ste/steSemiMaterial/mobileSopy', params: params);
   }
 
 // 半成品领用-修改

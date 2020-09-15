@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dfmdsapp/components/slide_button.dart';
 
 // 删除按钮
 class CardRemoveBtn extends StatefulWidget {
@@ -12,7 +13,7 @@ class CardRemoveBtn extends StatefulWidget {
 class _CardRemoveBtnState extends State<CardRemoveBtn> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       child: Container(
         width: 70.0,
         height: double.infinity,
@@ -37,11 +38,17 @@ class _CardRemoveBtnState extends State<CardRemoveBtn> {
                 shape: CircleBorder(side: BorderSide(color: Colors.red)),
                 child: Icon(IconData(0xe674, fontFamily: 'MdsIcon'),
                     color: Colors.white, size: 30),
-                onPressed: widget.removeOnTab),
+                onPressed: () {
+                  eventBus.fire(IndexEvent(0));
+                  widget.removeOnTab();
+                }),
           ),
         ),
       ),
-      onTap: widget.removeOnTab,
+      onTap: () {
+        eventBus.fire(IndexEvent(0));
+        widget.removeOnTab();
+      },
     );
   }
 }

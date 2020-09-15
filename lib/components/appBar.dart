@@ -13,7 +13,6 @@ class MdsAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
-
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -31,6 +30,7 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
         style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
       ),
       centerTitle: true,
+      elevation: 1.5,
       backgroundColor: Colors.white,
       actions: <Widget>[
         GestureDetector(
@@ -38,17 +38,16 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
             padding: EdgeInsets.only(right: 15),
             child: Icon(Icons.more_horiz, color: Colors.blue),
           ),
-          onTap: () async{
+          onTap: () async {
             final result = await showMenu(
-              context: context,
-              position: RelativeRect.fromLTRB(500,75, 10, 0),
-              color: Color(0xFF4C4C4C),
-              items: <PopupMenuEntry<String>>[
-                this.selectView(Icons.home, '首页', '1'),
-                PopupMenuDivider(height: 1.0),
-                this.selectView(Icons.person, '我的', '2'),
-              ]
-            );
+                context: context,
+                position: RelativeRect.fromLTRB(500, 75, 10, 0),
+                color: Color(0xFF4C4C4C),
+                items: <PopupMenuEntry<String>>[
+                  this.selectView(Icons.home, '首页', '1'),
+                  PopupMenuDivider(height: 1.0),
+                  this.selectView(Icons.person, '我的', '2'),
+                ]);
             print(result);
           },
         )
@@ -77,21 +76,19 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
 
   selectView(IconData icon, String text, String id) {
     return PopupMenuItem<String>(
-      value: id,
-      height: 35.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+        value: id,
+        height: 35.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
 //            Icon(icon, color: Colors.white),
 //            Text(text),
-          Container(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Icon(icon, color: Colors.white)
-          ),
-          Text(text, style: TextStyle(color: Colors.white)),
-        ],
-      )
-    );
+            Container(
+                padding: EdgeInsets.only(right: 8.0),
+                child: Icon(icon, color: Colors.white)),
+            Text(text, style: TextStyle(color: Colors.white)),
+          ],
+        ));
   }
 }

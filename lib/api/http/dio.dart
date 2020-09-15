@@ -5,10 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:dfmdsapp/utils/storage.dart';
+import 'package:dfmdsapp/utils/toast.dart';
+import 'package:dfmdsapp/main.dart';
+
 import './env.dart';
 import './httpCode.dart';
-import 'package:dfmdsapp/utils/storage.dart';
-import 'package:dfmdsapp/main.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({Key key}) : super(key: key);
@@ -157,15 +160,15 @@ class HttpManager {
       _com.complete(response.data);
       return _future;
     } else if (response.data['code'] == ResultCode.EXPIRED_TOKEN) {
+      endLoading();
       Router.navigatorKey.currentState
-          .pushNamedAndRemoveUntil('/', (route) => false);
+          .pushNamedAndRemoveUntil('/login', (route) => false);
       _com.complete(response.data);
       return _future;
     } else {
       endLoading();
       Future.delayed(Duration(milliseconds: 500), () {
-        EasyLoading.showInfo('${response.data['msg']}',
-            duration: Duration(milliseconds: 2000));
+        infoToast(msg: '${response.data['msg']}');
       });
       _com.completeError(response);
       return _future;
@@ -174,16 +177,22 @@ class HttpManager {
 
   void formatError(DioError e) {
     if (e.type == DioErrorType.CONNECT_TIMEOUT) {
+      infoToast(msg: "连接超时");
       print("连接超时");
     } else if (e.type == DioErrorType.SEND_TIMEOUT) {
+      infoToast(msg: "请求超时");
       print("请求超时");
     } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
+      infoToast(msg: "响应超时");
       print("响应超时");
     } else if (e.type == DioErrorType.RESPONSE) {
+      infoToast(msg: "出现异常");
       print("出现异常");
     } else if (e.type == DioErrorType.CANCEL) {
+      infoToast(msg: "请求取消");
       print("请求取消");
     } else {
+      infoToast(msg: "未知错误");
       print("未知错误");
     }
   }

@@ -15,7 +15,7 @@ import '../pages/sterilize/semiReceive/home.dart';
 import '../pages/sterilize/semiReceive/add.dart';
 
 Map<String, Function> routers = {
-  '/': (contxt, {arguments}) => LoginPage(),
+  '/login': (contxt, {arguments}) => LoginPage(),
   '/home': (contxt, {arguments}) => IndexPage(),
   '/sterilize/barcode': (contxt, {arguments}) =>
       BarCodePage(arguments: arguments),

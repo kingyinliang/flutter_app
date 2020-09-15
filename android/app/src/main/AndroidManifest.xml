@@ -8,8 +8,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="dfmdsapp"
-        android:icon="@mipmap/ic_launcher">
+        android:label="MDS"
+        android:icon="@mipmap/logo">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

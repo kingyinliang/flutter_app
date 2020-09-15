@@ -50,6 +50,10 @@ class _PotAddPageState extends State<PotAddPage> {
       EasyLoading.showError('请填写煮料锅序');
       return;
     }
+    if (formMap['consumeAmount'] == null || formMap['consumeAmount'] == '') {
+      EasyLoading.showError('请填写领用数量');
+      return;
+    }
     if (formMap['addDate'] == null || formMap['addDate'] == '') {
       EasyLoading.showError('请填写添加时间');
       return;

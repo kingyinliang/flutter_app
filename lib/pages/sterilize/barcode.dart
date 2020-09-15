@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 
@@ -37,6 +38,8 @@ class _BarCodePageState extends State<BarCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MdsAppBarWidget(titleData: '二维码'),
+      backgroundColor: Color(0xFFF5F5F5),
       body: Container(
         child: ListView.builder(
           itemCount: potList.length,
@@ -55,8 +58,11 @@ class _BarCodePageState extends State<BarCodePage> {
                   },
                 );
               },
-              child: Center(
-                child: Text(potList[index]['holderName']),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Center(
+                  child: Text(potList[index]['holderName']),
+                ),
               ),
             );
           },
