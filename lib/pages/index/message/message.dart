@@ -82,6 +82,7 @@ class _MessagePageState extends State<MessagePage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          brightness: Brightness.light,
           backgroundColor: Colors.white,
           title: Center(
             child: Text("消息列表",

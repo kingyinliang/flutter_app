@@ -1,5 +1,8 @@
 import '../pages/login/login.dart';
 import '../pages/index/index.dart';
+import '../pages/index/user/user_info.dart';
+import '../pages/index/user/versions.dart';
+import '../pages/index/user/update_pasword.dart';
 import '../pages/sterilize/barcode.dart';
 import '../pages/sterilize/craft/list.dart';
 import '../pages/sterilize/craft/materialList.dart';
@@ -17,6 +20,10 @@ import '../pages/sterilize/semiReceive/add.dart';
 Map<String, Function> routers = {
   '/login': (contxt, {arguments}) => LoginPage(),
   '/home': (contxt, {arguments}) => IndexPage(),
+  '/user/userinfo': (contxt, {arguments}) => UserInfoPage(arguments: arguments),
+  '/user/versions': (contxt, {arguments}) => VersionsPage(arguments: arguments),
+  '/user/updatepasword': (contxt, {arguments}) =>
+      UpdatePaswordPage(arguments: arguments),
   '/sterilize/barcode': (contxt, {arguments}) =>
       BarCodePage(arguments: arguments),
   '/sterilize/list': (contxt, {arguments}) =>

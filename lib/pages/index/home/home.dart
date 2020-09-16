@@ -48,56 +48,62 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        NotificationListener(
-          onNotification: (ScrollNotification notification) {
-            if (notification is ScrollUpdateNotification &&
-                notification.depth == 0) {
-              _onScroll(notification.metrics.pixels);
-            }
-            return true;
-          },
-          child: ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              HomeHead(
-                factoryName: factoryName,
-                workShopName: workShopName,
-              ),
-              HomeMenu(
-                menu: menuList,
-              ),
-            ],
-          ),
-        ),
-        Opacity(
-          opacity: _opacity,
-          child: Container(
-            height: 50,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(72, 123, 255, 1),
-                  Color.fromRGBO(156, 183, 253, 1)
+    return Container(
+      child: Stack(
+        children: <Widget>[
+          NotificationListener(
+            onNotification: (ScrollNotification notification) {
+              if (notification is ScrollUpdateNotification &&
+                  notification.depth == 0) {
+                _onScroll(notification.metrics.pixels);
+              }
+              return true;
+            },
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                children: <Widget>[
+                  HomeHead(
+                    factoryName: factoryName,
+                    workShopName: workShopName,
+                  ),
+                  HomeMenu(
+                    menu: menuList,
+                  ),
                 ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
               ),
             ),
-            child: Center(
-              child: Text(
-                "$factoryName-$workShopName",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
+          ),
+          Opacity(
+            opacity: _opacity,
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(72, 123, 255, 1),
+                    Color.fromRGBO(156, 183, 253, 1)
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  "$factoryName-$workShopName",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

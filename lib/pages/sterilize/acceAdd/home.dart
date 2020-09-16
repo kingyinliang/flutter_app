@@ -4,6 +4,7 @@ import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
 import 'package:dfmdsapp/components/slide_button.dart';
 import 'package:dfmdsapp/components/sliver_tab_bar.dart';
+import 'package:dfmdsapp/components/no_data.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/toast.dart';
 
@@ -94,6 +95,9 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   }
 
   _delPot(index) async {
+    if (widget.arguments['statusName'] == '已提交') {
+      return;
+    }
     try {
       await Sterilize.acceAddPotDelApi({
         'ids': [potList[index]['id']],
@@ -106,6 +110,9 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   }
 
   _delAcceReceive(index, childIndex) async {
+    if (widget.arguments['statusName'] == '已提交') {
+      return;
+    }
     if (acceList[index]['child'][childIndex]['splitFlag'] != 'Y') {
       EasyLoading.showError('不能删除哦');
       return;
@@ -122,6 +129,9 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   }
 
   _delMaterial(index) async {
+    if (widget.arguments['statusName'] == '已提交') {
+      return;
+    }
     try {
       await Sterilize.acceAddMaterialDelApi({
         'ids': [materialList[index]['id']],
@@ -131,6 +141,61 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
       materialList.removeAt(index);
       setState(() {});
     } catch (e) {}
+  }
+
+  _getBtn() {
+    if (widget.arguments['statusName'] != '已提交') {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.bottomRight,
+            margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
+            child: _floatingActionButtonFlag
+                ? FloatingActionButton(
+                    onPressed: () {
+                      if (_tabIndex == 0) {
+                        if (steCookingConsumeFlag == '1') {
+                          Navigator.pushNamed(
+                            context,
+                            '/sterilize/acceAdd/potAdd',
+                            arguments: {
+                              'potOrderNo': widget.arguments['potNum']['potNo'],
+                              'potOrderId': widget.arguments['potNum']
+                                  ['potOrderId'],
+                            },
+                          ).then(
+                              (value) => value != null ? _initState() : null);
+                        } else {}
+                      } else {
+                        print(widget.arguments['potNum']);
+                        Navigator.pushNamed(
+                          context,
+                          '/sterilize/acceAdd/materialAdd',
+                          arguments: {
+                            'potOrderNo': widget.arguments['potNum']['potNo'],
+                            'potOrderId': widget.arguments['potNum']
+                                ['potOrderId'],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      }
+                    },
+                    child: Icon(Icons.add),
+                  )
+                : SizedBox(),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            child: MdsWidthButton(
+              text: '提交',
+              onPressed: _submitPage,
+            ),
+          ),
+        ],
+      );
+    } else {
+      return SizedBox();
+    }
   }
 
   @override
@@ -174,6 +239,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
               data: potList,
               updataFn: _initState,
               arguments: {
+                'statusName': widget.arguments['statusName'],
                 'potOrderNo': widget.arguments['potNum']['potNo'],
                 'potOrderId': widget.arguments['potNum']['potOrderId'],
               },
@@ -183,6 +249,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
               data: acceList,
               updataFn: _initState,
               arguments: {
+                'statusName': widget.arguments['statusName'],
                 'potOrderNo': widget.arguments['potNum']['potNo'],
                 'potOrderId': widget.arguments['potNum']['potOrderId'],
               },
@@ -192,6 +259,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
               data: materialList,
               updataFn: _initState,
               arguments: {
+                'statusName': widget.arguments['statusName'],
                 'potOrderNo': widget.arguments['potNum']['potNo'],
                 'potOrderId': widget.arguments['potNum']['potOrderId'],
               },
@@ -203,57 +271,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         floatingActionButton: Container(
           width: double.infinity,
           height: 130,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.bottomRight,
-                margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
-                child: _floatingActionButtonFlag
-                    ? FloatingActionButton(
-                        onPressed: () {
-                          if (_tabIndex == 0) {
-                            if (steCookingConsumeFlag == '1') {
-                              Navigator.pushNamed(
-                                context,
-                                '/sterilize/acceAdd/potAdd',
-                                arguments: {
-                                  'potOrderNo': widget.arguments['potNum']
-                                      ['potNo'],
-                                  'potOrderId': widget.arguments['potNum']
-                                      ['potOrderId'],
-                                },
-                              ).then((value) =>
-                                  value != null ? _initState() : null);
-                            } else {}
-                          } else {
-                            print(widget.arguments['potNum']);
-                            Navigator.pushNamed(
-                              context,
-                              '/sterilize/acceAdd/materialAdd',
-                              arguments: {
-                                'potOrderNo': widget.arguments['potNum']
-                                    ['potNo'],
-                                'potOrderId': widget.arguments['potNum']
-                                    ['potOrderId'],
-                              },
-                            ).then(
-                                (value) => value != null ? _initState() : null);
-                          }
-                        },
-                        child: Icon(Icons.add),
-                      )
-                    : SizedBox(),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: MdsWidthButton(
-                  text: '提交',
-                  onPressed: _submitPage,
-                ),
-              ),
-            ],
-          ),
+          child: _getBtn(),
         ),
       ),
     );
@@ -292,39 +310,49 @@ class _PotListWidgetState extends State<PotListWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-      padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
-      itemCount: widget.data.length,
-      itemBuilder: (context, index) {
-        return SlideButton(
-          index: index,
-          singleButtonWidth: 70,
-          child: ItemCard(
-            carTitle: '煮料锅领用数量',
-            cardMap: widget.data[index],
-            title: 'consumeAmount',
-            subTitle: 'unit',
-            wrapList: wrapList,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/sterilize/acceAdd/potAdd',
-                arguments: {
-                  'potOrderNo': widget.arguments['potOrderNo'],
-                  'potOrderId': widget.arguments['potOrderId'],
-                  'data': widget.data[index],
-                },
-              ).then((value) => value != null ? widget.updataFn() : null);
+    return widget.data.length != 0
+        ? ListView.builder(
+            padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+            itemCount: widget.data.length,
+            itemBuilder: (context, index) {
+              return SlideButton(
+                index: index,
+                singleButtonWidth: 70,
+                child: ItemCard(
+                  carTitle: '煮料锅领用数量',
+                  cardMap: widget.data[index],
+                  title: 'consumeAmount',
+                  subTitle: 'unit',
+                  wrapList: wrapList,
+                  onTap: () {
+                    if (widget.arguments['statusName'] == '已提交') {
+                      return;
+                    }
+                    Navigator.pushNamed(
+                      context,
+                      '/sterilize/acceAdd/potAdd',
+                      arguments: {
+                        'potOrderNo': widget.arguments['potOrderNo'],
+                        'potOrderId': widget.arguments['potOrderId'],
+                        'data': widget.data[index],
+                      },
+                    ).then((value) => value != null ? widget.updataFn() : null);
+                  },
+                ),
+                buttons: <Widget>[
+                  CardRemoveBtn(
+                    removeOnTab: () {
+                      if (widget.arguments['statusName'] == '已提交') {
+                        return;
+                      }
+                      widget.delFn(index);
+                    },
+                  ),
+                ],
+              );
             },
-          ),
-          buttons: <Widget>[
-            CardRemoveBtn(
-              removeOnTab: () => widget.delFn(index),
-            ),
-          ],
-        );
-      },
-    );
+          )
+        : NoDataWidget();
   }
 
   @override
@@ -351,89 +379,104 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-      itemCount: widget.data.length,
-      itemBuilder: (context, index) {
-        List<Widget> childList = [
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-            child: ColumnItem(
-              addFlag: true,
-              startText: widget.data[index]['useMaterialCode'],
-              endText: widget.data[index]['useMaterialName'],
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/sterilize/acceAdd/acceReceive',
-                  arguments: {
-                    'potOrderNo': widget.arguments['potOrderNo'],
-                    'potOrderId': widget.arguments['potOrderId'],
-                    'useMaterialCode': widget.data[index]['useMaterialCode'],
-                    'useMaterialName': widget.data[index]['useMaterialName'],
-                    'useUnit': widget.data[index]['useUnit'],
-                  },
-                ).then((value) => value != null ? widget.updataFn() : null);
-              },
-            ),
-          ),
-        ];
-        widget.data[index]['child'].asMap().keys.forEach((childIndex) {
-          childList.add(Container(
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(24, 0, 0, 0),
-            child: SlideButton(
-                index: index,
-                child: ColumnItem(
-                  startText: widget.data[index]['child'][childIndex]
-                              ['useAmount']
-                          .toString() +
-                      widget.data[index]['child'][childIndex]['useUnit'],
-                  centerText: widget.data[index]['child'][childIndex]
-                      ['useBatch'],
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/sterilize/acceAdd/acceReceive',
-                      arguments: {
-                        'potOrderNo': widget.arguments['potOrderNo'],
-                        'potOrderId': widget.arguments['potOrderId'],
-                        'useMaterialCode': widget.data[index]
-                            ['useMaterialCode'],
-                        'useMaterialName': widget.data[index]
-                            ['useMaterialName'],
-                        'useUnit': widget.data[index]['useUnit'],
-                        'data': widget.data[index]['child'][childIndex],
-                      },
-                    ).then((value) => value != null ? widget.updataFn() : null);
-                  },
+    return widget.data.length != 0
+        ? ListView.builder(
+            itemCount: widget.data.length,
+            itemBuilder: (context, index) {
+              List<Widget> childList = [
+                Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                  child: ColumnItem(
+                    addFlag: true,
+                    startText: widget.data[index]['useMaterialCode'],
+                    endText: widget.data[index]['useMaterialName'],
+                    onTap: () {
+                      if (widget.arguments['statusName'] == '已提交') {
+                        return;
+                      }
+                      Navigator.pushNamed(
+                        context,
+                        '/sterilize/acceAdd/acceReceive',
+                        arguments: {
+                          'potOrderNo': widget.arguments['potOrderNo'],
+                          'potOrderId': widget.arguments['potOrderId'],
+                          'useMaterialCode': widget.data[index]
+                              ['useMaterialCode'],
+                          'useMaterialName': widget.data[index]
+                              ['useMaterialName'],
+                          'useUnit': widget.data[index]['useUnit'],
+                        },
+                      ).then(
+                          (value) => value != null ? widget.updataFn() : null);
+                    },
+                  ),
                 ),
-                singleButtonWidth: 60,
-                buttons: <Widget>[
-                  Container(
-                    width: 60,
-                    color: Color(0xFFE8E8E8),
-                    child: Center(
-                      child: Container(
-                        height: 24,
-                        child: RaisedButton(
-                            color: Colors.red,
-                            shape: CircleBorder(
-                                side: BorderSide(color: Colors.red)),
-                            child: Icon(IconData(0xe674, fontFamily: 'MdsIcon'),
-                                color: Colors.white, size: 16),
-                            onPressed: () => widget.delFn(index, childIndex)),
+              ];
+              widget.data[index]['child'].asMap().keys.forEach((childIndex) {
+                childList.add(Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.fromLTRB(24, 0, 0, 0),
+                  child: SlideButton(
+                      index: index,
+                      child: ColumnItem(
+                        startText: widget.data[index]['child'][childIndex]
+                                    ['useAmount']
+                                .toString() +
+                            widget.data[index]['child'][childIndex]['useUnit'],
+                        centerText: widget.data[index]['child'][childIndex]
+                            ['useBatch'],
+                        onTap: () {
+                          if (widget.arguments['statusName'] == '已提交') {
+                            return;
+                          }
+                          Navigator.pushNamed(
+                            context,
+                            '/sterilize/acceAdd/acceReceive',
+                            arguments: {
+                              'potOrderNo': widget.arguments['potOrderNo'],
+                              'potOrderId': widget.arguments['potOrderId'],
+                              'useMaterialCode': widget.data[index]
+                                  ['useMaterialCode'],
+                              'useMaterialName': widget.data[index]
+                                  ['useMaterialName'],
+                              'useUnit': widget.data[index]['useUnit'],
+                              'data': widget.data[index]['child'][childIndex],
+                            },
+                          ).then((value) =>
+                              value != null ? widget.updataFn() : null);
+                        },
                       ),
-                    ),
-                  )
-                ]),
-          ));
-        });
-        return Column(
-          children: childList,
-        );
-      },
-    );
+                      singleButtonWidth: 60,
+                      buttons: <Widget>[
+                        Container(
+                          width: 60,
+                          color: Color(0xFFE8E8E8),
+                          child: Center(
+                            child: Container(
+                              height: 24,
+                              child: RaisedButton(
+                                  color: Colors.red,
+                                  shape: CircleBorder(
+                                      side: BorderSide(color: Colors.red)),
+                                  child: Icon(
+                                      IconData(0xe674, fontFamily: 'MdsIcon'),
+                                      color: Colors.white,
+                                      size: 16),
+                                  onPressed: () =>
+                                      widget.delFn(index, childIndex)),
+                            ),
+                          ),
+                        )
+                      ]),
+                ));
+              });
+              return Column(
+                children: childList,
+              );
+            },
+          )
+        : NoDataWidget();
   }
 
   @override
@@ -542,39 +585,44 @@ class _MaterialAddTabState extends State<MaterialAddTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-      padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
-      itemCount: widget.data.length,
-      itemBuilder: (context, index) {
-        return SlideButton(
-          index: index,
-          singleButtonWidth: 70,
-          child: ItemCard(
-            carTitle: '增补料领用数量',
-            cardMap: widget.data[index],
-            title: 'useAmount',
-            subTitle: 'useUnit',
-            wrapList: wrapList,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/sterilize/acceAdd/materialAdd',
-                arguments: {
-                  'potOrderNo': widget.arguments['potOrderNo'],
-                  'potOrderId': widget.arguments['potOrderId'],
-                  'data': widget.data[index],
-                },
-              ).then((value) => value != null ? widget.updataFn() : null);
+    return widget.data.length != 0
+        ? ListView.builder(
+            padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+            itemCount: widget.data.length,
+            itemBuilder: (context, index) {
+              return SlideButton(
+                index: index,
+                singleButtonWidth: 70,
+                child: ItemCard(
+                  carTitle: '增补料领用数量',
+                  cardMap: widget.data[index],
+                  title: 'useAmount',
+                  subTitle: 'useUnit',
+                  wrapList: wrapList,
+                  onTap: () {
+                    if (widget.arguments['statusName'] == '已提交') {
+                      return;
+                    }
+                    Navigator.pushNamed(
+                      context,
+                      '/sterilize/acceAdd/materialAdd',
+                      arguments: {
+                        'potOrderNo': widget.arguments['potOrderNo'],
+                        'potOrderId': widget.arguments['potOrderId'],
+                        'data': widget.data[index],
+                      },
+                    ).then((value) => value != null ? widget.updataFn() : null);
+                  },
+                ),
+                buttons: <Widget>[
+                  CardRemoveBtn(
+                    removeOnTab: () => widget.delFn(index),
+                  ),
+                ],
+              );
             },
-          ),
-          buttons: <Widget>[
-            CardRemoveBtn(
-              removeOnTab: () => widget.delFn(index),
-            ),
-          ],
-        );
-      },
-    );
+          )
+        : NoDataWidget();
   }
 
   @override

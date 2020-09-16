@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
+import 'package:dfmdsapp/components/no_data.dart';
 import 'package:dfmdsapp/utils/pxunit.dart' show pxUnit;
 import 'package:dfmdsapp/utils/toast.dart';
 import 'package:dfmdsapp/components/slide_button.dart';
@@ -37,7 +38,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
   List semiList = [];
 
   getListCard() {
-    List listWidget = [];
+    List<Widget> listWidget = [];
     listWidget = semiList.asMap().keys.map((index) {
       return SlideButton(
         index: index,
@@ -49,6 +50,9 @@ class _SemiReceivePageState extends State<SemiReceivePage>
           subTitle: 'consumeUnit',
           wrapList: wrapList,
           onTap: () {
+            if (widget.arguments['statusName'] == '已提交') {
+              return;
+            }
             Navigator.pushNamed(
               context,
               '/sterilize/semiReceive/add',
@@ -64,12 +68,26 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         ),
         buttons: <Widget>[
           CardRemoveBtn(
-            removeOnTab: () => _semiDel(index),
+            removeOnTab: () {
+              if (widget.arguments['statusName'] == '已提交') {
+                return;
+              }
+              _semiDel(index);
+            },
           ),
         ],
       );
     }).toList();
-    return listWidget;
+    if (listWidget.length == 0) {
+      return [
+        Container(
+          padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+          child: NoDataWidget(),
+        )
+      ];
+    } else {
+      return listWidget;
+    }
   }
 
   _semiSubmit() async {
@@ -95,13 +113,14 @@ class _SemiReceivePageState extends State<SemiReceivePage>
     } catch (e) {}
   }
 
-  _initState() async {
+  _initState({type: false}) async {
     try {
       var res = await Sterilize.semiHomeApi({
         "orderNo": widget.arguments['potNum']['orderNo'],
         "potOrderNo": widget.arguments['potNum']['potNo']
       });
       semiList = res['data'];
+      if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}
   }
@@ -112,8 +131,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         "orderNo": widget.arguments['potNum']['orderNo'],
         "potOrderNo": widget.arguments['potNum']['potNo']
       });
-      successToast(msg: '操作成功');
-      _initState();
+      _initState(type: true);
     } catch (e) {}
   }
 
@@ -147,6 +165,107 @@ class _SemiReceivePageState extends State<SemiReceivePage>
     super.initState();
   }
 
+  List<Widget> _getPage() {
+    List<Widget> page = [
+      ListView(
+        children: <Widget>[
+          SizedBox(height: 5),
+          PageHead(
+            title:
+                '${widget.arguments['potName']} 第${widget.arguments['potNum']['potOrder']}锅',
+            subTitle: '${widget.arguments['potNum']['materialName']}',
+            orderNo: '${widget.arguments['potNum']['orderNo']}',
+            potNo: '${widget.arguments['potNum']['potNo']}',
+          ),
+          SizedBox(height: 5),
+          Container(
+            padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+            child: Column(
+              children: getListCard(),
+            ),
+          ),
+        ],
+      ),
+    ];
+    if (widget.arguments['statusName'] != '已提交') {
+      page.add(
+        Positioned(
+          bottom: 70 + _ctrlAnimationCircle.value * sin(0 * pi / 3),
+          right: 5 + _ctrlAnimationCircle.value * cos(0 * pi / 3),
+          child: RawMaterialButton(
+            fillColor: Color(0xFF1677FF),
+            splashColor: Colors.amber[100],
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            shape: CircleBorder(),
+            onPressed: _addBtnClick,
+          ),
+        ),
+      );
+      page.add(
+        Positioned(
+          bottom: 70 + _ctrlAnimationCircle.value * sin(1 * pi / 3),
+          right: 5 + _ctrlAnimationCircle.value * cos(1 * pi / 3),
+          child: RawMaterialButton(
+            shape: CircleBorder(),
+            splashColor: Colors.amber[100],
+            fillColor: Color(0xFF1677FF),
+            child: Icon(
+              Icons.content_copy,
+              color: Colors.white,
+              size: 17,
+            ),
+            onPressed: _copyBtnClick,
+          ),
+        ),
+      );
+      page.add(
+        Positioned(
+          bottom: 68,
+          right: 7,
+          child: RawMaterialButton(
+            fillColor: Color(0xFF1677FF),
+            splashColor: Color(0xFF1677FF),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              child: Transform(
+                transform: Matrix4.identity()
+                  ..rotateZ(_ctrlAnimationCircle.value / 50 * pi / 2 * 1.5),
+                origin: Offset(17, 17),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 34,
+                ),
+              ),
+            ),
+            shape: CircleBorder(),
+            onPressed: () {
+              setState(() {
+                _ctrlAnimationCircle.status == AnimationStatus.completed
+                    ? _ctrlAnimationCircle.reverse()
+                    : _ctrlAnimationCircle.forward();
+              });
+            },
+          ),
+        ),
+      );
+      page.add(
+        Positioned(
+          bottom: 10,
+          width: pxUnit(375),
+          child: MdsWidthButton(
+            text: '提交',
+            onPressed: _semiSubmit,
+          ),
+        ),
+      );
+    }
+    return page;
+  }
+
   @override
   void dispose() {
     _ctrlAnimationCircle.dispose();
@@ -158,95 +277,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
     return Scaffold(
       appBar: MdsAppBarWidget(titleData: '半成品领用'),
       backgroundColor: Color(0xFFF5F5F5),
-      body: Stack(
-        children: <Widget>[
-          ListView(
-            children: <Widget>[
-              SizedBox(height: 5),
-              PageHead(
-                title:
-                    '${widget.arguments['potName']} 第${widget.arguments['potNum']['potOrder']}锅',
-                subTitle: '${widget.arguments['potNum']['materialName']}',
-                orderNo: '${widget.arguments['potNum']['orderNo']}',
-                potNo: '${widget.arguments['potNum']['potNo']}',
-              ),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
-                child: Column(
-                  children: getListCard(),
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            bottom: 70 + _ctrlAnimationCircle.value * sin(0 * pi / 3),
-            right: 5 + _ctrlAnimationCircle.value * cos(0 * pi / 3),
-            child: RawMaterialButton(
-              fillColor: Color(0xFF1677FF),
-              splashColor: Colors.amber[100],
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              shape: CircleBorder(),
-              onPressed: _addBtnClick,
-            ),
-          ),
-          Positioned(
-            bottom: 70 + _ctrlAnimationCircle.value * sin(1 * pi / 3),
-            right: 5 + _ctrlAnimationCircle.value * cos(1 * pi / 3),
-            child: RawMaterialButton(
-              shape: CircleBorder(),
-              splashColor: Colors.amber[100],
-              fillColor: Color(0xFF1677FF),
-              child: Icon(
-                Icons.content_copy,
-                color: Colors.white,
-                size: 17,
-              ),
-              onPressed: _copyBtnClick,
-            ),
-          ),
-          Positioned(
-            bottom: 68,
-            right: 7,
-            child: RawMaterialButton(
-              fillColor: Color(0xFF1677FF),
-              splashColor: Color(0xFF1677FF),
-              child: Container(
-                padding: EdgeInsets.all(8),
-                child: Transform(
-                  transform: Matrix4.identity()
-                    ..rotateZ(_ctrlAnimationCircle.value / 50 * pi / 2 * 1.5),
-                  origin: Offset(17, 17),
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 34,
-                  ),
-                ),
-              ),
-              shape: CircleBorder(),
-              onPressed: () {
-                setState(() {
-                  _ctrlAnimationCircle.status == AnimationStatus.completed
-                      ? _ctrlAnimationCircle.reverse()
-                      : _ctrlAnimationCircle.forward();
-                });
-              },
-            ),
-          ),
-          Positioned(
-            bottom: 10,
-            width: pxUnit(375),
-            child: MdsWidthButton(
-              text: '提交',
-              onPressed: _semiSubmit,
-            ),
-          ),
-        ],
-      ),
+      body: Stack(children: _getPage()),
     );
   }
 }

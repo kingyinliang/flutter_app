@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
+import 'package:dfmdsapp/components/no_data.dart';
 
 class AcceAddListPage extends StatefulWidget {
   final arguments;
@@ -169,50 +170,54 @@ class _ListItemWidgetState extends State<ListItemWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-      itemCount: listviewList.length,
-      itemBuilder: (context, index) {
-        return Container(
-          color: Colors.white,
-          padding: EdgeInsets.all(12),
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
-          child: ListTile(
-            leading: CircleAvatar(
-              child: Image.asset("lib/assets/images/pot.jpg"),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              textDirection: TextDirection.ltr,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text('第${listviewList[index]['potOrder']}锅',
-                        style: TextStyle(fontSize: 17.0)),
-                  ],
+    return listviewList.length != 0
+        ? ListView.builder(
+            itemCount: listviewList.length,
+            itemBuilder: (context, index) {
+              return Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(12),
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    child: Image.asset("lib/assets/images/pot.jpg"),
+                  ),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: TextDirection.ltr,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text('第${listviewList[index]['potOrder']}锅',
+                              style: TextStyle(fontSize: 17.0)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: TextDirection.ltr,
+                    children: <Widget>[
+                      Text(
+                          '${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}'),
+                      Text(
+                          '${listviewList[index]['orderNo']}-${listviewList[index]['statusName']}'),
+                    ],
+                  ),
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                  onTap: () {
+                    Navigator.pushNamed(context, widget.url, arguments: {
+                      'status': listviewList[index]['status'],
+                      'statusName': listviewList[index]['statusName'],
+                      'pot': widget.pot,
+                      'potName': widget.potName,
+                      'potNum': listviewList[index],
+                    });
+                  },
                 ),
-              ],
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              textDirection: TextDirection.ltr,
-              children: <Widget>[
-                Text(
-                    '${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}'),
-                Text(
-                    '${listviewList[index]['orderNo']}-${listviewList[index]['statusName']}'),
-              ],
-            ),
-            trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              Navigator.pushNamed(context, widget.url, arguments: {
-                'pot': widget.pot,
-                'potName': widget.potName,
-                'potNum': listviewList[index],
-              });
+              );
             },
-          ),
-        );
-      },
-    );
+          )
+        : NoDataWidget();
   }
 }
