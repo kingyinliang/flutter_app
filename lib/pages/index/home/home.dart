@@ -122,6 +122,7 @@ class _HomeHeadState extends State<HomeHead> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
       width: double.infinity,
       height: 125.0,
       decoration: BoxDecoration(
