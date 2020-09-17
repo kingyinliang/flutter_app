@@ -30,6 +30,7 @@ class _BarCodePageState extends State<BarCodePage> {
       ),
     );
     string1 = result;
+    setState(() {});
     print(result.type);
     print(result.rawContent);
     print(result.format);
@@ -41,6 +42,7 @@ class _BarCodePageState extends State<BarCodePage> {
     SDScan scan = SDScan().setScanEventListener((dynamic codeString) {
       print("扫描结果:" + codeString);
       string2 = codeString;
+      setState(() {});
     });
     scan.startScan(config: scanConfig);
   }

@@ -27,12 +27,47 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   List potList = [];
   List acceList = [];
   List materialList = [];
+  bool potStatus = true;
+  bool acceStatus = true;
+  bool materialStatus = true;
 
   // 获取tab切换index
   void setFloatingActionButtonFlag(int index) {
-    _floatingActionButtonFlag = index == 1 ? false : true;
+    if (index == 0) {
+      if (potList.length > 0) {
+        _floatingActionButtonFlag = potStatus && steCookingConsumeFlag == '1';
+      } else {
+        _floatingActionButtonFlag = steCookingConsumeFlag == '1';
+      }
+    }
+    if (index == 1) {
+      _floatingActionButtonFlag = false;
+    }
+    if (index == 2) {
+      if (materialList.length > 0) {
+        _floatingActionButtonFlag = materialStatus;
+      } else {
+        _floatingActionButtonFlag = true;
+      }
+    }
     _tabIndex = index;
     setState(() {});
+  }
+
+  bool getStatus(List arr) {
+    bool st = false;
+    arr.forEach((item) {
+      if (item['checkStatus'] == 'N' ||
+          item['checkStatus'] == 'R' ||
+          item['checkStatus'] == 'S' ||
+          item['checkStatus'] == 'T' ||
+          item['checkStatus'] == '' ||
+          item['checkStatus'] == true) {
+        st = true;
+      }
+    });
+
+    return st;
   }
 
   _initState() async {
@@ -42,15 +77,25 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         "orderNo": widget.arguments['potNum']['orderNo'],
         "potOrderNo": widget.arguments['potNum']['potNo']
       });
-      steCookingConsumeFlag = res['data']['steCookingConsumeFlag'];
-      potList = res['data']['steCookingConsume'];
-      acceList = _acceData(res['data']['steAccessoriesConsume']);
-      materialList = res['data']['newSteAccessoriesConsume'];
-      potList.forEach((element) {
-        element['potNoName'] = '${element['potNo']}#锅';
-        element['cookingNumName'] = '第${element['cookingNum']}锅';
+      setState(() {
+        steCookingConsumeFlag = res['data']['steCookingConsumeFlag'];
+        potList = res['data']['steCookingConsume'];
+        acceList = _acceData(res['data']['steAccessoriesConsume']);
+        materialList = res['data']['newSteAccessoriesConsume'];
+        potList.forEach((element) {
+          element['potNoName'] = '${element['potNo']}#锅';
+          element['cookingNumName'] = '第${element['cookingNum']}锅';
+        });
       });
-      setState(() {});
+      setState(() {
+        potStatus = getStatus(potList);
+        materialStatus = getStatus(materialList);
+        acceList.forEach((element) {
+          element['checkStatus'] = getStatus(element['child']);
+        });
+        acceStatus = getStatus(acceList);
+        setFloatingActionButtonFlag(_tabIndex);
+      });
     } catch (e) {}
   }
 
@@ -95,9 +140,6 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   }
 
   _delPot(index) async {
-    if (widget.arguments['statusName'] == '已提交') {
-      return;
-    }
     try {
       await Sterilize.acceAddPotDelApi({
         'ids': [potList[index]['id']],
@@ -110,9 +152,6 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   }
 
   _delAcceReceive(index, childIndex) async {
-    if (widget.arguments['statusName'] == '已提交') {
-      return;
-    }
     if (acceList[index]['child'][childIndex]['splitFlag'] != 'Y') {
       EasyLoading.showError('不能删除哦');
       return;
@@ -129,9 +168,6 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   }
 
   _delMaterial(index) async {
-    if (widget.arguments['statusName'] == '已提交') {
-      return;
-    }
     try {
       await Sterilize.acceAddMaterialDelApi({
         'ids': [materialList[index]['id']],
@@ -144,58 +180,57 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
   }
 
   _getBtn() {
-    if (widget.arguments['statusName'] != '已提交') {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Container(
-            alignment: Alignment.bottomRight,
-            margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
-            child: _floatingActionButtonFlag
-                ? FloatingActionButton(
-                    onPressed: () {
-                      if (_tabIndex == 0) {
-                        if (steCookingConsumeFlag == '1') {
-                          Navigator.pushNamed(
-                            context,
-                            '/sterilize/acceAdd/potAdd',
-                            arguments: {
-                              'potOrderNo': widget.arguments['potNum']['potNo'],
-                              'potOrderId': widget.arguments['potNum']
-                                  ['potOrderId'],
-                            },
-                          ).then(
-                              (value) => value != null ? _initState() : null);
-                        } else {}
-                      } else {
-                        print(widget.arguments['potNum']);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Container(
+          alignment: Alignment.bottomRight,
+          margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
+          child: _floatingActionButtonFlag
+              ? FloatingActionButton(
+                  onPressed: () {
+                    if (_tabIndex == 0) {
+                      if (steCookingConsumeFlag == '1') {
                         Navigator.pushNamed(
                           context,
-                          '/sterilize/acceAdd/materialAdd',
+                          '/sterilize/acceAdd/potAdd',
                           arguments: {
                             'potOrderNo': widget.arguments['potNum']['potNo'],
                             'potOrderId': widget.arguments['potNum']
                                 ['potOrderId'],
                           },
                         ).then((value) => value != null ? _initState() : null);
-                      }
-                    },
-                    child: Icon(Icons.add),
-                  )
-                : SizedBox(),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-            child: MdsWidthButton(
-              text: '提交',
-              onPressed: _submitPage,
-            ),
-          ),
-        ],
-      );
-    } else {
-      return SizedBox();
-    }
+                      } else {}
+                    } else {
+                      print(widget.arguments['potNum']);
+                      Navigator.pushNamed(
+                        context,
+                        '/sterilize/acceAdd/materialAdd',
+                        arguments: {
+                          'potOrderNo': widget.arguments['potNum']['potNo'],
+                          'potOrderId': widget.arguments['potNum']
+                              ['potOrderId'],
+                        },
+                      ).then((value) => value != null ? _initState() : null);
+                    }
+                  },
+                  child: Icon(Icons.add),
+                )
+              : SizedBox(),
+        ),
+        (_tabIndex == 0 && potStatus) ||
+                (_tabIndex == 1 && acceStatus) ||
+                (_tabIndex == 2 && materialStatus)
+            ? Container(
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: MdsWidthButton(
+                  text: '提交',
+                  onPressed: _submitPage,
+                ),
+              )
+            : SizedBox(),
+      ],
+    );
   }
 
   @override
@@ -239,7 +274,6 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
               data: potList,
               updataFn: _initState,
               arguments: {
-                'statusName': widget.arguments['statusName'],
                 'potOrderNo': widget.arguments['potNum']['potNo'],
                 'potOrderId': widget.arguments['potNum']['potOrderId'],
               },
@@ -259,7 +293,6 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
               data: materialList,
               updataFn: _initState,
               arguments: {
-                'statusName': widget.arguments['statusName'],
                 'potOrderNo': widget.arguments['potNum']['potNo'],
                 'potOrderId': widget.arguments['potNum']['potOrderId'],
               },
@@ -325,7 +358,11 @@ class _PotListWidgetState extends State<PotListWidget>
                   subTitle: 'unit',
                   wrapList: wrapList,
                   onTap: () {
-                    if (widget.arguments['statusName'] == '已提交') {
+                    if (!(widget.data[index]['checkStatus'] == 'N' ||
+                        widget.data[index]['checkStatus'] == 'R' ||
+                        widget.data[index]['checkStatus'] == 'S' ||
+                        widget.data[index]['checkStatus'] == 'T' ||
+                        widget.data[index]['checkStatus'] == '')) {
                       return;
                     }
                     Navigator.pushNamed(
@@ -342,7 +379,11 @@ class _PotListWidgetState extends State<PotListWidget>
                 buttons: <Widget>[
                   CardRemoveBtn(
                     removeOnTab: () {
-                      if (widget.arguments['statusName'] == '已提交') {
+                      if (!(widget.data[index]['checkStatus'] == 'N' ||
+                          widget.data[index]['checkStatus'] == 'R' ||
+                          widget.data[index]['checkStatus'] == 'S' ||
+                          widget.data[index]['checkStatus'] == 'T' ||
+                          widget.data[index]['checkStatus'] == '')) {
                         return;
                       }
                       widget.delFn(index);
@@ -392,7 +433,7 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                     startText: widget.data[index]['useMaterialCode'],
                     endText: widget.data[index]['useMaterialName'],
                     onTap: () {
-                      if (widget.arguments['statusName'] == '已提交') {
+                      if (!widget.data[index]['checkStatus']) {
                         return;
                       }
                       Navigator.pushNamed(
@@ -427,7 +468,21 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                         centerText: widget.data[index]['child'][childIndex]
                             ['useBatch'],
                         onTap: () {
-                          if (widget.arguments['statusName'] == '已提交') {
+                          if (!(widget.data[index]['child'][childIndex]
+                                      ['checkStatus'] ==
+                                  'N' ||
+                              widget.data[index]['child'][childIndex]
+                                      ['checkStatus'] ==
+                                  'R' ||
+                              widget.data[index]['child'][childIndex]
+                                      ['checkStatus'] ==
+                                  'S' ||
+                              widget.data[index]['child'][childIndex]
+                                      ['checkStatus'] ==
+                                  'T' ||
+                              widget.data[index]['child'][childIndex]
+                                      ['checkStatus'] ==
+                                  '')) {
                             return;
                           }
                           Navigator.pushNamed(
@@ -456,15 +511,34 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                             child: Container(
                               height: 24,
                               child: RaisedButton(
-                                  color: Colors.red,
-                                  shape: CircleBorder(
-                                      side: BorderSide(color: Colors.red)),
-                                  child: Icon(
-                                      IconData(0xe674, fontFamily: 'MdsIcon'),
-                                      color: Colors.white,
-                                      size: 16),
-                                  onPressed: () =>
-                                      widget.delFn(index, childIndex)),
+                                color: Colors.red,
+                                shape: CircleBorder(
+                                    side: BorderSide(color: Colors.red)),
+                                child: Icon(
+                                    IconData(0xe674, fontFamily: 'MdsIcon'),
+                                    color: Colors.white,
+                                    size: 16),
+                                onPressed: () {
+                                  if (!(widget.data[index]['child'][childIndex]
+                                              ['checkStatus'] ==
+                                          'N' ||
+                                      widget.data[index]['child'][childIndex]
+                                              ['checkStatus'] ==
+                                          'R' ||
+                                      widget.data[index]['child'][childIndex]
+                                              ['checkStatus'] ==
+                                          'S' ||
+                                      widget.data[index]['child'][childIndex]
+                                              ['checkStatus'] ==
+                                          'T' ||
+                                      widget.data[index]['child'][childIndex]
+                                              ['checkStatus'] ==
+                                          '')) {
+                                    return;
+                                  }
+                                  widget.delFn(index, childIndex);
+                                },
+                              ),
                             ),
                           ),
                         )
@@ -546,7 +620,7 @@ class _ColumnItemState extends State<ColumnItem> {
               : InkWell(
                   child: Icon(
                     IconData(0xe62c, fontFamily: 'MdsIcon'),
-                    size: 18,
+                    size: 15,
                     color: Color(0xFF487BFF),
                   ),
                   onTap: widget.onTap,
@@ -600,7 +674,11 @@ class _MaterialAddTabState extends State<MaterialAddTab>
                   subTitle: 'useUnit',
                   wrapList: wrapList,
                   onTap: () {
-                    if (widget.arguments['statusName'] == '已提交') {
+                    if (!(widget.data[index]['checkStatus'] == 'N' ||
+                        widget.data[index]['checkStatus'] == 'R' ||
+                        widget.data[index]['checkStatus'] == 'S' ||
+                        widget.data[index]['checkStatus'] == 'T' ||
+                        widget.data[index]['checkStatus'] == '')) {
                       return;
                     }
                     Navigator.pushNamed(
@@ -616,7 +694,16 @@ class _MaterialAddTabState extends State<MaterialAddTab>
                 ),
                 buttons: <Widget>[
                   CardRemoveBtn(
-                    removeOnTab: () => widget.delFn(index),
+                    removeOnTab: () {
+                      if (!(widget.data[index]['checkStatus'] == 'N' ||
+                          widget.data[index]['checkStatus'] == 'R' ||
+                          widget.data[index]['checkStatus'] == 'S' ||
+                          widget.data[index]['checkStatus'] == 'T' ||
+                          widget.data[index]['checkStatus'] == '')) {
+                        return;
+                      }
+                      widget.delFn(index);
+                    },
                   ),
                 ],
               );

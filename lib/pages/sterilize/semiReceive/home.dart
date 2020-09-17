@@ -36,6 +36,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
   ];
 
   List semiList = [];
+  String status = '';
 
   getListCard() {
     List<Widget> listWidget = [];
@@ -50,7 +51,11 @@ class _SemiReceivePageState extends State<SemiReceivePage>
           subTitle: 'consumeUnit',
           wrapList: wrapList,
           onTap: () {
-            if (widget.arguments['statusName'] == '已提交') {
+            if (!(semiList[index]['checkStatus'] == 'N' ||
+                semiList[index]['checkStatus'] == 'R' ||
+                semiList[index]['checkStatus'] == 'S' ||
+                semiList[index]['checkStatus'] == 'T' ||
+                semiList[index]['checkStatus'] == '')) {
               return;
             }
             Navigator.pushNamed(
@@ -69,7 +74,11 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         buttons: <Widget>[
           CardRemoveBtn(
             removeOnTab: () {
-              if (widget.arguments['statusName'] == '已提交') {
+              if (!(semiList[index]['checkStatus'] == 'N' ||
+                  semiList[index]['checkStatus'] == 'R' ||
+                  semiList[index]['checkStatus'] == 'S' ||
+                  semiList[index]['checkStatus'] == 'T' ||
+                  semiList[index]['checkStatus'] == '')) {
                 return;
               }
               _semiDel(index);
@@ -97,7 +106,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         'type': '',
       });
       successToast(msg: '操作成功');
-      setState(() {});
+      _initState(type: true);
     } catch (e) {}
   }
 
@@ -120,6 +129,9 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         "potOrderNo": widget.arguments['potNum']['potNo']
       });
       semiList = res['data'];
+      if (semiList.length != 0) {
+        status = res['data'][0]['status'];
+      }
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}
@@ -187,7 +199,11 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         ],
       ),
     ];
-    if (widget.arguments['statusName'] != '已提交') {
+    if (status == 'N' ||
+        status == 'R' ||
+        status == 'S' ||
+        status == 'T' ||
+        status == '') {
       page.add(
         Positioned(
           bottom: 70 + _ctrlAnimationCircle.value * sin(0 * pi / 3),
