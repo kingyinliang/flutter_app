@@ -316,9 +316,13 @@ class _MenuItemState extends State<MenuItem> {
         ),
       ),
       onTap: () {
+        String urlString = '/sterilize/barcode';
+        if (menu['workingType'] == 'processor') {
+          urlString = widget.url;
+        }
         Navigator.pushNamed(
           context,
-          '/sterilize/barcode',
+          urlString,
           arguments: {
             'url': widget.url,
             'workingType': menu['workingType'],

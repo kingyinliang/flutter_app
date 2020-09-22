@@ -116,4 +116,44 @@ class Sterilize {
         '/ste/accessiruesConsume/steAccessoriesNewDelete',
         params: params);
   }
+
+  /////////////////////////// 工艺 start  ////////////////////////////////////////////////
+  // 列表 (type: not  save  submit)
+  static sterilizeCraftListApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/processorQuery', params: params);
+  }
+  // 详情列表
+  static sterilizeCraftMaterialListApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/query', params: params);
+  }
+  // 提交
+  static sterilizeCraftMaterialTimeSubmitApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/mobileSubmit', params: params);
+  }
+  // 杀菌时间添加
+  static sterilizeCraftMaterialTimeInsertApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/timeInsert', params: params);
+  }
+  // 杀菌时间修改
+  static sterilizeCraftMaterialTimeUpdateApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/timeUpdate', params: params);
+  }
+  // 杀菌时间删除
+  static sterilizeCraftMaterialTimeDelApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/timeDelete', params: params);
+  }
+  // 杀菌升温添加
+  static sterilizeCraftMaterialInsertApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/insert', params: params);
+  }
+  // 杀菌升温修改
+  static sterilizeCraftMaterialUpdateApi(params) {
+    return HttpManager.getInstance().post('/ste/steProcessorControl/update', params: params);
+  }
+  ////////////////////////////// 工艺 end ////////////////////////////////////////
+  // 异常 start
+  // home查询
+  static sterilizeExceptionListApi(params) {
+    return HttpManager.getInstance().post('/ste/steException/potOrderQuery', params: params);
+  }
 }
