@@ -14,8 +14,14 @@ class MdsAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
 
 class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AppBar(
+      brightness: Brightness.light,
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios),
         color: Colors.blue,

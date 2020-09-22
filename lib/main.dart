@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'router/index.dart';
 
@@ -10,18 +11,24 @@ class Router {
 
 void main() {
   runApp(MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlutterEasyLoading(
-      child: MaterialApp(
-        home: new SplashScreen(),
-        navigatorKey: Router.navigatorKey,
-        debugShowCheckedModeBanner: false,
-        // initialRoute: '/home',
-        onGenerateRoute: onGenerateRoute,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: MaterialApp(
+          home: new SplashScreen(),
+          navigatorKey: Router.navigatorKey,
+          debugShowCheckedModeBanner: false,
+          // initialRoute: '/home',
+          onGenerateRoute: onGenerateRoute,
+        ),
       ),
     );
   }

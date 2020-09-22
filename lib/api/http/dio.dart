@@ -147,9 +147,10 @@ class HttpManager {
     }
   }
 
-  endLoading() {
+  endLoading() async {
     netLoadingCount = 0;
-    EasyLoading.dismiss();
+    // ignore: await_only_futures
+    await EasyLoading.dismiss(animation: false);
   }
 
   // 响应拦截
@@ -167,9 +168,7 @@ class HttpManager {
       return _future;
     } else {
       endLoading();
-      Future.delayed(Duration(milliseconds: 500), () {
-        infoToast(msg: '${response.data['msg']}');
-      });
+      infoToast(msg: '${response.data['msg']}');
       _com.completeError(response);
       return _future;
     }

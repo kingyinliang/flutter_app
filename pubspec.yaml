@@ -36,6 +36,8 @@ dependencies:
   event_bus: ^1.1.1
   date_format: ^1.0.8
   english_words: ^3.1.5
+  barcode_scan: ^3.0.1
+  flutter_dong_scan: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +60,7 @@ flutter:
     - lib/assets/images/loginBg.png
     - lib/assets/images/loginLogo.png
     - lib/assets/images/loading.gif
+    - lib/assets/images/nodata.png
     - lib/assets/images/man.png
     - lib/assets/images/feman.png
     - lib/assets/images/pot.jpg

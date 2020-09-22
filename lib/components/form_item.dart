@@ -6,9 +6,11 @@ class FormItem extends StatefulWidget {
   final Widget child;
   final String label;
   final bool requiredFlg;
+  final double height;
 
   FormItem(
       {Key key,
+      this.height = 48,
       @required this.child,
       @required this.label,
       this.requiredFlg = false})
@@ -22,7 +24,7 @@ class _FormItemState extends State<FormItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
+      height: widget.height,
       padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
       decoration: BoxDecoration(
         border: Border(
