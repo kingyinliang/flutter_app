@@ -34,7 +34,7 @@ class LoadingWidget extends StatelessWidget {
 
 class HttpManager {
   final String _addressBaseUrl = HostAddress.APP_API;
-  final int _connectTimeout = 60000;
+  final int _connectTimeout = 600000;
   final int _receiveTimeout = 3000;
   int netLoadingCount = 0;
 

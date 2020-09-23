@@ -67,14 +67,16 @@ class _ItemCardState extends State<ItemCard> {
           Positioned(
             right: 0,
             top: 0,
-            child: widget.submitButtonFlag ? InkWell(
-              onTap: widget.onTap,
-              child: Icon(
-                IconData(0xe62c, fontFamily: 'MdsIcon'),
-                size: 16,
-                color: Color(0xFF487BFF),
-              ),
-            ) : SizedBox(),
+            child: widget.submitButtonFlag
+                ? InkWell(
+                    onTap: widget.onTap,
+                    child: Icon(
+                      IconData(0xe62c, fontFamily: 'MdsIcon'),
+                      size: 16,
+                      color: Color(0xFF487BFF),
+                    ),
+                  )
+                : SizedBox(),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

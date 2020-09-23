@@ -41,10 +41,19 @@ class _SemiReceivePageState extends State<SemiReceivePage>
   getListCard() {
     List<Widget> listWidget = [];
     listWidget = semiList.asMap().keys.map((index) {
+      bool submitButtonFlag = true;
+      if (!(semiList[index]['checkStatus'] == 'N' ||
+          semiList[index]['checkStatus'] == 'R' ||
+          semiList[index]['checkStatus'] == 'S' ||
+          semiList[index]['checkStatus'] == 'T' ||
+          semiList[index]['checkStatus'] == '')) {
+        submitButtonFlag = false;
+      }
       return SlideButton(
         index: index,
         singleButtonWidth: 70,
         child: ItemCard(
+          submitButtonFlag: submitButtonFlag,
           carTitle: '半成品领用领用数量',
           cardMap: semiList[index],
           title: 'consumeAmount',
