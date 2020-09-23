@@ -70,7 +70,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
     return st;
   }
 
-  _initState() async {
+  _initState({type: false}) async {
     try {
       var res = await Sterilize.acceAddHomeApi({
         "materialCode": widget.arguments['potNum']['materialCode'],
@@ -96,6 +96,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         acceStatus = getStatus(acceList);
         setFloatingActionButtonFlag(_tabIndex);
       });
+      if (type) successToast(msg: '操作成功');
     } catch (e) {}
   }
 
@@ -130,11 +131,11 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
       type = 'new';
     }
     try {
-      await Sterilize.acceAddPotDelApi({
+      await Sterilize.acceAddSubmitApi({
         'potOrderNo': widget.arguments['potNum']['potNo'],
         'type': type,
       });
-      successToast(msg: '操作成功');
+      _initState(type: true);
       setState(() {});
     } catch (e) {}
   }

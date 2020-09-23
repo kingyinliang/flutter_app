@@ -60,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       });
       await saveStringStorage('token', res['data']['token']);
+      await saveStringStorage('loginUserId', res['data']['id']);
       await saveStringStorage('deptName', deptName);
       await saveMapStorage('userData', res['data']);
       await HttpManager.getInstance().updateToken();

@@ -1,6 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+
+import 'package:dfmdsapp/components/dialog.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/api/api/index.dart';
+import 'package:dfmdsapp/api/http/socket.dart';
+import 'package:dfmdsapp/utils/path_provider.dart';
+// import 'package:dfmdsapp/utils/version_update.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -12,6 +18,7 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   Map userData = {'sex': 'M', 'realName': ''};
   String deptName;
+
   @override
   void initState() {
     super.initState();
@@ -30,12 +37,15 @@ class _UserPageState extends State<UserPage> {
   _quit() async {
     try {
       await Common.quitLoginApi();
+      WebSocketManager.dispos();
       Navigator.pop(context);
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     } catch (e) {}
   }
 
   _switchUser() {
+    WebSocketManager.dispos();
+    Navigator.pop(context);
     Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
   }
 
@@ -116,6 +126,18 @@ class _UserPageState extends State<UserPage> {
                     icon: IconData(0xe674, fontFamily: 'MdsIcon'),
                     iconColor: Color(0xFFE86452),
                     text: '清除缓存',
+                    onTap: () {
+                      // Navigator.of(context).push(DialogRouter(MessageDialog()));
+                      // varsionUpdateInit(context);
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) {
+                          // return VersionUpdateDialog();
+                          return StorageDialog();
+                        },
+                      );
+                    },
                   ),
                   UserItem(
                     icon: IconData(0xe6ba, fontFamily: 'MdsIcon'),
@@ -244,6 +266,72 @@ class _UserItemState extends State<UserItem> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class StorageDialog extends StatefulWidget {
+  StorageDialog({Key key}) : super(key: key);
+
+  @override
+  _StorageDialogState createState() => _StorageDialogState();
+}
+
+class _StorageDialogState extends State<StorageDialog> {
+  var size = '';
+  _initState() async {
+    size = await getStorageSize();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              _initState();
+            }));
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DiaLogContainer(
+      success: () async {
+        await clear();
+        Navigator.of(context, rootNavigator: true).pop();
+        Navigator.pop(context);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/login', (route) => false);
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(
+            Icons.warning,
+            color: Color(0xFFF94630),
+            size: 38,
+          ),
+          SizedBox(height: 12),
+          Text(
+            '清理缓存',
+            style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+          ),
+          SizedBox(height: 12),
+          Text(
+            '系统缓存 ' + size,
+            style: TextStyle(color: Color(0xFF666666), fontSize: 14),
+          ),
+          SizedBox(height: 4),
+          Text(
+            '确定清除缓存数据？',
+            style: TextStyle(color: Color(0xFF666666), fontSize: 14),
+          ),
+          SizedBox(height: 30),
+        ],
       ),
     );
   }

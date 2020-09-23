@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/form.dart';
+import 'package:package_info/package_info.dart';
 
 class VersionsPage extends StatefulWidget {
   final arguments;
@@ -11,6 +12,24 @@ class VersionsPage extends StatefulWidget {
 }
 
 class _VersionsPageState extends State<VersionsPage> {
+  String version = '';
+
+  _initState() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+  }
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +50,7 @@ class _VersionsPageState extends State<VersionsPage> {
               ),
               SizedBox(height: 10),
               Text(
-                '版本 V1.0.0.1',
+                '版本 V$version',
                 style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
               ),
             ],
