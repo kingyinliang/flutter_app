@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'home/home.dart';
 import 'message/message.dart';
 import 'user/user.dart';
+import 'package:dfmdsapp/utils/storage.dart';
+import 'package:dfmdsapp/api/http/socket.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -12,11 +14,31 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   int _currentIndex = 0;
+
   List<Widget> _pageList = [
     HomePage(),
     MessagePage(),
     UserPage(),
   ];
+
+  _initState() async {
+    try {
+      var loginUserId = await getStorage('loginUserId');
+      WebSocketManager.initSocket(loginUserId);
+    } catch (e) {}
+  }
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

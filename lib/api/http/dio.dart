@@ -12,6 +12,7 @@ import 'package:dfmdsapp/main.dart';
 
 import './env.dart';
 import './httpCode.dart';
+import './socket.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({Key key}) : super(key: key);
@@ -162,8 +163,11 @@ class HttpManager {
       return _future;
     } else if (response.data['code'] == ResultCode.EXPIRED_TOKEN) {
       endLoading();
-      Router.navigatorKey.currentState
-          .pushNamedAndRemoveUntil('/login', (route) => false);
+      WebSocketManager.dispos();
+      Future.delayed(Duration.zero, () {
+        Router.navigatorKey.currentState
+            .pushNamedAndRemoveUntil('/login', (route) => false);
+      });
       _com.complete(response.data);
       return _future;
     } else {

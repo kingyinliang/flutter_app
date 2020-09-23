@@ -13,6 +13,18 @@ class Common {
     return HttpManager.getInstance().get('/sysUser/quit');
   }
 
+// 消息查询
+  static msgQueryApi(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .post('/msg/query', params: params);
+  }
+
+// 消息已读
+  static msgReadApi(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .post('/msg/read', params: params);
+  }
+
 // 首页菜单
   static getMenuApi() {
     return HttpManager.getInstance().get('/sysUser/userRole/mobile/menuQuery');
