@@ -41,4 +41,11 @@ class Common {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
         .get('/sysMaterial/unit/dropDown', params: params);
   }
+
+  // 班次拉取
+  static getClassListQuery(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .get('/sysDictItem/classes/dropDown', params: params);
+  }
 }
+

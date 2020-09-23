@@ -106,15 +106,20 @@ class _BarCodePageState extends State<BarCodePage> {
               children: potList.asMap().keys.map((index) {
                 return InkWell(
                   onTap: () {
+                    String urlString = '/sterilize/list';
+                    if (widget.arguments['blockType'] == 'exception') {
+                      urlString = widget.arguments['url'];
+                    }
                     Navigator.pushNamed(
                       context,
-                      '/sterilize/list',
+                      urlString,
                       arguments: {
                         'pot': potList[index]['holderNo'],
                         'potName': potList[index]['holderName'],
                         'url': widget.arguments['url'],
                         'title': widget.arguments['title'],
                         'workingType': widget.arguments['workingType'],
+                        'typeParameters': widget.arguments['typeParameters'],
                       },
                     );
                   },

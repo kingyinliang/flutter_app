@@ -153,7 +153,15 @@ class Sterilize {
   ////////////////////////////// 工艺 end ////////////////////////////////////////
   // 异常 start
   // home查询
-  static sterilizeExceptionListApi(params) {
+  static sterilizeExceptionHomeListApi(params) {
     return HttpManager.getInstance().post('/ste/steException/potOrderQuery', params: params);
+  }
+  // list异常查询
+  static sterilizeExceptionDetailListApi(params) {
+    return HttpManager.getInstance().post('/ste/steException/query', params: params);
+  }
+  // list文本查询
+  static sterilizeExceptionDetailTextApi(params) {
+    return HttpManager.getInstance().post('/ste/steText/query', params: params);
   }
 }

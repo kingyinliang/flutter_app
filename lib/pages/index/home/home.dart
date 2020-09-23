@@ -232,6 +232,8 @@ class _MenuItemState extends State<MenuItem> {
           'menuColor': 0xFFF6BD16,
           'workingType': 'semiAbnormal',
           'menuSubTitle': 'Abnormal records',
+          'blockType': 'exception',
+          'typeParameters': 'semiReceive',
         };
         break;
       case 'material':
@@ -246,6 +248,8 @@ class _MenuItemState extends State<MenuItem> {
           'menuColor': 0xFF454955,
           'workingType': 'materialAbnormal',
           'menuSubTitle': 'Abnormal records',
+          'blockType': 'exception',
+          'typeParameters': 'acceadd',
         };
         break;
       case 'processor':
@@ -260,6 +264,8 @@ class _MenuItemState extends State<MenuItem> {
           'menuColor': 0xFF5D7092,
           'workingType': 'processorAbnormal',
           'menuSubTitle': 'Abnormal records',
+          'blockType': 'exception',
+          'typeParameters': 'craft',
         };
         break;
       default:
@@ -334,6 +340,8 @@ class _MenuItemState extends State<MenuItem> {
             'url': widget.url,
             'workingType': menu['workingType'],
             'title': widget.menuTitle,
+            'blockType': menu['blockType'],
+            'typeParameters': menu['typeParameters'],
           },
         );
       },

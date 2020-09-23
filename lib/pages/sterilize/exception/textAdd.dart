@@ -6,15 +6,15 @@ import 'package:dfmdsapp/components/raisedButton.dart';
 import 'package:dfmdsapp/components/form.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 
-class ExceptionAdd extends StatefulWidget {
+class ExceptionTextAdd extends StatefulWidget {
   final arguments;
-  ExceptionAdd({Key key, this.arguments}) : super(key: key);
+  ExceptionTextAdd({Key key, this.arguments}) : super(key: key);
 
   @override
-  _ExceptionAddState createState() => _ExceptionAddState();
+  _ExceptionTextAddState createState() => _ExceptionTextAddState();
 }
 
-class _ExceptionAddState extends State<ExceptionAdd> {
+class _ExceptionTextAddState extends State<ExceptionTextAdd> {
   Map<String, dynamic> formMap = {
     'feedStartDate': '',
     'feeEndDate': '',
@@ -75,32 +75,8 @@ class _ExceptionAddState extends State<ExceptionAdd> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(
         children: <Widget>[
-          SelectWidget(
-            label: '班次',
-            prop: formMap['keepZkFlag'].toString(),
-            requiredFlg: true,
-            options: StageList,
-            optionsLabel: 'label',
-            optionsval: 'val',
-            onChange: (val) {
-              formMap['keepZkFlag'] = val['val'];
-              setState(() {});
-            },
-          ),
-          SelectWidget(
-            label: '异常情况',
-            prop: formMap['keepZkFlag'].toString(),
-            requiredFlg: true,
-            options: StageList,
-            optionsLabel: 'label',
-            optionsval: 'val',
-            onChange: (val) {
-              formMap['keepZkFlag'] = val['val'];
-              setState(() {});
-            },
-          ),
           DataPickerWidget(
-            label: '开始时间',
+            label: '入料开始时间',
             prop: formMap['feedStartDate'].toString(),
             requiredFlg: true,
             onChange: (val) {
@@ -109,7 +85,7 @@ class _ExceptionAddState extends State<ExceptionAdd> {
             },
           ),
           DataPickerWidget(
-            label: '结束时间',
+            label: '入料结束时间',
             prop: formMap['feeEndDate'].toString(),
             requiredFlg: true,
             onChange: (val) {
@@ -117,21 +93,35 @@ class _ExceptionAddState extends State<ExceptionAdd> {
               setState(() {});
             },
           ),
-          InputWidget(
-              label: '异常描述',
-              prop: formMap['remark'].toString(),
-              onChange: (val) {
-                formMap['remark'] = val;
-                setState(() {});
-              }
+          DataPickerWidget(
+            label: '升温开始时间',
+            prop: formMap['riseStartDate'].toString(),
+            requiredFlg: true,
+            onChange: (val) {
+              formMap['riseStartDate'] = val;
+              setState(() {});
+            },
           ),
-          InputWidget(
-              label: '备注',
-              prop: formMap['remark'].toString(),
-              onChange: (val) {
-                formMap['remark'] = val;
-                setState(() {});
-              }
+          DataPickerWidget(
+            label: '升温结束时间',
+            prop: formMap['riseEndDate'].toString(),
+            requiredFlg: true,
+            onChange: (val) {
+              formMap['riseEndDate'] = val;
+              setState(() {});
+            },
+          ),
+          SelectWidget(
+            label: '保温阶段-ZK',
+            prop: formMap['keepZkFlag'].toString(),
+            requiredFlg: true,
+            options: StageList,
+            optionsLabel: 'label',
+            optionsval: 'val',
+            onChange: (val) {
+              formMap['keepZkFlag'] = val['val'];
+              setState(() {});
+            },
           ),
           SelectWidget(
             label: '降温阶段-ZK',
@@ -148,13 +138,6 @@ class _ExceptionAddState extends State<ExceptionAdd> {
         ],
       ),
     );
-  }
-
-  _initState() async {
-    try {
-      var res = await Common.getClassListQuery({});
-      print(res);
-    } catch (e) {}
   }
 
   @override
@@ -176,9 +159,8 @@ class _ExceptionAddState extends State<ExceptionAdd> {
     }
     Future.delayed(
       Duration.zero,
-        () => setState(() {
-          _initState();
-        }),
+          () => setState(() {
+      }),
     );
     super.initState();
   }
@@ -187,7 +169,7 @@ class _ExceptionAddState extends State<ExceptionAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MdsAppBarWidget(
-          titleData: formMap['id'] == null ? '异常新增' : '异常修改'),
+          titleData: formMap['id'] == null ? '工艺控制新增' : '工艺控制修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[

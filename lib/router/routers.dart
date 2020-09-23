@@ -9,7 +9,9 @@ import '../pages/sterilize/craft/materialList.dart';
 import '../pages/sterilize/craft/materialAdd.dart';
 import '../pages/sterilize/craft/timeAdd.dart';
 import '../pages/sterilize/exception/home.dart';
+import '../pages/sterilize/exception/list.dart';
 import '../pages/sterilize/exception/add.dart';
+import '../pages/sterilize/exception/textAdd.dart';
 import '../pages/sterilize/list.dart';
 import '../pages/sterilize/acceAdd/home.dart';
 import '../pages/sterilize/acceAdd/potAdd.dart';
@@ -34,7 +36,9 @@ Map<String, Function> routers = {
    '/sterilize/craft/materialAdd': (contxt, {arguments}) => CraftMaterialAdd(arguments: arguments),
   '/sterilize/craft/timeAdd': (contxt, {arguments}) => CraftTimeAdd(arguments: arguments),
   '/sterilize/exception/home': (contxt, {arguments}) => CraftExceptionHome(arguments: arguments),
-  '/sterilize/craft/exceptionAdd': (contxt, {arguments}) => ExceptionAdd(),
+  '/sterilize/exception/list': (contxt, {arguments}) => CraftExceptionList(arguments: arguments),
+  '/sterilize/exception/add': (contxt, {arguments}) => ExceptionAdd(arguments: arguments),
+  '/sterilize/exception/textAdd': (contxt, {arguments}) => ExceptionTextAdd(arguments: arguments),
   '/sterilize/acceAdd/home': (contxt, {arguments}) =>
       AcceAddHomePage(arguments: arguments),
   '/sterilize/acceAdd/potAdd': (contxt, {arguments}) =>
