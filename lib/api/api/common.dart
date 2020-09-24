@@ -13,6 +13,12 @@ class Common {
     return HttpManager.getInstance().get('/sysUser/quit');
   }
 
+// 修改密码
+  static updatePasswordApi(params) {
+    return HttpManager.getInstance()
+        .post('/sysUser/password/update', params: params);
+  }
+
 // 消息查询
   static msgQueryApi(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
@@ -60,4 +66,3 @@ class Common {
         .get('/sysDictItem/classes/dropDown', params: params);
   }
 }
-

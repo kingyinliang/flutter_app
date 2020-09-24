@@ -4,6 +4,7 @@ import 'package:dfmdsapp/components/form.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
 import 'package:dfmdsapp/utils/toast.dart';
+import 'package:dfmdsapp/api/api/index.dart';
 
 class UpdatePaswordPage extends StatefulWidget {
   final arguments;
@@ -27,8 +28,12 @@ class _UpdatePaswordPageState extends State<UpdatePaswordPage> {
     );
   }
 
-  _submitForm() {
+  _submitForm() async {
     RegExp exp = new RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,12}$");
+    if (formMap['password'].length == 0) {
+      warningToast(msg: '请输入原始密码');
+      return;
+    }
     if (exp.hasMatch(formMap['newPassword']) == false) {
       warningToast(msg: '请输入8-12位数字大小写字母组合');
       return;
@@ -37,6 +42,10 @@ class _UpdatePaswordPageState extends State<UpdatePaswordPage> {
       warningToast(msg: '两次输入密码不一致');
       return;
     }
+    try {
+      await Common.updatePasswordApi(formMap);
+      successToast(msg: '密码修改成功');
+    } catch (e) {}
   }
 
   _initState() async {
@@ -76,6 +85,7 @@ class _UpdatePaswordPageState extends State<UpdatePaswordPage> {
                 InputWidget(
                   label: '原始密码',
                   requiredFlg: true,
+                  eye: true,
                   prop: formMap['password'].toString(),
                   onChange: (val) {
                     formMap['password'] = val;
@@ -85,6 +95,7 @@ class _UpdatePaswordPageState extends State<UpdatePaswordPage> {
                 InputWidget(
                   label: '新密码',
                   requiredFlg: true,
+                  eye: true,
                   prop: formMap['newPassword'].toString(),
                   onChange: (val) {
                     formMap['newPassword'] = val;
@@ -94,6 +105,7 @@ class _UpdatePaswordPageState extends State<UpdatePaswordPage> {
                 InputWidget(
                   label: '确认密码',
                   requiredFlg: true,
+                  eye: true,
                   prop: formMap['conPassword'].toString(),
                   onChange: (val) {
                     formMap['conPassword'] = val;

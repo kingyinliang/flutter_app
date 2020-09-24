@@ -1,4 +1,6 @@
+import 'package:dfmdsapp/utils/toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../api/api/common.dart';
 import '../../utils/storage.dart';
 import '../../components/raisedButton.dart';
@@ -32,6 +34,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _login() async {
+    if (_userName.text.length != 8) {
+      infoToast(msg: '请输出长度为 8 个字符账号/工号');
+      return;
+    }
+    if (_password.text.length > 12 || _password.text.length < 8) {
+      infoToast(msg: '请输出长度在 8 到 12 个字符的密码');
+      return;
+    }
     if (this._rememberPaw) {
       await saveStringStorage('userName', this._userName.text);
       await saveStringStorage('password', this._password.text);

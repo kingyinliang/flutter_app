@@ -66,6 +66,7 @@ flutter:
     - lib/assets/images/loginLogo.png
     - lib/assets/images/loading.gif
     - lib/assets/images/nodata.png
+    - lib/assets/images/version.png
     - lib/assets/images/man.png
     - lib/assets/images/feman.png
     - lib/assets/images/pot.jpg

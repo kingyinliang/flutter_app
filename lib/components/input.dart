@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'form_item.dart';
 
 class InputWidget extends StatefulWidget {
   final String label;
   final String prop;
+  final List<TextInputFormatter> inputFormatters;
+  final bool eye;
   final bool requiredFlg;
   final Function onChange;
 
@@ -12,6 +15,8 @@ class InputWidget extends StatefulWidget {
       @required this.label,
       @required this.prop,
       @required this.onChange,
+      this.inputFormatters,
+      this.eye = false,
       this.requiredFlg = false})
       : super(key: key);
 
@@ -37,6 +42,8 @@ class _InputWidgetState extends State<InputWidget> {
   Widget build(BuildContext context) {
     return FormItem(
       child: TextField(
+        obscureText: widget.eye,
+        inputFormatters: widget.inputFormatters ?? <TextInputFormatter>[],
         controller: TextEditingController.fromValue(
           TextEditingValue(
             text: inputVal.text,
