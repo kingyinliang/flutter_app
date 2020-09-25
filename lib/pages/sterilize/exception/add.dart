@@ -42,13 +42,14 @@ class _ExceptionAddState extends State<ExceptionAdd> {
       if (formMap['endDate'] == null) {
         formMap['endDate'] = '';
       }
-      if (formMap['exceptionSituation'] != null && formMap['exceptionSituation'] != '') {
+      if (formMap['exceptionSituation'] != null &&
+          formMap['exceptionSituation'] != '') {
         this._getAbnormalReason(formMap['exceptionSituation']);
       }
     }
     Future.delayed(
       Duration.zero,
-          () => setState(() {
+      () => setState(() {
         _getClassList();
         _getAbnormalList();
       }),
@@ -124,16 +125,14 @@ class _ExceptionAddState extends State<ExceptionAdd> {
               onChange: (val) {
                 formMap['exceptionInfo'] = val;
                 setState(() {});
-              }
-          ),
+              }),
           InputWidget(
               label: '备注',
               prop: formMap['remark'].toString(),
               onChange: (val) {
                 formMap['remark'] = val;
                 setState(() {});
-              }
-          )
+              })
         ],
       ),
     );
@@ -151,7 +150,8 @@ class _ExceptionAddState extends State<ExceptionAdd> {
   // 异常情况
   _getAbnormalList() async {
     try {
-      var abnormalRes = await Common.dictDropDownQuery({ 'dictType': 'ABNORMAL_HALT' });
+      var abnormalRes =
+          await Common.dictDropDownQuery({'dictType': 'ABNORMAL_HALT'});
       this.abnormalList = abnormalRes['data'];
       setState(() {});
     } catch (e) {}
@@ -159,18 +159,19 @@ class _ExceptionAddState extends State<ExceptionAdd> {
 
   // 异常原因
   _getAbnormalReason(val) async {
-    var workShop = await getStorage('workShopId');
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       if (val == 'FAULT' || val == 'SHUTDOWN') {
         var reasonRes = await Common.deviceListQuery({'deptId': workShop});
         reasonRes['data'].forEach((item) => {
-          this.reasonResList.add({
-            'dictValue': item['deviceName'],
-            'dictCode': item['deviceNo']
-          })
-        });
+              this.reasonResList.add({
+                'dictValue': item['deviceName'],
+                'dictCode': item['deviceNo']
+              })
+            });
       } else if (val == 'POOR_PROCESS' || val == 'WAIT') {
-        var reasonRes = await Common.dictDropDownQuery({'dictType': 'POOR_PROCESS_WAIT'});
+        var reasonRes =
+            await Common.dictDropDownQuery({'dictType': 'POOR_PROCESS_WAIT'});
         this.reasonResList = reasonRes['data'];
       } else if (val == 'ENERGY') {
         var reasonRes = await Common.dictDropDownQuery({'dictType': 'ENERGY'});
@@ -185,7 +186,8 @@ class _ExceptionAddState extends State<ExceptionAdd> {
       EasyLoading.showError('请选择班次');
       return;
     }
-    if (formMap['exceptionSituation'] == null || formMap['exceptionSituation'] == '') {
+    if (formMap['exceptionSituation'] == null ||
+        formMap['exceptionSituation'] == '') {
       EasyLoading.showError('请选择异常情况');
       return;
     }
@@ -198,7 +200,8 @@ class _ExceptionAddState extends State<ExceptionAdd> {
       return;
     }
 
-    if (formMap['exceptionSituation'] != 'AB_OTHERS' && formMap['exceptionReason'] == '') {
+    if (formMap['exceptionSituation'] != 'AB_OTHERS' &&
+        formMap['exceptionReason'] == '') {
       EasyLoading.showError('请选择异常原因');
       return;
     }
@@ -221,7 +224,8 @@ class _ExceptionAddState extends State<ExceptionAdd> {
 
     formMap['duration'] = difference.inMinutes; // 时间差
     formMap['exceptionStage'] = widget.arguments['typeCode'];
-    formMap['changed'] = new DateTime.now().toString().split('.')[0].replaceAll('-', '-');
+    formMap['changed'] =
+        new DateTime.now().toString().split('.')[0].replaceAll('-', '-');
     if (formMap['id'] != null) {
       try {
         await Sterilize.sterilizeExceptionDetailUpdateApi(formMap);
