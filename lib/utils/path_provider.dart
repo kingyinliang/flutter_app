@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:dfmdsapp/utils/storage.dart';
 
 // 获取文件缓存大小
 Future<String> loadCache() async {
@@ -30,6 +31,9 @@ getStorageSize() async {
   Directory tempDir = await getTemporaryDirectory();
   double pathProviderSize = await _getTotalSizeOfFilesInDir(tempDir);
 
+  Directory storageDir = await getExternalStorageDirectory();
+  double storageSize = await _getTotalSizeOfFilesInDir(storageDir);
+
   String tempDirPath = tempDir.path;
   var sharePath = tempDirPath.splitMapJoin(
     '/cache',
@@ -39,7 +43,8 @@ getStorageSize() async {
   );
   sharePath = sharePath + '/shared_prefs';
   double sharerSize = await _getTotalSizeOfFilesInDir(Directory(sharePath));
-  double size = pathProviderSize + sharerSize;
+
+  double size = pathProviderSize + sharerSize + storageSize;
   var _sizeStr = _renderSize(size);
   return _sizeStr.toString();
 }
@@ -77,10 +82,13 @@ _renderSize(double value) {
 }
 
 // ignore: unused_element
-void _clearCache() async {
+void clearCache(Function callback) async {
   Directory tempDir = await getTemporaryDirectory();
+  Directory storageDir = await getExternalStorageDirectory();
+  SharedUtil.instance.clear();
   await delDir(tempDir);
-  await loadCache();
+  await delDir(storageDir);
+  callback();
 }
 
 ///递归方式删除目录

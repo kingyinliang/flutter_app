@@ -6,7 +6,6 @@ import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/api/http/socket.dart';
 import 'package:dfmdsapp/utils/path_provider.dart';
-// import 'package:dfmdsapp/utils/version_update.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -30,8 +29,8 @@ class _UserPageState extends State<UserPage> {
   }
 
   _initState() async {
-    deptName = await getStorage('deptName');
-    userData = await getMapStorage('userData');
+    deptName = await SharedUtil.instance.getStorage('deptName');
+    userData = await SharedUtil.instance.getMapStorage('userData');
   }
 
   _quit() async {
@@ -128,7 +127,7 @@ class _UserPageState extends State<UserPage> {
                     text: '清除缓存',
                     onTap: () {
                       // Navigator.of(context).push(DialogRouter(MessageDialog()));
-                      // varsionUpdateInit(context);
+
                       showDialog(
                         context: context,
                         barrierDismissible: false,
@@ -300,11 +299,12 @@ class _StorageDialogState extends State<StorageDialog> {
   Widget build(BuildContext context) {
     return DiaLogContainer(
       success: () async {
-        await clear();
-        Navigator.of(context, rootNavigator: true).pop();
-        Navigator.pop(context);
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/login', (route) => false);
+        clearCache(() {
+          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.pop(context);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/login', (route) => false);
+        });
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -37,7 +37,7 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
   }
 
   _initState() async {
-    var workShop = await getStorage('workShopId');
+	var workShopId = await SharedUtil.instance.getStorage('workShopId');
     try {
       // 异常列表
       var res = await Sterilize.sterilizeExceptionDetailListApi({
@@ -46,7 +46,7 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
         "orderId": widget.arguments['potDetail']['orderId'],
         "orderNo": widget.arguments['potDetail']['orderNo'],
         "exceptionStage": widget.arguments['typeCode'],
-        "workShop": workShop
+        "workShop": workShopId
       });
       this.exceptionList = res['data'];
       // 文本列表

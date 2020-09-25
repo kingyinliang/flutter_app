@@ -27,8 +27,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   _initState() async {
-    factoryName = await getStorage('factory');
-    workShopName = await getStorage('workShop');
+    factoryName = await SharedUtil.instance.getStorage('factory');
+    workShopName = await SharedUtil.instance.getStorage('workShop');
     try {
       var res = await Common.getMenuApi();
       menuList = res['data']['menuList'];

@@ -349,10 +349,19 @@ class _PotListWidgetState extends State<PotListWidget>
             padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
             itemCount: widget.data.length,
             itemBuilder: (context, index) {
+              bool submitButtonFlag = true;
+              if (!(widget.data[index]['checkStatus'] == 'N' ||
+                  widget.data[index]['checkStatus'] == 'R' ||
+                  widget.data[index]['checkStatus'] == 'S' ||
+                  widget.data[index]['checkStatus'] == 'T' ||
+                  widget.data[index]['checkStatus'] == '')) {
+                submitButtonFlag = false;
+              }
               return SlideButton(
                 index: index,
                 singleButtonWidth: 70,
                 child: ItemCard(
+                  submitButtonFlag: submitButtonFlag,
                   carTitle: '煮料锅领用数量',
                   cardMap: widget.data[index],
                   title: 'consumeAmount',
@@ -665,10 +674,19 @@ class _MaterialAddTabState extends State<MaterialAddTab>
             padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
             itemCount: widget.data.length,
             itemBuilder: (context, index) {
+              bool submitButtonFlag = true;
+              if (!(widget.data[index]['checkStatus'] == 'N' ||
+                  widget.data[index]['checkStatus'] == 'R' ||
+                  widget.data[index]['checkStatus'] == 'S' ||
+                  widget.data[index]['checkStatus'] == 'T' ||
+                  widget.data[index]['checkStatus'] == '')) {
+                submitButtonFlag = false;
+              }
               return SlideButton(
                 index: index,
                 singleButtonWidth: 70,
                 child: ItemCard(
+                  submitButtonFlag: submitButtonFlag,
                   carTitle: '增补料领用数量',
                   cardMap: widget.data[index],
                   title: 'useAmount',

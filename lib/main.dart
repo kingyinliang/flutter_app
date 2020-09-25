@@ -1,22 +1,43 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'router/index.dart';
+import 'package:dfmdsapp/config/config_init.dart';
 
 class Router {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 }
 
-void main() {
+void main() async {
+  // 初始化
+  await ConfigInt.flutterDownloaderInit();
+  await ConfigInt.sharedPreferencesInit();
+
   runApp(MyApp());
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-  ));
+
+// 透明状态栏
+  if (Platform.isAndroid) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
+  }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  MyApp({Key key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlutterEasyLoading(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
@@ -59,6 +60,10 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
       EasyLoading.showError('请填写领用批次');
       return;
     }
+    if (formMap['consumeBatch'].length != 10) {
+      EasyLoading.showError('领用批次10位');
+      return;
+    }
     if (formMap['id'] != null) {
       try {
         await Sterilize.semiUpdateApi(formMap);
@@ -73,7 +78,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
   }
 
   _getPotList() async {
-    var factoryId = await getStorage('factoryId');
+    var factoryId = await SharedUtil.instance.getStorage('factoryId');
     try {
       var res = await Common.holderDropDownQuery(
           {'factory': factoryId, 'holderType': '001'});
@@ -94,7 +99,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
   }
 
   _getTransferTank() async {
-    var workShop = await getStorage('workShopId');
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Common.holderDropDownQuery(
           {'deptId': workShop, 'holderType': '022'});
@@ -166,6 +171,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
           InputWidget(
             label: '领用批次',
             prop: formMap['consumeBatch'].toString(),
+            inputFormatters: [LengthLimitingTextInputFormatter(10)],
             requiredFlg: true,
             onChange: (val) {
               formMap['consumeBatch'] = val;

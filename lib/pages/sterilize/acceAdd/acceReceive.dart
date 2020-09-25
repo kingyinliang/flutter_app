@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
@@ -36,6 +37,10 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
     }
     if (formMap['useBatch'] == null || formMap['useBatch'] == '') {
       EasyLoading.showError('请填写领用批次');
+      return;
+    }
+    if (formMap['useBatch'].length != 10) {
+      EasyLoading.showError('领用批次10位');
       return;
     }
     if (formMap['addDate'] == null || formMap['addDate'] == '') {
@@ -75,7 +80,7 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
   }
 
   _getUseBoxNo() async {
-    var workShop = await getStorage('workShopId');
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Common.holderDropDownQuery(
           {'deptId': workShop, 'holderType': '023'});
@@ -110,6 +115,7 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
           ),
           InputWidget(
             label: '领用批次',
+            inputFormatters: [LengthLimitingTextInputFormatter(10)],
             prop: formMap['useBatch'].toString(),
             requiredFlg: true,
             onChange: (val) {
