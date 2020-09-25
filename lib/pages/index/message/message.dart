@@ -15,7 +15,8 @@ class MessagePage extends StatefulWidget {
   _MessagePageState createState() => _MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
+class _MessagePageState extends State<MessagePage>
+    with AutomaticKeepAliveClientMixin {
   List messageOne = [];
   List messageTwo = [];
   var eventListen;
@@ -64,6 +65,9 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     eventListen = EventBusUtil.getInstance().on<MsgEvent>().listen((data) {
       setState(() {
@@ -88,6 +92,7 @@ class _MessagePageState extends State<MessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(

@@ -14,9 +14,13 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _UserPageState extends State<UserPage>
+    with AutomaticKeepAliveClientMixin {
   Map userData = {'sex': 'M', 'realName': ''};
   String deptName;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -50,6 +54,7 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       body: MediaQuery.removePadding(

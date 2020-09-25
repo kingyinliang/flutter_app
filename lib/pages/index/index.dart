@@ -24,7 +24,7 @@ class _IndexPageState extends State<IndexPage> {
   ];
 
   _initState() async {
-    if (widget.arguments['page'] != null) {
+    if (widget.arguments != null) {
       setState(() {
         _currentIndex = widget.arguments['page'];
       });
