@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
+import 'package:dfmdsapp/utils/picker.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter_dong_scan/scan.dart';
 
@@ -57,6 +58,156 @@ class _BarCodePageState extends State<BarCodePage> {
     } catch (e) {}
   }
 
+  _selectPot() {
+    PickerTool.showOneRow(
+      context,
+      selectVal: '',
+      data: potList,
+      label: 'holderName',
+      value: 'holderNo',
+      clickCallBack: (val) {
+        _goList(val);
+      },
+    );
+  }
+
+  _goList(val) {
+    String urlString = '/sterilize/list';
+    if (widget.arguments['blockType'] == 'exception') {
+      urlString = widget.arguments['url'];
+    }
+    var arguments = {
+      'pot': val['holderNo'],
+      'potName': val['holderName'],
+      'url': widget.arguments['url'],
+      'title': widget.arguments['title'],
+      'workingType': widget.arguments['workingType'],
+      'typeParameters': widget.arguments['typeParameters'],
+    };
+    Future.delayed(
+      Duration(milliseconds: 1),
+      () => setState(() {
+        Navigator.of(context).pushNamed(
+          urlString,
+          arguments: arguments,
+        );
+      }),
+    );
+  }
+
+  // Widget _body() {
+  //   return Container(
+  //     child: ListView(
+  //       children: <Widget>[
+  //         InkWell(
+  //           onTap: _barcode,
+  //           child: Container(
+  //             alignment: Alignment.center,
+  //             width: 100,
+  //             height: 50,
+  //             color: Colors.blue,
+  //             child: Text('扫一扫'),
+  //           ),
+  //         ),
+  //         SizedBox(height: 10),
+  //         Text(string1.toString()),
+  //         SizedBox(height: 10),
+  //         InkWell(
+  //           onTap: _dongscan,
+  //           child: Container(
+  //             alignment: Alignment.center,
+  //             width: 100,
+  //             height: 50,
+  //             color: Colors.blue,
+  //             child: Text('扫一扫'),
+  //           ),
+  //         ),
+  //         SizedBox(height: 10),
+  //         Text(string2.toString()),
+  //         SizedBox(height: 10),
+  //         Column(
+  //           children: potList.asMap().keys.map((index) {
+  //             return InkWell(
+  //               onTap: () {
+  //                 String urlString = '/sterilize/list';
+  //                 if (widget.arguments['blockType'] == 'exception') {
+  //                   urlString = widget.arguments['url'];
+  //                 }
+  //                 Navigator.pushNamed(
+  //                   context,
+  //                   urlString,
+  //                   arguments: {
+  //                     'pot': potList[index]['holderNo'],
+  //                     'potName': potList[index]['holderName'],
+  //                     'url': widget.arguments['url'],
+  //                     'title': widget.arguments['title'],
+  //                     'workingType': widget.arguments['workingType'],
+  //                     'typeParameters': widget.arguments['typeParameters'],
+  //                   },
+  //                 );
+  //               },
+  //               child: Container(
+  //                 padding: EdgeInsets.all(10),
+  //                 child: Center(
+  //                   child: Text(potList[index]['holderName']),
+  //                 ),
+  //               ),
+  //             );
+  //           }).toList(),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget body() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text(string1 ?? ''),
+        Text(string2 ?? ''),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 70,
+              height: 70,
+              child: RawMaterialButton(
+                shape: CircleBorder(),
+                splashColor: Colors.amber[100],
+                fillColor: Color(0xFF1677FF),
+                child: Icon(
+                  IconData(0xe6ca, fontFamily: 'MdsIcon'),
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: _dongscan,
+              ),
+            ),
+            SizedBox(width: 50),
+            Container(
+              width: 70,
+              height: 70,
+              child: RawMaterialButton(
+                shape: CircleBorder(),
+                splashColor: Colors.amber[100],
+                fillColor: Color(0xFF1677FF),
+                child: Icon(
+                  IconData(0xe632, fontFamily: 'MdsIcon'),
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: _selectPot,
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   void initState() {
     Future.delayed(
@@ -73,68 +224,7 @@ class _BarCodePageState extends State<BarCodePage> {
     return Scaffold(
       appBar: MdsAppBarWidget(titleData: '二维码'),
       backgroundColor: Color(0xFFF5F5F5),
-      body: Container(
-        child: ListView(
-          children: <Widget>[
-            InkWell(
-              onTap: _barcode,
-              child: Container(
-                alignment: Alignment.center,
-                width: 100,
-                height: 50,
-                color: Colors.blue,
-                child: Text('扫一扫'),
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(string1.toString()),
-            SizedBox(height: 10),
-            InkWell(
-              onTap: _dongscan,
-              child: Container(
-                alignment: Alignment.center,
-                width: 100,
-                height: 50,
-                color: Colors.blue,
-                child: Text('扫一扫'),
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(string2.toString()),
-            SizedBox(height: 10),
-            Column(
-              children: potList.asMap().keys.map((index) {
-                return InkWell(
-                  onTap: () {
-                    String urlString = '/sterilize/list';
-                    if (widget.arguments['blockType'] == 'exception') {
-                      urlString = widget.arguments['url'];
-                    }
-                    Navigator.pushNamed(
-                      context,
-                      urlString,
-                      arguments: {
-                        'pot': potList[index]['holderNo'],
-                        'potName': potList[index]['holderName'],
-                        'url': widget.arguments['url'],
-                        'title': widget.arguments['title'],
-                        'workingType': widget.arguments['workingType'],
-                        'typeParameters': widget.arguments['typeParameters'],
-                      },
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Center(
-                      child: Text(potList[index]['holderName']),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-      ),
+      body: body(),
     );
   }
 }
