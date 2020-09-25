@@ -16,12 +16,13 @@ class ExceptionAdd extends StatefulWidget {
 }
 
 class _ExceptionAddState extends State<ExceptionAdd> {
-  Map<String, dynamic> formMap = {
+  Map formMap = {
     'classes': '',
     'exceptionSituation': '',
     'startDate': '',
     'endDate': '',
-    'duration': 0,
+    'duration': '0',
+    'durationString': '0分钟',
     'durationUnit': 'MIN',
     'exceptionReason': '',
     'exceptionInfo': '',
@@ -42,6 +43,7 @@ class _ExceptionAddState extends State<ExceptionAdd> {
       if (formMap['endDate'] == null) {
         formMap['endDate'] = '';
       }
+      formMap['durationString'] = '${formMap['duration']}分钟';
       if (formMap['exceptionSituation'] != null && formMap['exceptionSituation'] != '') {
         this._getAbnormalReason(formMap['exceptionSituation']);
       }
@@ -94,6 +96,7 @@ class _ExceptionAddState extends State<ExceptionAdd> {
             requiredFlg: true,
             onChange: (val) {
               formMap['startDate'] = val;
+              this._getDuration();
               setState(() {});
             },
           ),
@@ -103,6 +106,16 @@ class _ExceptionAddState extends State<ExceptionAdd> {
             requiredFlg: true,
             onChange: (val) {
               formMap['endDate'] = val;
+              this._getDuration();
+              setState(() {});
+            },
+          ),
+          InputWidget(
+            label: '时长',
+            prop: formMap['durationString'].toString(),
+            enabled: false,
+            onChange: (val) {
+              formMap['durationString'] = val;
               setState(() {});
             },
           ),
@@ -180,6 +193,31 @@ class _ExceptionAddState extends State<ExceptionAdd> {
     } catch (e) {}
   }
 
+  // 获取时长
+  _getDuration() {
+    if(formMap['startDate'] != '' && formMap['endDate'] != '') {
+      int nowyear = int.parse(formMap['startDate'].split(" ")[0].split('-')[0]);
+      int nowmonth = int.parse(formMap['startDate'].split(" ")[0].split('-')[1]);
+      int nowday = int.parse(formMap['startDate'].split(" ")[0].split('-')[2]);
+      int nowhour = int.parse(formMap['startDate'].split(" ")[1].split(':')[0]);
+      int nowmin = int.parse(formMap['startDate'].split(" ")[1].split(':')[1]);
+
+      int oldyear = int.parse(formMap['endDate'].split(" ")[0].split('-')[0]);
+      int oldmonth = int.parse(formMap['endDate'].split(" ")[0].split('-')[1]);
+      int oldday = int.parse(formMap['endDate'].split(" ")[0].split('-')[2]);
+      int oldhour = int.parse(formMap['endDate'].split(" ")[1].split(':')[0]);
+      int oldmin = int.parse(formMap['endDate'].split(" ")[1].split(':')[1]);
+
+      var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
+      var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
+      var difference = old.difference(now);
+
+      formMap['duration'] = difference.inMinutes; // 时间差
+      formMap['durationString'] = '${difference.inMinutes}分钟'; // 时间差
+
+    }
+  }
+
   _submitForm() async {
     if (formMap['classes'] == null || formMap['classes'] == '') {
       EasyLoading.showError('请选择班次');
@@ -203,23 +241,6 @@ class _ExceptionAddState extends State<ExceptionAdd> {
       return;
     }
 
-    int nowyear = int.parse(formMap['startDate'].split(" ")[0].split('-')[0]);
-    int nowmonth = int.parse(formMap['startDate'].split(" ")[0].split('-')[1]);
-    int nowday = int.parse(formMap['startDate'].split(" ")[0].split('-')[2]);
-    int nowhour = int.parse(formMap['startDate'].split(" ")[1].split(':')[0]);
-    int nowmin = int.parse(formMap['startDate'].split(" ")[1].split(':')[1]);
-
-    int oldyear = int.parse(formMap['endDate'].split(" ")[0].split('-')[0]);
-    int oldmonth = int.parse(formMap['endDate'].split(" ")[0].split('-')[1]);
-    int oldday = int.parse(formMap['endDate'].split(" ")[0].split('-')[2]);
-    int oldhour = int.parse(formMap['endDate'].split(" ")[1].split(':')[0]);
-    int oldmin = int.parse(formMap['endDate'].split(" ")[1].split(':')[1]);
-
-    var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
-    var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
-    var difference = old.difference(now);
-
-    formMap['duration'] = difference.inMinutes; // 时间差
     formMap['exceptionStage'] = widget.arguments['typeCode'];
     formMap['changed'] = new DateTime.now().toString().split('.')[0].replaceAll('-', '-');
     if (formMap['id'] != null) {

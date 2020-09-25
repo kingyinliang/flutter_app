@@ -9,6 +9,7 @@ import '../common/exception_card.dart';
 import '../common/remove_btn.dart';
 import 'package:dfmdsapp/utils/toast.dart';
 import '../common/text_card.dart';
+import 'package:dfmdsapp/utils/storage.dart';
 
 class CraftExceptionList extends StatefulWidget {
   final arguments;
@@ -36,6 +37,7 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
   }
 
   _initState() async {
+    var workShop = await getStorage('workShopId');
     try {
       // 异常列表
       var res = await Sterilize.sterilizeExceptionDetailListApi({
@@ -44,6 +46,7 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
         "orderId": widget.arguments['potDetail']['orderId'],
         "orderNo": widget.arguments['potDetail']['orderNo'],
         "exceptionStage": widget.arguments['typeCode'],
+        "workShop": workShop
       });
       this.exceptionList = res['data'];
       // 文本列表
@@ -85,6 +88,7 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
     try {
       await Sterilize.sterilizeExceptionDetailDeleteApi([this.exceptionList[index]['id']]);
       successToast(msg: '操作成功');
+      this.exceptionList.removeAt(index);
       setState(() {});
     } catch (e) {}
   }
@@ -101,7 +105,7 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
           children: <Widget>[
             SizedBox(height: 5),
             PageHead(
-              title: '110#锅 第${widget.arguments['potDetail']['potOrder']}锅',
+              title: '${widget.arguments['potDetail']['potName']} 第${widget.arguments['potDetail']['potOrder']}锅',
               subTitle: '${widget.arguments['potDetail']['materialName']}',
               orderNo: '${widget.arguments['potDetail']['orderNo']}',
               potNo: '${widget.arguments['potDetail']['potNo']}',
@@ -205,9 +209,9 @@ class DateListWidget extends StatefulWidget {
 class _DateListWidgetState extends State<DateListWidget>
 with AutomaticKeepAliveClientMixin {
   List wrapList = [
-    {'label': '班次：', 'value': 'classes'},
-    {'label': '异常情况：', 'value': 'exceptionSituation'},
-    {'label': '异常原因：', 'value': 'exceptionReason'},
+    {'label': '班次：', 'value': 'classesName'},
+    {'label': '异常情况：', 'value': 'exceptionSituationName'},
+    {'label': '异常原因：', 'value': 'exceptionReasonName'},
     {'label': '异常描述：', 'value': 'exceptionInfo'},
     {'label': '备注：', 'value': 'remark'},
     {'label': '', 'value': 'changer'},

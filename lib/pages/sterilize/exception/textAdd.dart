@@ -79,7 +79,7 @@ class _ExceptionTextAddState extends State<ExceptionTextAdd> {
               this.setState(() {
                 formMap['text'] = val;
               });
-            }
+            },
            ),
         ]
       ),

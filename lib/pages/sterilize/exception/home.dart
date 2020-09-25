@@ -101,6 +101,9 @@ class _HeadSearchWidgetState extends State<HeadSearchWidget> {
             hintText: '锅序号',
             fillColor: Color(0xFF999999),
           ),
+          onSubmitted: (val) {
+            print(val);
+          }
         ),
       ),
     );

@@ -158,7 +158,7 @@ class _CraftMaterialListState extends State<CraftMaterialList> {
           children: <Widget>[
             SizedBox(height: 5),
             PageHead(
-              title: '110#锅 第${widget.arguments['potNum']['potOrder']}锅',
+              title: '${widget.arguments['potNum']['potName']} 第${widget.arguments['potNum']['potOrder']}锅',
               subTitle: '${widget.arguments['potNum']['materialName']}',
               orderNo: '${widget.arguments['potNum']['orderNo']}',
               potNo: '${widget.arguments['potNum']['potNo']}',

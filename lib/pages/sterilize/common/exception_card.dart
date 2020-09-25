@@ -96,20 +96,31 @@ class _ExceptionItemCardState extends State<ExceptionItemCard> {
                 children: <Widget>[
                   Text('开始时间'),
                   Expanded(
-                    child: Text(''),
+                    child: Text('${widget.cardMap['duration']}分钟', textAlign: TextAlign.center),
                   ),
                   Text('结束时间')
                 ],
               ),
-              SizedBox(height: 6),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Text(widget.cardMap[widget.startTime] == null ? '' : widget.cardMap[widget.startTime], style: TextStyle(fontSize: 16)),
                   Expanded(
                     child: Text(''),
                   ),
-                  Text(widget.cardMap[widget.endTime] == null ? '' : widget.cardMap[widget.endTime], style: TextStyle(fontSize: 16))
+                  Text('------------->'),
+                  Expanded(
+                    child: Text(''),
+                  ),
+                ],
+              ),
+              SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(widget.cardMap[widget.startTime] == null ? '' : widget.cardMap[widget.startTime], style: TextStyle(fontSize: 18)),
+                  Expanded(
+                    child: Text(''),
+                  ),
+                  Text(widget.cardMap[widget.endTime] == null ? '' : widget.cardMap[widget.endTime], style: TextStyle(fontSize: 18))
                 ],
               ),
               SizedBox(height: 14),

@@ -4,6 +4,7 @@ import 'form_item.dart';
 class InputWidget extends StatefulWidget {
   final String label;
   final String prop;
+  final bool enabled;
   final bool requiredFlg;
   final Function onChange;
 
@@ -11,6 +12,7 @@ class InputWidget extends StatefulWidget {
       {Key key,
       @required this.label,
       @required this.prop,
+      this.enabled = true,
       @required this.onChange,
       this.requiredFlg = false})
       : super(key: key);
@@ -37,6 +39,7 @@ class _InputWidgetState extends State<InputWidget> {
   Widget build(BuildContext context) {
     return FormItem(
       child: TextField(
+        enabled: widget.enabled,
         controller: TextEditingController.fromValue(
           TextEditingValue(
             text: inputVal.text,
