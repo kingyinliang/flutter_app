@@ -250,7 +250,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: MdsAppBarWidget(titleData: '辅料添加'),
+        appBar: MdsAppBarWidget(titleData: '辅料添加', refresh: true),
         backgroundColor: Color(0xFFF5F5F5),
         body: SliverTabBarWidget(
           tabChange: setFloatingActionButtonFlag,
@@ -434,12 +434,18 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
         ? ListView.builder(
             itemCount: widget.data.length,
             itemBuilder: (context, index) {
+              bool submitButtonFlag = true;
+              if (!widget.data[index]['checkStatus']) {
+                submitButtonFlag = false;
+              }
+
               List<Widget> childList = [
                 Container(
                   color: Colors.white,
                   padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
                   child: ColumnItem(
                     addFlag: true,
+                    btnFlag: submitButtonFlag,
                     startText: widget.data[index]['useMaterialCode'],
                     endText: widget.data[index]['useMaterialName'],
                     onTap: () {
@@ -465,12 +471,26 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                 ),
               ];
               widget.data[index]['child'].asMap().keys.forEach((childIndex) {
+                bool childSubmitButtonFlag = true;
+                if (!(widget.data[index]['child'][childIndex]['checkStatus'] ==
+                        'N' ||
+                    widget.data[index]['child'][childIndex]['checkStatus'] ==
+                        'R' ||
+                    widget.data[index]['child'][childIndex]['checkStatus'] ==
+                        'S' ||
+                    widget.data[index]['child'][childIndex]['checkStatus'] ==
+                        'T' ||
+                    widget.data[index]['child'][childIndex]['checkStatus'] ==
+                        '')) {
+                  childSubmitButtonFlag = false;
+                }
                 childList.add(Container(
                   color: Colors.white,
                   padding: EdgeInsets.fromLTRB(24, 0, 0, 0),
                   child: SlideButton(
                       index: index,
                       child: ColumnItem(
+                        btnFlag: childSubmitButtonFlag,
                         startText: widget.data[index]['child'][childIndex]
                                     ['useAmount']
                                 .toString() +
@@ -570,6 +590,7 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
 // 辅料单item
 class ColumnItem extends StatefulWidget {
   final bool addFlag;
+  final bool btnFlag;
   final String startText;
   final String centerText;
   final String endText;
@@ -577,6 +598,7 @@ class ColumnItem extends StatefulWidget {
   ColumnItem(
       {Key key,
       this.addFlag = false,
+      this.btnFlag = true,
       this.startText = '',
       this.centerText = '',
       this.endText = '',
@@ -618,23 +640,25 @@ class _ColumnItemState extends State<ColumnItem> {
             ),
           ),
           SizedBox(width: 10),
-          widget.addFlag == true
-              ? InkWell(
-                  child: Icon(
-                    IconData(0xe69e, fontFamily: 'MdsIcon'),
-                    size: 20,
-                    color: Color(0xFF487BFF),
-                  ),
-                  onTap: widget.onTap,
-                )
-              : InkWell(
-                  child: Icon(
-                    IconData(0xe62c, fontFamily: 'MdsIcon'),
-                    size: 15,
-                    color: Color(0xFF487BFF),
-                  ),
-                  onTap: widget.onTap,
-                )
+          widget.btnFlag
+              ? widget.addFlag == true
+                  ? InkWell(
+                      child: Icon(
+                        IconData(0xe69e, fontFamily: 'MdsIcon'),
+                        size: 20,
+                        color: Color(0xFF487BFF),
+                      ),
+                      onTap: widget.onTap,
+                    )
+                  : InkWell(
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 15,
+                        color: Color(0xFF487BFF),
+                      ),
+                      onTap: widget.onTap,
+                    )
+              : SizedBox(),
         ],
       ),
     );

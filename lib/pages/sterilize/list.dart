@@ -234,7 +234,7 @@ class _ListItemWidgetState extends State<ListItemWidget>
                 'pot': widget.pot,
                 'potName': widget.potName,
                 'potNum': listviewList[index],
-              });
+              }).then((value) => value != null ? _initState() : null);
             },
           ),
         );

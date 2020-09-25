@@ -24,7 +24,7 @@ import 'package:dfmdsapp/pages/sterilize/semiReceive/add.dart';
 Map<String, Function> routers = {
   '/noNet': (contxt, {arguments}) => NoNetPage(),
   '/login': (contxt, {arguments}) => LoginPage(),
-  '/home': (contxt, {arguments}) => IndexPage(),
+  '/home': (contxt, {arguments}) => IndexPage(arguments: arguments),
   '/user/userinfo': (contxt, {arguments}) => UserInfoPage(arguments: arguments),
   '/user/versions': (contxt, {arguments}) => VersionsPage(arguments: arguments),
   '/user/updatepasword': (contxt, {arguments}) =>

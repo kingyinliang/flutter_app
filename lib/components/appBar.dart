@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MdsAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  MdsAppBarWidget({Key key, this.titleData, this.callBack}) : super(key: key);
+  MdsAppBarWidget(
+      {Key key, this.titleData, this.callBack, this.refresh = false})
+      : super(key: key);
   final String titleData;
   final callBack;
+  final bool refresh;
 
   @override
   _MdsAppBarWidgetState createState() => _MdsAppBarWidgetState();
@@ -27,8 +30,11 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
         color: Colors.blue,
         tooltip: 'Back',
         onPressed: () {
-          print('Back');
-          Navigator.pop(context);
+          if (widget.refresh) {
+            Navigator.pop(context, true);
+          } else {
+            Navigator.pop(context);
+          }
         },
       ),
       title: Text(

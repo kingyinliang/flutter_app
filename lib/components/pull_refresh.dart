@@ -103,7 +103,11 @@ class _PullRefreshState extends State<PullRefresh> {
         itemCount: widget.data.length + 1,
         itemBuilder: (BuildContext context, int index) {
           if (index == widget.data.length) {
-            return _loadingView();
+            if (widget.data.length > 9) {
+              return _loadingView();
+            } else {
+              return SizedBox();
+            }
           } else {
             return widget.itemBuilder(context, index);
           }

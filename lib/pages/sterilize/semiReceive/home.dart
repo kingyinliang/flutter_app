@@ -300,7 +300,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: '半成品领用'),
+      appBar: MdsAppBarWidget(titleData: '半成品领用', refresh: true),
       backgroundColor: Color(0xFFF5F5F5),
       body: Stack(children: _getPage()),
     );

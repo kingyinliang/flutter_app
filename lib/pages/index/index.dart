@@ -7,7 +7,8 @@ import 'package:dfmdsapp/api/http/socket.dart';
 import 'package:dfmdsapp/config/config_init.dart';
 
 class IndexPage extends StatefulWidget {
-  IndexPage({Key key}) : super(key: key);
+  final arguments;
+  IndexPage({Key key, this.arguments}) : super(key: key);
 
   @override
   _IndexPageState createState() => _IndexPageState();
@@ -23,6 +24,11 @@ class _IndexPageState extends State<IndexPage> {
   ];
 
   _initState() async {
+    if (widget.arguments['page'] != null) {
+      setState(() {
+        _currentIndex = widget.arguments['page'];
+      });
+    }
     if (ConfigInt.connect == null) {
       await ConfigInt.connectivityInit();
     }
