@@ -200,6 +200,7 @@ with AutomaticKeepAliveClientMixin {
                 'potName': widget.potName,
                 'potDetail': listviewList[index],
                 'barTitle': widget.barTitle,
+				        'typeCode': widget.typeParameters,
               });
             },
           ),

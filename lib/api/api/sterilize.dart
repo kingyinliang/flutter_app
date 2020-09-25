@@ -160,8 +160,28 @@ class Sterilize {
   static sterilizeExceptionDetailListApi(params) {
     return HttpManager.getInstance().post('/ste/steException/query', params: params);
   }
+  // list异常添加
+  static sterilizeExceptionDetailInsertApi(params) {
+    return HttpManager.getInstance().post('/ste/steException/insert', params: params);
+  }
+  // list异常修改
+  static sterilizeExceptionDetailUpdateApi(params) {
+    return HttpManager.getInstance().post('/ste/steException/update', params: params);
+  }
+  // list异常删除
+  static sterilizeExceptionDetailDeleteApi(params) {
+    return HttpManager.getInstance().post('/ste/steException/delete', params: params);
+  }
   // list文本查询
   static sterilizeExceptionDetailTextApi(params) {
     return HttpManager.getInstance().post('/ste/steText/query', params: params);
+  }
+  // list文本添加
+  static sterilizeExceptionDetailTextInsertApi(params) {
+    return HttpManager.getInstance().post('/ste/steText/insert', params: params);
+  }
+  // list文本修改
+  static sterilizeExceptionDetailTextUpdateApi(params) {
+    return HttpManager.getInstance().post('/ste/steText/update', params: params);
   }
 }

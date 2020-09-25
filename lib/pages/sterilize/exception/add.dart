@@ -5,6 +5,7 @@ import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
 import 'package:dfmdsapp/components/form.dart';
 import 'package:dfmdsapp/api/api/index.dart';
+import 'package:dfmdsapp/utils/storage.dart';
 
 class ExceptionAdd extends StatefulWidget {
   final arguments;
@@ -16,56 +17,43 @@ class ExceptionAdd extends StatefulWidget {
 
 class _ExceptionAddState extends State<ExceptionAdd> {
   Map<String, dynamic> formMap = {
-    'feedStartDate': '',
-    'feeEndDate': '',
-    'riseStartDate': '',
-    'riseEndDate': '',
-    'keepZkFlag': '',
-    'coolZkFlag': '',
+    'classes': '',
+    'exceptionSituation': '',
+    'startDate': '',
+    'endDate': '',
+    'duration': 0,
+    'durationUnit': 'MIN',
+    'exceptionReason': '',
+    'exceptionInfo': '',
     'remark': '',
+    'exceptionStage': ''
   };
+  List classList = [];
+  List abnormalList = [];
+  List reasonResList = [];
 
-  List StageList = [
-    {
-      'label': '是',
-      'val': 'Y',
-    },
-    {
-      'label': '否',
-      'val': 'N',
+  @override
+  void initState() {
+    if (widget.arguments['data'] != null) {
+      formMap = jsonDecode(jsonEncode(widget.arguments['data']));
+      if (formMap['startDate'] == null) {
+        formMap['startDate'] = '';
+      }
+      if (formMap['endDate'] == null) {
+        formMap['endDate'] = '';
+      }
+      if (formMap['exceptionSituation'] != null && formMap['exceptionSituation'] != '') {
+        this._getAbnormalReason(formMap['exceptionSituation']);
+      }
     }
-  ];
-
-  _submitForm() async {
-    if (formMap['feedStartDate'] == null || formMap['feedStartDate'] == '') {
-      EasyLoading.showError('请选择入料开始时间');
-      return;
-    }
-    if (formMap['feeEndDate'] == null || formMap['feeEndDate'] == '') {
-      EasyLoading.showError('请选择入料结束时间');
-      return;
-    }
-    if (formMap['riseStartDate'] == null || formMap['riseStartDate'] == '') {
-      EasyLoading.showError('请选择升温开始时间');
-      return;
-    }
-    if (formMap['riseEndDate'] == null || formMap['riseEndDate'] == '') {
-      EasyLoading.showError('请选择升温结束时间');
-      return;
-    }
-    if (formMap['id'] != null) {
-      try {
-        await Sterilize.sterilizeCraftMaterialUpdateApi(formMap);
-        Navigator.pop(context, true);
-      } catch (e) {}
-    } else {
-      try {
-        formMap['potOrderNo'] = widget.arguments['potOrderNo'];
-        formMap['potOrderId'] = widget.arguments['potOrderId'];
-        await Sterilize.sterilizeCraftMaterialInsertApi(formMap);
-        Navigator.pop(context, true);
-      } catch (e) {}
-    }
+    Future.delayed(
+      Duration.zero,
+          () => setState(() {
+        _getClassList();
+        _getAbnormalList();
+      }),
+    );
+    super.initState();
   }
 
   Widget formWidget() {
@@ -77,51 +65,64 @@ class _ExceptionAddState extends State<ExceptionAdd> {
         children: <Widget>[
           SelectWidget(
             label: '班次',
-            prop: formMap['keepZkFlag'].toString(),
+            prop: formMap['classes'].toString(),
             requiredFlg: true,
-            options: StageList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            options: classList,
+            optionsLabel: 'dictValue',
+            optionsval: 'dictCode',
             onChange: (val) {
-              formMap['keepZkFlag'] = val['val'];
+              formMap['classes'] = val['dictCode'];
               setState(() {});
             },
           ),
           SelectWidget(
             label: '异常情况',
-            prop: formMap['keepZkFlag'].toString(),
+            prop: formMap['exceptionSituation'].toString(),
             requiredFlg: true,
-            options: StageList,
-            optionsLabel: 'label',
-            optionsval: 'val',
+            options: abnormalList,
+            optionsLabel: 'dictValue',
+            optionsval: 'dictCode',
             onChange: (val) {
-              formMap['keepZkFlag'] = val['val'];
+              formMap['exceptionSituation'] = val['dictCode'];
+              this._getAbnormalReason(val['dictCode']);
               setState(() {});
             },
           ),
           DataPickerWidget(
             label: '开始时间',
-            prop: formMap['feedStartDate'].toString(),
+            prop: formMap['startDate'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['feedStartDate'] = val;
+              formMap['startDate'] = val;
               setState(() {});
             },
           ),
           DataPickerWidget(
             label: '结束时间',
-            prop: formMap['feeEndDate'].toString(),
+            prop: formMap['endDate'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['feeEndDate'] = val;
+              formMap['endDate'] = val;
+              setState(() {});
+            },
+          ),
+          SelectWidget(
+            label: '异常原因',
+            prop: formMap['exceptionReason'].toString(),
+            requiredFlg: true,
+            options: this.reasonResList,
+            optionsLabel: 'dictValue',
+            optionsval: 'dictCode',
+            onChange: (val) {
+              formMap['exceptionReason'] = val['dictCode'];
               setState(() {});
             },
           ),
           InputWidget(
               label: '异常描述',
-              prop: formMap['remark'].toString(),
+              prop: formMap['exceptionInfo'].toString(),
               onChange: (val) {
-                formMap['remark'] = val;
+                formMap['exceptionInfo'] = val;
                 setState(() {});
               }
           ),
@@ -132,62 +133,117 @@ class _ExceptionAddState extends State<ExceptionAdd> {
                 formMap['remark'] = val;
                 setState(() {});
               }
-          ),
-          SelectWidget(
-            label: '降温阶段-ZK',
-            prop: formMap['coolZkFlag'].toString(),
-            requiredFlg: true,
-            options: StageList,
-            optionsLabel: 'label',
-            optionsval: 'val',
-            onChange: (val) {
-              formMap['coolZkFlag'] = val['val'];
-              setState(() {});
-            },
-          ),
+          )
         ],
       ),
     );
   }
 
-  _initState() async {
+  // 班次下拉
+  _getClassList() async {
     try {
-      var res = await Common.getClassListQuery({});
-      print(res);
+      var res = await Common.classListQuery({'dictType': 'CRAFT_PHASE'});
+      this.classList = res['data'];
+      setState(() {});
     } catch (e) {}
   }
 
-  @override
-  void initState() {
-    if (widget.arguments['data'] != null) {
-      formMap = jsonDecode(jsonEncode(widget.arguments['data']));
-      if (formMap['feedStartDate'] == null) {
-        formMap['feedStartDate'] = '';
+  // 异常情况
+  _getAbnormalList() async {
+    try {
+      var abnormalRes = await Common.dictDropDownQuery({ 'dictType': 'ABNORMAL_HALT' });
+      this.abnormalList = abnormalRes['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  // 异常原因
+  _getAbnormalReason(val) async {
+    var workShop = await getStorage('workShopId');
+    try {
+      if (val == 'FAULT' || val == 'SHUTDOWN') {
+        var reasonRes = await Common.deviceListQuery({'deptId': workShop});
+        reasonRes['data'].forEach((item) => {
+          this.reasonResList.add({
+            'dictValue': item['deviceName'],
+            'dictCode': item['deviceNo']
+          })
+        });
+      } else if (val == 'POOR_PROCESS' || val == 'WAIT') {
+        var reasonRes = await Common.dictDropDownQuery({'dictType': 'POOR_PROCESS_WAIT'});
+        this.reasonResList = reasonRes['data'];
+      } else if (val == 'ENERGY') {
+        var reasonRes = await Common.dictDropDownQuery({'dictType': 'ENERGY'});
+        this.reasonResList = reasonRes['data'];
       }
-      if (formMap['feeEndDate'] == null) {
-        formMap['feeEndDate'] = '';
-      }
-      if (formMap['riseStartDate'] == null) {
-        formMap['riseStartDate'] = '';
-      }
-      if (formMap['riseEndDate'] == null) {
-        formMap['riseEndDate'] = '';
-      }
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submitForm() async {
+    if (formMap['classes'] == null || formMap['classes'] == '') {
+      EasyLoading.showError('请选择班次');
+      return;
     }
-    Future.delayed(
-      Duration.zero,
-        () => setState(() {
-          _initState();
-        }),
-    );
-    super.initState();
+    if (formMap['exceptionSituation'] == null || formMap['exceptionSituation'] == '') {
+      EasyLoading.showError('请选择异常情况');
+      return;
+    }
+    if (formMap['startDate'] == null || formMap['startDate'] == '') {
+      EasyLoading.showError('请选择开始时间');
+      return;
+    }
+    if (formMap['endDate'] == null || formMap['endDate'] == '') {
+      EasyLoading.showError('请选择结束时间');
+      return;
+    }
+
+    if (formMap['exceptionSituation'] != 'AB_OTHERS' && formMap['exceptionReason'] == '') {
+      EasyLoading.showError('请选择异常原因');
+      return;
+    }
+
+    int nowyear = int.parse(formMap['startDate'].split(" ")[0].split('-')[0]);
+    int nowmonth = int.parse(formMap['startDate'].split(" ")[0].split('-')[1]);
+    int nowday = int.parse(formMap['startDate'].split(" ")[0].split('-')[2]);
+    int nowhour = int.parse(formMap['startDate'].split(" ")[1].split(':')[0]);
+    int nowmin = int.parse(formMap['startDate'].split(" ")[1].split(':')[1]);
+
+    int oldyear = int.parse(formMap['endDate'].split(" ")[0].split('-')[0]);
+    int oldmonth = int.parse(formMap['endDate'].split(" ")[0].split('-')[1]);
+    int oldday = int.parse(formMap['endDate'].split(" ")[0].split('-')[2]);
+    int oldhour = int.parse(formMap['endDate'].split(" ")[1].split(':')[0]);
+    int oldmin = int.parse(formMap['endDate'].split(" ")[1].split(':')[1]);
+
+    var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
+    var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
+    var difference = old.difference(now);
+
+    formMap['duration'] = difference.inMinutes; // 时间差
+    formMap['exceptionStage'] = widget.arguments['typeCode'];
+    formMap['changed'] = new DateTime.now().toString().split('.')[0].replaceAll('-', '-');
+    if (formMap['id'] != null) {
+      try {
+        await Sterilize.sterilizeExceptionDetailUpdateApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        formMap['orderId'] = widget.arguments['potDetail']['orderId'];
+        formMap['orderNo'] = widget.arguments['potDetail']['orderNo'];
+        formMap['potOrderNo'] = widget.arguments['potDetail']['potNo'];
+        formMap['potOrderId'] = widget.arguments['potDetail']['potOrderId'];
+        await Sterilize.sterilizeExceptionDetailInsertApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MdsAppBarWidget(
-          titleData: formMap['id'] == null ? '异常新增' : '异常修改'),
+          titleData: formMap['id'] == null ? '异常记录新增' : '异常记录修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[
