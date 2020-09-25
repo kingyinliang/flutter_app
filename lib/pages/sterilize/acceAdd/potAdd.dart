@@ -72,7 +72,7 @@ class _PotAddPageState extends State<PotAddPage> {
   }
 
   _getCookingNum() async {
-    var workShop = await getStorage('workShopId');
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Sterilize.cookingNoApi({
         'workShop': workShop,
@@ -100,7 +100,7 @@ class _PotAddPageState extends State<PotAddPage> {
   }
 
   _getPotList() async {
-    var workShop = await getStorage('workShopId');
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Common.holderDropDownQuery(
           {'deptId': workShop, 'holderType': '020'});
@@ -110,7 +110,7 @@ class _PotAddPageState extends State<PotAddPage> {
   }
 
   _getTransferTank() async {
-    var workShop = await getStorage('workShopId');
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Common.holderDropDownQuery(
           {'deptId': workShop, 'holderType': '022'});

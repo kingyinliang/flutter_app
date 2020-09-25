@@ -22,7 +22,7 @@ class _MessagePageState extends State<MessagePage> {
 
   _initState({type: false}) async {
     try {
-      var loginUserId = await getStorage('loginUserId');
+      var loginUserId = await SharedUtil.instance.getStorage('loginUserId');
       var resOne = await Common.msgQueryApi({
         'current': 1,
         'size': 9999999,
@@ -51,7 +51,7 @@ class _MessagePageState extends State<MessagePage> {
     });
     if (redList.length > 0) {
       try {
-        var loginUserId = await getStorage('loginUserId');
+        var loginUserId = await SharedUtil.instance.getStorage('loginUserId');
         await Common.msgReadApi({
           'ids': redList,
           'userId': loginUserId,

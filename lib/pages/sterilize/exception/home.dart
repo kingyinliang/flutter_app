@@ -16,59 +16,55 @@ class _CraftExceptionHomeState extends State<CraftExceptionHome> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+        length: 2,
         child: Scaffold(
-          backgroundColor: Color(0xffF5F5F5),
-          appBar: MdsAppBarWidget(titleData: widget.arguments['title']),
-          body: Container(
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Color(0xFFF5F5F5),
-                automaticallyImplyLeading: false,
-                title: HeadSearchWidget(),
-                elevation: 1.5,
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(42),
-                  child: Material(
-                    color: Colors.white,
-                    child: TabBar(
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Color(0xFF1677FF),
-                      labelColor: Color(0xFF1677FF),
-                      labelStyle: TextStyle(fontSize: 17),
-                      unselectedLabelColor: Color(0xFF333333),
-                      unselectedLabelStyle: TextStyle(fontSize: 17),
-                      tabs: <Widget>[
-                        Tab(text: '未录入'),
-                        Tab(text: '已录入'),
-                      ],
+            backgroundColor: Color(0xffF5F5F5),
+            appBar: MdsAppBarWidget(titleData: widget.arguments['title']),
+            body: Container(
+                child: Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Color(0xFFF5F5F5),
+                      automaticallyImplyLeading: false,
+                      title: HeadSearchWidget(),
+                      elevation: 1.5,
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(42),
+                        child: Material(
+                          color: Colors.white,
+                          child: TabBar(
+                            indicatorSize: TabBarIndicatorSize.label,
+                            indicatorColor: Color(0xFF1677FF),
+                            labelColor: Color(0xFF1677FF),
+                            labelStyle: TextStyle(fontSize: 17),
+                            unselectedLabelColor: Color(0xFF333333),
+                            unselectedLabelStyle: TextStyle(fontSize: 17),
+                            tabs: <Widget>[
+                              Tab(text: '未录入'),
+                              Tab(text: '已录入'),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              backgroundColor: Color(0xFFF5F5F5),
-              body: TabBarView(
-                children: <Widget>[
-                  ListItemWidget(
-                    type: '0',
-                    url: widget.arguments['url'],
-                    pot: widget.arguments['pot'],
-                    typeParameters: widget.arguments['typeParameters'],
-                    barTitle: widget.arguments['title'],
-                  ),
-                  ListItemWidget(
-                    type: '1',
-                    url: widget.arguments['url'],
-                    pot: widget.arguments['pot'],
-                    typeParameters: widget.arguments['typeParameters'],
-                    barTitle: widget.arguments['title'],
-                  ),
-                ],
-              )
-            )
-          )
-        )
-    );
+                    backgroundColor: Color(0xFFF5F5F5),
+                    body: TabBarView(
+                      children: <Widget>[
+                        ListItemWidget(
+                          type: '0',
+                          url: widget.arguments['url'],
+                          pot: widget.arguments['pot'],
+                          typeParameters: widget.arguments['typeParameters'],
+                          barTitle: widget.arguments['title'],
+                        ),
+                        ListItemWidget(
+                          type: '1',
+                          url: widget.arguments['url'],
+                          pot: widget.arguments['pot'],
+                          typeParameters: widget.arguments['typeParameters'],
+                          barTitle: widget.arguments['title'],
+                        ),
+                      ],
+                    )))));
   }
 }
 
@@ -116,12 +112,12 @@ class ListItemWidget extends StatefulWidget {
   final String barTitle;
   ListItemWidget(
       {Key key,
-        @required this.url,
-        @required this.pot,
-        @required this.potName,
-        @required this.type,
-        @required this.typeParameters,
-        @required this.barTitle})
+      @required this.url,
+      @required this.pot,
+      @required this.potName,
+      @required this.type,
+      @required this.typeParameters,
+      @required this.barTitle})
       : super(key: key);
 
   @override
@@ -129,10 +125,10 @@ class ListItemWidget extends StatefulWidget {
 }
 
 class _ListItemWidgetState extends State<ListItemWidget>
-with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   List listviewList = [];
   _initState() async {
-    var workShopId = await getStorage('workShopId');
+    var workShopId = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Sterilize.sterilizeExceptionHomeListApi({
         'potNo': widget.pot,
@@ -154,11 +150,10 @@ with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     Future.delayed(
-      Duration.zero,
+        Duration.zero,
         () => setState(() {
-        _initState();
-      })
-    );
+              _initState();
+            }));
   }
 
   @override
@@ -181,7 +176,8 @@ with AutomaticKeepAliveClientMixin {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('第${listviewList[index]['potOrder']}锅', style: TextStyle(fontSize: 17.0)),
+                    Text('第${listviewList[index]['potOrder']}锅',
+                        style: TextStyle(fontSize: 17.0)),
                   ],
                 ),
               ],
@@ -190,17 +186,19 @@ with AutomaticKeepAliveClientMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               textDirection: TextDirection.ltr,
               children: <Widget>[
-                Text('${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}'),
+                Text(
+                    '${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}'),
                 Text('${listviewList[index]['orderNo']}'),
               ],
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              Navigator.pushNamed(context, '/sterilize/exception/list', arguments: {
-                'potName': widget.potName,
-                'potDetail': listviewList[index],
-                'barTitle': widget.barTitle,
-              });
+              Navigator.pushNamed(context, '/sterilize/exception/list',
+                  arguments: {
+                    'potName': widget.potName,
+                    'potDetail': listviewList[index],
+                    'barTitle': widget.barTitle,
+                  });
             },
           ),
         );
@@ -208,4 +206,3 @@ with AutomaticKeepAliveClientMixin {
     );
   }
 }
-

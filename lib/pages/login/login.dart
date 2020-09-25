@@ -29,8 +29,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _initState() async {
-    _userName.text = await getStorage('userName');
-    _password.text = await getStorage('password');
+    _userName.text = await SharedUtil.instance.getStorage('userName');
+    _password.text = await SharedUtil.instance.getStorage('password');
   }
 
   _login() async {
@@ -43,11 +43,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     if (this._rememberPaw) {
-      await saveStringStorage('userName', this._userName.text);
-      await saveStringStorage('password', this._password.text);
+      await SharedUtil.instance
+          .saveStringStorage('userName', this._userName.text);
+      await SharedUtil.instance
+          .saveStringStorage('password', this._password.text);
     } else {
-      await saveStringStorage('userName', '');
-      await saveStringStorage('password', '');
+      await SharedUtil.instance.saveStringStorage('userName', '');
+      await SharedUtil.instance.saveStringStorage('password', '');
     }
     try {
       var res = await Common.loginApi({
@@ -61,18 +63,21 @@ class _LoginPageState extends State<LoginPage> {
           deptName = deptName + element['deptName'] + '/';
         }
         if (element['deptType'] == 'FACTORY') {
-          saveStringStorage('factory', element['deptName']);
-          saveStringStorage('factoryId', element['id']);
+          SharedUtil.instance.saveStringStorage('factory', element['deptName']);
+          SharedUtil.instance.saveStringStorage('factoryId', element['id']);
         }
         if (element['deptType'] == 'WORK_SHOP') {
-          saveStringStorage('workShop', element['deptName']);
-          saveStringStorage('workShopId', element['id']);
+          SharedUtil.instance
+              .saveStringStorage('workShop', element['deptName']);
+          SharedUtil.instance.saveStringStorage('workShopId', element['id']);
         }
       });
-      await saveStringStorage('token', res['data']['token']);
-      await saveStringStorage('loginUserId', res['data']['id']);
-      await saveStringStorage('deptName', deptName);
-      await saveMapStorage('userData', res['data']);
+      await SharedUtil.instance
+          .saveStringStorage('token', res['data']['token']);
+      await SharedUtil.instance
+          .saveStringStorage('loginUserId', res['data']['id']);
+      await SharedUtil.instance.saveStringStorage('deptName', deptName);
+      await SharedUtil.instance.saveMapStorage('userData', res['data']);
       await HttpManager.getInstance().updateToken();
       Navigator.pop(context);
       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);

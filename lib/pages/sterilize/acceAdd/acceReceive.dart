@@ -80,7 +80,7 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
   }
 
   _getUseBoxNo() async {
-    var workShop = await getStorage('workShopId');
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Common.holderDropDownQuery(
           {'deptId': workShop, 'holderType': '023'});

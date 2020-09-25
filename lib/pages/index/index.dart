@@ -4,6 +4,7 @@ import 'message/message.dart';
 import 'user/user.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/api/http/socket.dart';
+import 'package:dfmdsapp/config/config_init.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -22,8 +23,12 @@ class _IndexPageState extends State<IndexPage> {
   ];
 
   _initState() async {
+    if (ConfigInt.connect == null) {
+      await ConfigInt.connectivityInit();
+    }
+
     try {
-      var loginUserId = await getStorage('loginUserId');
+      var loginUserId = await SharedUtil.instance.getStorage('loginUserId');
       WebSocketManager.initSocket(loginUserId);
     } catch (e) {}
   }

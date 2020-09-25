@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dfmdsapp/config/config_init.dart';
 
 class SharedUtil {
@@ -55,49 +54,4 @@ class SharedUtil {
   Future clear() async {
     return ConfigInt.sp.clear();
   }
-}
-
-Future saveStringStorage(key, value) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setString(key, value);
-}
-
-Future saveIntStorage(key, value) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setInt(key, value);
-}
-
-Future saveBoolStorage(key, value) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setBool(key, value);
-}
-
-Future saveDoubleStorage(key, value) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setDouble(key, value);
-}
-
-Future saveStringListStorage(key, value) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setStringList(key, value);
-}
-
-Future saveMapStorage(key, value) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setString(key, jsonEncode(value).toString());
-}
-
-Future getMapStorage(key) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  return jsonDecode(sharedPreferences.get(key));
-}
-
-Future getStorage(key) async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  return sharedPreferences.get(key);
-}
-
-Future clear() async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  return sharedPreferences.clear();
 }

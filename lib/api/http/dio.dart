@@ -101,6 +101,11 @@ class HttpManager {
   get(url, {params, options, withLoading = true}) async {
     showLoading(withLoading);
     Response response;
+    var net = await SharedUtil.instance.getStorage('netStatus');
+    if (net == false) {
+      endLoading();
+      return onRequest(Response(data: {'msg': "无网络"}));
+    }
     try {
       response = await _dio.get(url, queryParameters: params, options: options);
       hideLoading(withLoading);
@@ -116,6 +121,11 @@ class HttpManager {
   post(url, {params, options, withLoading = true}) async {
     showLoading(withLoading);
     Response response;
+    var net = await SharedUtil.instance.getStorage('netStatus');
+    if (net == false) {
+      endLoading();
+      return onRequest(Response(data: {'msg': "无网络"}));
+    }
     try {
       response = await _dio.post(url, data: params, options: options);
       hideLoading(withLoading);
@@ -129,7 +139,8 @@ class HttpManager {
 
   // ignore: missing_return
   Future updateToken() async {
-    _dio.options.headers['Authorization'] = await getStorage('token');
+    _dio.options.headers['Authorization'] =
+        await SharedUtil.instance.getStorage('token');
   }
 
   // loding
@@ -206,9 +217,10 @@ class LogsInterceptors extends Interceptor {
   @override
   Future onRequest(RequestOptions options) async {
     if (options.headers['Authorization'] is String) {
-    } else if (await getStorage('token') is String) {
+    } else if (await SharedUtil.instance.getStorage('token') is String) {
       await HttpManager.getInstance().updateToken();
-      options.headers['Authorization'] = await getStorage('token');
+      options.headers['Authorization'] =
+          await SharedUtil.instance.getStorage('token');
     }
 
     String requestStr = "\n==================== REQUEST ====================\n"

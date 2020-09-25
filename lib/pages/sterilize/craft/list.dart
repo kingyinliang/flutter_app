@@ -25,58 +25,48 @@ class _CraftListPageState extends State<CraftListPage> {
 //      });
 //    }
     return DefaultTabController(
-      length: 3,
+        length: 3,
         child: Scaffold(
-          backgroundColor: Color(0xffF5F5F5),
-          appBar: MdsAppBarWidget(titleData: '工艺控制'),
-          body: Container(
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Color(0xFFF5F5F5),
-                automaticallyImplyLeading: false,
-                title: HeadSearchWidget(),
-                elevation: 1.5,
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(42),
-                  child: Material(
-                    color: Colors.white,
-                    child: TabBar(
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Color(0xFF1677FF),
-                      labelColor: Color(0xFF1677FF),
-                      labelStyle: TextStyle(fontSize: 17),
-                      unselectedLabelColor: Color(0xFF333333),
-                      unselectedLabelStyle: TextStyle(fontSize: 17),
-                      tabs: <Widget>[
-                        Tab(text: '待维护'),
-                        Tab(text: '已保存'),
-                        Tab(text: '已提交'),
-                      ],
+            backgroundColor: Color(0xffF5F5F5),
+            appBar: MdsAppBarWidget(titleData: '工艺控制'),
+            body: Container(
+                child: Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Color(0xFFF5F5F5),
+                      automaticallyImplyLeading: false,
+                      title: HeadSearchWidget(),
+                      elevation: 1.5,
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(42),
+                        child: Material(
+                          color: Colors.white,
+                          child: TabBar(
+                            indicatorSize: TabBarIndicatorSize.label,
+                            indicatorColor: Color(0xFF1677FF),
+                            labelColor: Color(0xFF1677FF),
+                            labelStyle: TextStyle(fontSize: 17),
+                            unselectedLabelColor: Color(0xFF333333),
+                            unselectedLabelStyle: TextStyle(fontSize: 17),
+                            tabs: <Widget>[
+                              Tab(text: '待维护'),
+                              Tab(text: '已保存'),
+                              Tab(text: '已提交'),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              backgroundColor: Color(0xFFF5F5F5),
-              body: TabBarView(
-                children: <Widget>[
-                  ListItemWidget(
-                    type: 'not',
-                    url: widget.arguments['url']
-                  ),
-                  ListItemWidget(
-                    type: 'save',
-                    url: widget.arguments['url']
-                  ),
-                  ListItemWidget(
-                    type: 'submit',
-                    url: widget.arguments['url']
-                  ),
-                ],
-              )
-            )
-          )
-        )
-    );
+                    backgroundColor: Color(0xFFF5F5F5),
+                    body: TabBarView(
+                      children: <Widget>[
+                        ListItemWidget(
+                            type: 'not', url: widget.arguments['url']),
+                        ListItemWidget(
+                            type: 'save', url: widget.arguments['url']),
+                        ListItemWidget(
+                            type: 'submit', url: widget.arguments['url']),
+                      ],
+                    )))));
 
 //    return new Scaffold(
 //      backgroundColor: Color(0xffF5F5F5),
@@ -210,6 +200,7 @@ class HeadSearchWidget extends StatefulWidget {
   @override
   _HeadSearchWidgetState createState() => _HeadSearchWidgetState();
 }
+
 class _HeadSearchWidgetState extends State<HeadSearchWidget> {
   @override
   Widget build(BuildContext context) {
@@ -247,11 +238,11 @@ class ListItemWidget extends StatefulWidget {
   final String workingType;
   ListItemWidget(
       {Key key,
-        @required this.url,
-        @required this.pot,
-        @required this.potName,
-        @required this.type,
-        @required this.workingType})
+      @required this.url,
+      @required this.pot,
+      @required this.potName,
+      @required this.type,
+      @required this.workingType})
       : super(key: key);
 
   @override
@@ -259,10 +250,10 @@ class ListItemWidget extends StatefulWidget {
 }
 
 class _ListItemWidgetState extends State<ListItemWidget>
-with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   List listviewList = [];
   _initState() async {
-    var workShopId = await getStorage('workShopId');
+    var workShopId = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Sterilize.sterilizeCraftListApi({
         'workShop': workShopId,
@@ -282,11 +273,10 @@ with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     Future.delayed(
-      Duration.zero,
+        Duration.zero,
         () => setState(() {
-        _initState();
-      })
-    );
+              _initState();
+            }));
   }
 
   @override
@@ -309,7 +299,8 @@ with AutomaticKeepAliveClientMixin {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('第${listviewList[index]['potOrder']}锅', style: TextStyle(fontSize: 17.0)),
+                    Text('第${listviewList[index]['potOrder']}锅',
+                        style: TextStyle(fontSize: 17.0)),
                   ],
                 ),
               ],
@@ -318,16 +309,19 @@ with AutomaticKeepAliveClientMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               textDirection: TextDirection.ltr,
               children: <Widget>[
-                Text('${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}'),
-                Text('${listviewList[index]['orderNo']}-${listviewList[index]['checkStatusName']}'),
+                Text(
+                    '${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}'),
+                Text(
+                    '${listviewList[index]['orderNo']}-${listviewList[index]['checkStatusName']}'),
               ],
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              Navigator.pushNamed(context, '/sterilize/craft/materialList', arguments: {
-                'potName': widget.potName,
-                'potNum': listviewList[index],
-              });
+              Navigator.pushNamed(context, '/sterilize/craft/materialList',
+                  arguments: {
+                    'potName': widget.potName,
+                    'potNum': listviewList[index],
+                  });
             },
           ),
         );
@@ -391,4 +385,3 @@ class ListViewDemo extends StatelessWidget {
     );
   }
 }
-

@@ -49,7 +49,7 @@ class _UpdatePaswordPageState extends State<UpdatePaswordPage> {
   }
 
   _initState() async {
-    userData = await getMapStorage('userData');
+    userData = await SharedUtil.instance.getMapStorage('userData');
   }
 
   @override

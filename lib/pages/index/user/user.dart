@@ -29,8 +29,8 @@ class _UserPageState extends State<UserPage> {
   }
 
   _initState() async {
-    deptName = await getStorage('deptName');
-    userData = await getMapStorage('userData');
+    deptName = await SharedUtil.instance.getStorage('deptName');
+    userData = await SharedUtil.instance.getMapStorage('userData');
   }
 
   _quit() async {

@@ -85,7 +85,7 @@ _renderSize(double value) {
 void clearCache(Function callback) async {
   Directory tempDir = await getTemporaryDirectory();
   Directory storageDir = await getExternalStorageDirectory();
-  clear();
+  SharedUtil.instance.clear();
   await delDir(tempDir);
   await delDir(storageDir);
   callback();
