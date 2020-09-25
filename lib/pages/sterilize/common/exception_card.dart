@@ -2,30 +2,29 @@ import 'package:flutter/material.dart';
 import '../../../components/card.dart';
 
 // 单个card
-class ItemCard extends StatefulWidget {
+class ExceptionItemCard extends StatefulWidget {
+  final int idx;
   final Function onTap;
-  final String carTitle;
-  final String title;
-  final String subTitle;
+  final String startTime;
+  final String endTime;
   final Map cardMap;
   final List wrapList;
-  final bool submitButtonFlag;
-  ItemCard(
+  final bool isEdit; // 是否显示修改按钮
+  ExceptionItemCard(
       {Key key,
-      this.carTitle = '',
+      this.idx,
       this.onTap,
+      this.startTime,
+      this.endTime,
       this.cardMap,
-      this.title,
-      this.subTitle,
       this.wrapList,
-      this.submitButtonFlag})
+      this.isEdit = true})
       : super(key: key);
-
   @override
-  _ItemCardState createState() => _ItemCardState();
+  _ExceptionItemCardState createState() => _ExceptionItemCardState();
 }
 
-class _ItemCardState extends State<ItemCard> {
+class _ExceptionItemCardState extends State<ExceptionItemCard> {
   List colorList = [0xFFCDDDFD, 0xFFD3EEF9, 0xFFF8D0CB, 0xFFCDF3E4, 0xFFFCEBB9];
   int index = -1;
 
@@ -64,25 +63,13 @@ class _ItemCardState extends State<ItemCard> {
     return MdsCard(
       child: Stack(
         children: <Widget>[
-//          Positioned(
-//            right: 0,
-//            top: 0,
-//            child: widget.submitButtonFlag ? InkWell(
-//              onTap: widget.onTap,
-//              child: Icon(
-//                IconData(0xe62c, fontFamily: 'MdsIcon'),
-//                size: 16,
-//                color: Color(0xFF487BFF),
-//              ),
-//            ) : SizedBox(),
-//          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('NO.1',
+                  Text('NO.${widget.idx+1}',
                       style: TextStyle(
                           height: 1.5,
                           fontSize: 14.0,
@@ -93,7 +80,7 @@ class _ItemCardState extends State<ItemCard> {
                     child: SizedBox(),
                   ),
                   Container(
-                    child: widget.submitButtonFlag ? InkWell(
+                    child: widget.isEdit ? InkWell(
                       onTap: widget.onTap,
                       child: Icon(
                         IconData(0xe62c, fontFamily: 'MdsIcon'),
@@ -118,11 +105,11 @@ class _ItemCardState extends State<ItemCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Text('2015-05-31 11:46', style: TextStyle(fontSize: 16)),
+                  Text(widget.cardMap[widget.startTime] == null ? '' : widget.cardMap[widget.startTime], style: TextStyle(fontSize: 16)),
                   Expanded(
                     child: Text(''),
                   ),
-                  Text('2020-05-31 11:46', style: TextStyle(fontSize: 16))
+                  Text(widget.cardMap[widget.endTime] == null ? '' : widget.cardMap[widget.endTime], style: TextStyle(fontSize: 16))
                 ],
               ),
               SizedBox(height: 14),

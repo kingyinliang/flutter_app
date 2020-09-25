@@ -61,8 +61,15 @@ class Common {
   }
 
   // 班次拉取
-  static getClassListQuery(params) {
+  static classListQuery(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
         .get('/sysDictItem/classes/dropDown', params: params);
   }
+
+  // 设备下拉 无翻页
+  static deviceListQuery(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .post('/sysDevice/listByType', params: params);
+  }
+
 }

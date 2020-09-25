@@ -8,6 +8,7 @@ import 'package:dfmdsapp/api/api/index.dart';
 import '../common/exception_card.dart';
 import '../common/remove_btn.dart';
 import 'package:dfmdsapp/utils/toast.dart';
+import '../common/text_card.dart';
 
 class CraftExceptionList extends StatefulWidget {
   final arguments;
@@ -18,69 +19,10 @@ class CraftExceptionList extends StatefulWidget {
 }
 
 class _CraftExceptionListState extends State<CraftExceptionList> {
-  var steCookingConsumeFlag;
   bool _floatingActionButtonFlag = true;
   int _tabIndex = 0;
-  List materialInfo = [];
-  List potList = [];
-
-  // 获取tab切换index
-  void setFloatingActionButtonFlag(int index) {
-    _tabIndex = index;
-    setState(() {});
-  }
-
-  Future<List> getcontrolTypeName(String val) async {
-    var res = await Common.dictDropDownQuery({'dictType': val});
-    return res['data'];
-  }
-
-  _initState() async {
-    try {
-      var res = await Sterilize.sterilizeCraftMaterialListApi({
-        "potOrderNo": widget.arguments['potDetail']['potNo']
-      });
-      if (res['data'] != null ) {
-        materialInfo = [res['data']];
-        print('123456789');
-        print(materialInfo);
-        if (res['data']['keepZkFlag'] == 'Y') {
-          materialInfo[0]['keepZkFlagString'] = '是';
-        } else {
-          materialInfo[0]['keepZkFlagString'] = '否';
-        }
-        if (res['data']['coolZkFlag'] == 'Y') {
-          materialInfo[0]['coolZkFlagString'] = '是';
-        } else {
-          materialInfo[0]['coolZkFlagString'] = '否';
-        }
-        potList = res['data']['item'];
-      }
-      _floatingActionButtonFlag = true;
-      setState(() {});
-    } catch (e) {}
-  }
-
-  // 加号是否显示  type （0加号  1提交）
-  getFloatingActionButtonFlag(int index, List data, int type) {
-    bool ButtonFlag = true;
-    if (index == 0) {
-      if (type == 1) {
-        ButtonFlag = data[0]['checkStatus'] == 'M' ? false : true;
-      } else {
-        ButtonFlag = (materialInfo.length == 1 || data[0]['checkStatus'] == 'M') ? false : true;
-      }
-    } else {
-      if (data[0]['item'].length == 0) {
-        ButtonFlag = true;
-      } else if (data[0]['item'][0]['checkStatus'] == 'M') {
-        ButtonFlag = false;
-      } else {
-        ButtonFlag = true;
-      }
-    }
-    return ButtonFlag;
-  }
+  List exceptionList = []; // 异常列表
+  List textList = []; // 文本列表
 
   @override
   void initState() {
@@ -93,31 +35,57 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
     );
   }
 
-  _delPot(index) async {
+  _initState() async {
     try {
-      await Sterilize.sterilizeCraftMaterialTimeDelApi([potList[index]['id']]);
-      successToast(msg: '操作成功');
-      potList.removeAt(index);
-      setState(() {});
+      // 异常列表
+      var res = await Sterilize.sterilizeExceptionDetailListApi({
+        "potOrderNo": widget.arguments['potDetail']['potNo'],
+        "potOrderId": widget.arguments['potDetail']['potOrderId'],
+        "orderId": widget.arguments['potDetail']['orderId'],
+        "orderNo": widget.arguments['potDetail']['orderNo'],
+        "exceptionStage": widget.arguments['typeCode'],
+      });
+      this.exceptionList = res['data'];
+      // 文本列表
+      var testRes = await Sterilize.sterilizeExceptionDetailTextApi({
+        "potOrderNo": widget.arguments['potDetail']['potNo'],
+        "potOrderId": widget.arguments['potDetail']['potOrderId'],
+        "orderId": widget.arguments['potDetail']['orderId'],
+        "orderNo": widget.arguments['potDetail']['orderNo'],
+        "textStage": widget.arguments['typeCode'],
+      });
+      if (testRes['data'] != null) {
+        this.textList = [testRes['data']];
+      }
+      _floatingActionButtonFlag = this._isButtonFlag(_tabIndex);
+      setState(() {});//
     } catch (e) {}
   }
 
-  // 提交
-  _submitPage() async {
-    String type = '';
-    if (_tabIndex == 0) {
-      type = '1';
+  // 获取tab切换index
+  void setFloatingActionButtonFlag(int index) {
+    _floatingActionButtonFlag = this._isButtonFlag(index);
+    _tabIndex = index;
+    setState(() {});
+  }
+
+  // 是否显示加号
+  _isButtonFlag(int tabIndex) {
+    bool buttonFlag = true;
+    if (tabIndex == 1) {
+      buttonFlag = this.textList.length == 1 ? false : true;
+    } else {
+      buttonFlag = true;
     }
-    if (_tabIndex == 1) {
-      type = '2';
-    }
+    return buttonFlag;
+  }
+
+  // 异常删除
+  _delPot(index) async {
     try {
-      await Sterilize.sterilizeCraftMaterialTimeSubmitApi({
-        'potOrderNo': widget.arguments['potDetail']['potNo'],
-        'type': type,
-      });
-      _initState();
+      await Sterilize.sterilizeExceptionDetailDeleteApi([this.exceptionList[index]['id']]);
       successToast(msg: '操作成功');
+      setState(() {});
     } catch (e) {}
   }
 
@@ -145,25 +113,36 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
             Tab(text: '其他记录'),
           ],
           tabBarViewChildren: <Widget>[
-            PotListWidget(
-              data: potList,
+            DateListWidget(
+              data: this.exceptionList,
               updataFn: _initState,
               arguments: {
-                'potOrderNo': widget.arguments['potDetail']['potNo'],
-                'potOrderId': widget.arguments['potDetail']['potOrderId'],
+                'typeCode': widget.arguments['typeCode'],
+                'potDetail': widget.arguments['potDetail'],
               },
               delFn: _delPot,
-              submitButtonFlag: true
             ),
-            PotListWidget(
-                data: potList,
-                updataFn: _initState,
-                arguments: {
-                  'potOrderNo': widget.arguments['potDetail']['potNo'],
-                  'potOrderId': widget.arguments['potDetail']['potOrderId'],
-                },
-                delFn: _delPot,
-                submitButtonFlag: true
+            ListView.builder(
+              padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+              itemCount: this.textList.length,
+              itemBuilder: (context, index) {
+                return TextCard(
+                  dataList: this.textList,
+                  text: 'text',
+                  idx: index,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/sterilize/exception/textAdd',
+                      arguments: {
+                        'typeCode': widget.arguments['typeCode'],
+                        'potDetail': widget.arguments['potDetail'],
+                        'data': this.textList[index],
+                      },
+                    ).then((value) => value != null ? _initState() : null);
+                  },
+                );
+              }
             )
           ]
         ),
@@ -185,8 +164,8 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
                           context,
                           '/sterilize/exception/add',
                           arguments: {
-                            'potOrderNo': widget.arguments['potDetail']['potNo'],
-                            'potOrderId': widget.arguments['potDetail']['potOrderId'],
+                            'typeCode': widget.arguments['typeCode'],
+                            'potDetail': widget.arguments['potDetail'],
                           },
                         ).then((value) => value != null ? _initState() : null);
                       } else {
@@ -194,8 +173,8 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
                           context,
                           '/sterilize/exception/textAdd',
                           arguments: {
-                            'potOrderNo': widget.arguments['potDetail']['potNo'],
-                            'potOrderId': widget.arguments['potDetail']['potOrderId'],
+                            'typeCode': widget.arguments['typeCode'],
+                            'potDetail': widget.arguments['potDetail'],
                           },
                         ).then((value) => value != null ? _initState() : null);
                       }
@@ -211,29 +190,28 @@ class _CraftExceptionListState extends State<CraftExceptionList> {
   }
 }
 
-// 煮料锅tab
-class PotListWidget extends StatefulWidget {
+// 异常list
+class DateListWidget extends StatefulWidget {
   final Map arguments;
   final List data;
   final Function updataFn;
   final Function delFn;
-  final bool submitButtonFlag;
-  PotListWidget({Key key, this.arguments, this.data, this.updataFn, this.delFn, this.submitButtonFlag}) : super(key: key);
+  DateListWidget({Key key, this.arguments, this.data, this.updataFn, this.delFn}) : super(key: key);
 
   @override
-  _PotListWidgetState createState() => _PotListWidgetState();
+  _DateListWidgetState createState() => _DateListWidgetState();
 }
 
-class _PotListWidgetState extends State<PotListWidget>
+class _DateListWidgetState extends State<DateListWidget>
 with AutomaticKeepAliveClientMixin {
   List wrapList = [
-    {'label': '类型：', 'value': 'controlTypeName'},
-    {'label': '阶段：', 'value': 'controlStage'},
-    {'label': '记录时间：', 'value': 'recordDate'},
-    {'label': '', 'value': 'cookingOrderNo'},
+    {'label': '班次：', 'value': 'classes'},
+    {'label': '异常情况：', 'value': 'exceptionSituation'},
+    {'label': '异常原因：', 'value': 'exceptionReason'},
+    {'label': '异常描述：', 'value': 'exceptionInfo'},
+    {'label': '备注：', 'value': 'remark'},
     {'label': '', 'value': 'changer'},
     {'label': '', 'value': 'changed'},
-    {'label': '备注：', 'value': 'remark'},
   ];
 
   @override
@@ -246,19 +224,19 @@ with AutomaticKeepAliveClientMixin {
         return SlideButton(
           index: index,
           singleButtonWidth: 70,
-          child: ItemCard(
-            submitButtonFlag: widget.submitButtonFlag,
-            carTitle: '温度(℃)',
+          child: ExceptionItemCard(
+            idx: index,
+            startTime: 'startDate',
+            endTime: 'endDate',
             cardMap: widget.data[index],
-            title: 'temp',
             wrapList: wrapList,
             onTap: () {
               Navigator.pushNamed(
                 context,
                 '/sterilize/exception/add',
                 arguments: {
-                  'potOrderNo': widget.arguments['potOrderNo'],
-                  'potOrderId': widget.arguments['potOrderId'],
+                  'typeCode': widget.arguments['typeCode'],
+                  'potDetail': widget.arguments['potDetail'],
                   'data': widget.data[index],
                 },
               ).then((value) => value != null ? widget.updataFn() : null);

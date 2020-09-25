@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
-import 'package:dfmdsapp/components/form.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 
 class ExceptionTextAdd extends StatefulWidget {
@@ -16,146 +15,19 @@ class ExceptionTextAdd extends StatefulWidget {
 
 class _ExceptionTextAddState extends State<ExceptionTextAdd> {
   Map<String, dynamic> formMap = {
-    'feedStartDate': '',
-    'feeEndDate': '',
-    'riseStartDate': '',
-    'riseEndDate': '',
-    'keepZkFlag': '',
-    'coolZkFlag': '',
-    'remark': '',
+    'orderId': '',
+    'orderNo': '',
+    'potOrderId': '',
+    'potOrderNo': '',
+    'text': '',
+    'textStage': '',
   };
-
-  List StageList = [
-    {
-      'label': '是',
-      'val': 'Y',
-    },
-    {
-      'label': '否',
-      'val': 'N',
-    }
-  ];
-
-  _submitForm() async {
-    if (formMap['feedStartDate'] == null || formMap['feedStartDate'] == '') {
-      EasyLoading.showError('请选择入料开始时间');
-      return;
-    }
-    if (formMap['feeEndDate'] == null || formMap['feeEndDate'] == '') {
-      EasyLoading.showError('请选择入料结束时间');
-      return;
-    }
-    if (formMap['riseStartDate'] == null || formMap['riseStartDate'] == '') {
-      EasyLoading.showError('请选择升温开始时间');
-      return;
-    }
-    if (formMap['riseEndDate'] == null || formMap['riseEndDate'] == '') {
-      EasyLoading.showError('请选择升温结束时间');
-      return;
-    }
-    if (formMap['id'] != null) {
-      try {
-        await Sterilize.sterilizeCraftMaterialUpdateApi(formMap);
-        Navigator.pop(context, true);
-      } catch (e) {}
-    } else {
-      try {
-        formMap['potOrderNo'] = widget.arguments['potOrderNo'];
-        formMap['potOrderId'] = widget.arguments['potOrderId'];
-        await Sterilize.sterilizeCraftMaterialInsertApi(formMap);
-        Navigator.pop(context, true);
-      } catch (e) {}
-    }
-  }
-
-  Widget formWidget() {
-    return Container(
-      color: Colors.white,
-      margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
-      padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-      child: Column(
-        children: <Widget>[
-          DataPickerWidget(
-            label: '入料开始时间',
-            prop: formMap['feedStartDate'].toString(),
-            requiredFlg: true,
-            onChange: (val) {
-              formMap['feedStartDate'] = val;
-              setState(() {});
-            },
-          ),
-          DataPickerWidget(
-            label: '入料结束时间',
-            prop: formMap['feeEndDate'].toString(),
-            requiredFlg: true,
-            onChange: (val) {
-              formMap['feeEndDate'] = val;
-              setState(() {});
-            },
-          ),
-          DataPickerWidget(
-            label: '升温开始时间',
-            prop: formMap['riseStartDate'].toString(),
-            requiredFlg: true,
-            onChange: (val) {
-              formMap['riseStartDate'] = val;
-              setState(() {});
-            },
-          ),
-          DataPickerWidget(
-            label: '升温结束时间',
-            prop: formMap['riseEndDate'].toString(),
-            requiredFlg: true,
-            onChange: (val) {
-              formMap['riseEndDate'] = val;
-              setState(() {});
-            },
-          ),
-          SelectWidget(
-            label: '保温阶段-ZK',
-            prop: formMap['keepZkFlag'].toString(),
-            requiredFlg: true,
-            options: StageList,
-            optionsLabel: 'label',
-            optionsval: 'val',
-            onChange: (val) {
-              formMap['keepZkFlag'] = val['val'];
-              setState(() {});
-            },
-          ),
-          SelectWidget(
-            label: '降温阶段-ZK',
-            prop: formMap['coolZkFlag'].toString(),
-            requiredFlg: true,
-            options: StageList,
-            optionsLabel: 'label',
-            optionsval: 'val',
-            onChange: (val) {
-              formMap['coolZkFlag'] = val['val'];
-              setState(() {});
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   void initState() {
+    print(widget.arguments);
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
-      if (formMap['feedStartDate'] == null) {
-        formMap['feedStartDate'] = '';
-      }
-      if (formMap['feeEndDate'] == null) {
-        formMap['feeEndDate'] = '';
-      }
-      if (formMap['riseStartDate'] == null) {
-        formMap['riseStartDate'] = '';
-      }
-      if (formMap['riseEndDate'] == null) {
-        formMap['riseEndDate'] = '';
-      }
     }
     Future.delayed(
       Duration.zero,
@@ -165,11 +37,82 @@ class _ExceptionTextAddState extends State<ExceptionTextAdd> {
     super.initState();
   }
 
+  Widget formWidget() {
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.fromLTRB(0, 5, 10, 0),
+      padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 5),
+          Row(
+            children: <Widget>[
+              Text('情况记录',
+                  style: TextStyle(color: Color(0xFF999999), fontSize: 15),
+                  textAlign: TextAlign.left
+              ),
+              Expanded(
+                child: SizedBox(),
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
+          TextField(
+            controller: TextEditingController.fromValue(
+              TextEditingValue(
+                text: formMap['text'],
+                // 保持光标在最后
+                selection: TextSelection.fromPosition(
+                    TextPosition(
+                      affinity: TextAffinity.downstream,
+                      offset: formMap['text'].length
+                    )
+                )
+              )
+            ),
+            maxLines: 4,
+            textAlign: TextAlign.left,
+            decoration: InputDecoration(
+              border: OutlineInputBorder()
+            ),
+            onChanged: (val) {
+              this.setState(() {
+                formMap['text'] = val;
+              });
+            }
+           ),
+        ]
+      ),
+    );
+  }
+
+  _submitForm() async {
+    if (formMap['text'] == null || formMap['text'] == '') {
+      EasyLoading.showError('请填写备注');
+      return;
+    }
+    if (formMap['id'] != null) {
+      try {
+        await Sterilize.sterilizeExceptionDetailTextUpdateApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        formMap['textStage'] = widget.arguments['typeCode'];
+        formMap['orderId'] = widget.arguments['potDetail']['orderId'];
+        formMap['orderNo'] = widget.arguments['potDetail']['orderNo'];
+        formMap['potOrderNo'] = widget.arguments['potDetail']['potNo'];
+        formMap['potOrderId'] = widget.arguments['potDetail']['potOrderId'];
+        await Sterilize.sterilizeExceptionDetailTextInsertApi(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(
-          titleData: formMap['id'] == null ? '工艺控制新增' : '工艺控制修改'),
+      appBar: MdsAppBarWidget(titleData: formMap['id'] == null ? '异常记录新增' : '异常记录修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[

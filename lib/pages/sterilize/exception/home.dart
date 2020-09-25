@@ -193,12 +193,12 @@ class _ListItemWidgetState extends State<ListItemWidget>
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              Navigator.pushNamed(context, '/sterilize/exception/list',
-                  arguments: {
-                    'potName': widget.potName,
-                    'potDetail': listviewList[index],
-                    'barTitle': widget.barTitle,
-                  });
+              Navigator.pushNamed(context, '/sterilize/exception/list', arguments: {
+                'potName': widget.potName,
+                'potDetail': listviewList[index],
+                'barTitle': widget.barTitle,
+				        'typeCode': widget.typeParameters,
+              });
             },
           ),
         );
