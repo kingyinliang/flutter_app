@@ -52,15 +52,17 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
           ),
           onTap: () async {
             final result = await showMenu(
-                context: context,
-                position: RelativeRect.fromLTRB(500, 75, 10, 0),
-                color: Color(0xFF4C4C4C),
-                items: <PopupMenuEntry<String>>[
-                  this.selectView(Icons.home, '首页', '1'),
-                  PopupMenuDivider(height: 1.0),
-                  this.selectView(Icons.person, '我的', '2'),
-                ]);
-            print(result);
+                            context: context,
+                            position: RelativeRect.fromLTRB(500, 75, 10, 0),
+                            color: Color(0xFF4C4C4C),
+                            items: <PopupMenuEntry>[
+                              this.selectView(Icons.home, '首页', 0),
+                              PopupMenuDivider(height: 1.0),
+                              this.selectView(Icons.person, '我的', 2),
+                          ]);
+            Navigator.pushNamed(context,'/home',arguments:{
+              'page': result,
+            });
           },
         )
 //        PopupMenuButton<String>(
@@ -86,8 +88,8 @@ class _MdsAppBarWidgetState extends State<MdsAppBarWidget> {
     );
   }
 
-  selectView(IconData icon, String text, String id) {
-    return PopupMenuItem<String>(
+  selectView(IconData icon, String text, int id) {
+    return PopupMenuItem(
         value: id,
         height: 35.0,
         child: Row(

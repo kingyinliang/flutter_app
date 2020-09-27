@@ -6,22 +6,30 @@ import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/components/pull_refresh.dart';
 import 'package:dfmdsapp/components/no_data.dart';
 
-class ExceptionHome extends StatefulWidget {
+class CraftHome extends StatefulWidget {
   final arguments;
-  ExceptionHome({Key key, this.arguments}) : super(key: key);
+  CraftHome({Key key, this.arguments}) : super(key: key);
 
   @override
-  _ExceptionHomeState createState() => _ExceptionHomeState();
+  _CraftHomeState createState() => _CraftHomeState();
 }
 
-class _ExceptionHomeState extends State<ExceptionHome> {
+class _CraftHomeState extends State<CraftHome> {
   @override
   Widget build(BuildContext context) {
+//    TextEditingController mControll3 = TextEditingController();
+
+//    String titleData = '工艺控制';
+//    void onChanged(val){
+//      setState(() {
+//        titleData = val;
+//      });
+//    }
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: Color(0xffF5F5F5),
-        appBar: MdsAppBarWidget(titleData: widget.arguments['title']),
+        appBar: MdsAppBarWidget(titleData: '工艺控制'),
         body: Container(
           child: Scaffold(
             appBar: AppBar(
@@ -41,8 +49,9 @@ class _ExceptionHomeState extends State<ExceptionHome> {
                     unselectedLabelColor: Color(0xFF333333),
                     unselectedLabelStyle: TextStyle(fontSize: 17),
                     tabs: <Widget>[
-                      Tab(text: '未录入'),
-                      Tab(text: '已录入'),
+                      Tab(text: '待维护'),
+                      Tab(text: '已保存'),
+                      Tab(text: '已提交'),
                     ],
                   ),
                 ),
@@ -51,20 +60,9 @@ class _ExceptionHomeState extends State<ExceptionHome> {
             backgroundColor: Color(0xFFF5F5F5),
             body: TabBarView(
               children: <Widget>[
-                ListItemWidget(
-                  type: '0',
-                  url: widget.arguments['url'],
-                  pot: widget.arguments['pot'],
-                  typeParameters: widget.arguments['typeParameters'],
-                  barTitle: widget.arguments['title'],
-                ),
-                ListItemWidget(
-                  type: '1',
-                  url: widget.arguments['url'],
-                  pot: widget.arguments['pot'],
-                  typeParameters: widget.arguments['typeParameters'],
-                  barTitle: widget.arguments['title'],
-                ),
+                ListItemWidget(type: 'not', url: widget.arguments['url']),
+                ListItemWidget(type: 'save', url: widget.arguments['url']),
+                ListItemWidget(type: 'submit', url: widget.arguments['url']),
               ],
             )
           )
@@ -75,9 +73,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
 }
 
 class HeadSearchWidget extends StatefulWidget {
-  final String test;
-  HeadSearchWidget({Key key, this.test}) : super(key: key);
-
+  HeadSearchWidget({Key key}) : super(key: key);
   @override
   _HeadSearchWidgetState createState() => _HeadSearchWidgetState();
 }
@@ -105,9 +101,6 @@ class _HeadSearchWidgetState extends State<HeadSearchWidget> {
             hintText: '锅序号',
             fillColor: Color(0xFF999999),
           ),
-          onSubmitted: (val) {
-            print(val);
-          }
         ),
       ),
     );
@@ -119,16 +112,14 @@ class ListItemWidget extends StatefulWidget {
   final String pot;
   final String potName;
   final String url;
-  final String typeParameters;
-  final String barTitle;
+  final String workingType;
   ListItemWidget(
       {Key key,
       @required this.url,
       @required this.pot,
       @required this.potName,
       @required this.type,
-      @required this.typeParameters,
-      @required this.barTitle})
+      @required this.workingType})
       : super(key: key);
 
   @override
@@ -157,11 +148,9 @@ with AutomaticKeepAliveClientMixin {
   Future<void> getData() async {
     try {
       var workShopId = await SharedUtil.instance.getStorage('workShopId');
-      var res = await Sterilize.sterilizeExceptionHomeListApi({
-        'potNo': widget.pot,
+      var res = await Sterilize.sterilizeCraftListApi({
         'workShop': workShopId,
-        'type': widget.typeParameters,
-        'saveType': widget.type,
+        'type': widget.type,
         'current': '1',
         'size': '10',
       });
@@ -171,14 +160,13 @@ with AutomaticKeepAliveClientMixin {
   }
 
   Future<bool> _pull() async {
+
     try {
       current++;
       var workShopId = await SharedUtil.instance.getStorage('workShopId');
-      var res = await Sterilize.sterilizeExceptionHomeListApi({
-        'potNo': widget.pot,
+      var res = await Sterilize.sterilizeCraftListApi({
         'workShop': workShopId,
-        'type': widget.typeParameters,
-        'saveType': widget.type,
+        'type': widget.type,
         'current': current,
         'size': '10',
       });
@@ -231,17 +219,17 @@ with AutomaticKeepAliveClientMixin {
               children: <Widget>[
                 Text(
                     '${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}'),
-                Text('${listviewList[index]['orderNo']}'),
+                Text(
+                    '${listviewList[index]['orderNo']}-${listviewList[index]['checkStatusName']}'),
               ],
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              Navigator.pushNamed(context, '/sterilize/exception/list', arguments: {
-                'potName': widget.potName,
-                'potDetail': listviewList[index],
-                'barTitle': widget.barTitle,
-                'typeCode': widget.typeParameters,
-              });
+              Navigator.pushNamed(context, '/sterilize/craft/materialList',
+                  arguments: {
+                    'potName': widget.potName,
+                    'potNum': listviewList[index],
+                  });
             },
           ),
         );
