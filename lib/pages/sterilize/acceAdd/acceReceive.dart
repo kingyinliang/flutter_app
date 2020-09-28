@@ -106,6 +106,7 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
           ),
           InputWidget(
             label: '领用数量',
+            keyboardType: 'number',
             prop: formMap['useAmount'].toString(),
             requiredFlg: true,
             onChange: (val) {
@@ -145,6 +146,7 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
           ),
           InputWidget(
             label: '备注',
+            keyboardType: 'text',
             prop: formMap['remark'].toString(),
             onChange: (val) {
               formMap['remark'] = val;

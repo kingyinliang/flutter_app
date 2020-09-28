@@ -44,7 +44,8 @@ class _ExceptionAddState extends State<ExceptionAdd> {
         formMap['endDate'] = '';
       }
       formMap['durationString'] = '${formMap['duration']}分钟';
-      if (formMap['exceptionSituation'] != null && formMap['exceptionSituation'] != '') {
+      if (formMap['exceptionSituation'] != null &&
+          formMap['exceptionSituation'] != '') {
         this._getAbnormalReason(formMap['exceptionSituation']);
       }
     }
@@ -132,19 +133,20 @@ class _ExceptionAddState extends State<ExceptionAdd> {
             },
           ),
           InputWidget(
-            label: '异常描述',
-            prop: formMap['exceptionInfo'].toString(),
-            onChange: (val) {
-              formMap['exceptionInfo'] = val;
-              setState(() {});
-            }),
+              label: '异常描述',
+              prop: formMap['exceptionInfo'].toString(),
+              onChange: (val) {
+                formMap['exceptionInfo'] = val;
+                setState(() {});
+              }),
           InputWidget(
-            label: '备注',
-            prop: formMap['remark'].toString(),
-            onChange: (val) {
-              formMap['remark'] = val;
-              setState(() {});
-            })
+              label: '备注',
+              keyboardType: 'text',
+              prop: formMap['remark'].toString(),
+              onChange: (val) {
+                formMap['remark'] = val;
+                setState(() {});
+              })
         ],
       ),
     );
@@ -195,9 +197,10 @@ class _ExceptionAddState extends State<ExceptionAdd> {
 
   // 获取时长
   _getDuration() {
-    if(formMap['startDate'] != '' && formMap['endDate'] != '') {
+    if (formMap['startDate'] != '' && formMap['endDate'] != '') {
       int nowyear = int.parse(formMap['startDate'].split(" ")[0].split('-')[0]);
-      int nowmonth = int.parse(formMap['startDate'].split(" ")[0].split('-')[1]);
+      int nowmonth =
+          int.parse(formMap['startDate'].split(" ")[0].split('-')[1]);
       int nowday = int.parse(formMap['startDate'].split(" ")[0].split('-')[2]);
       int nowhour = int.parse(formMap['startDate'].split(" ")[1].split(':')[0]);
       int nowmin = int.parse(formMap['startDate'].split(" ")[1].split(':')[1]);

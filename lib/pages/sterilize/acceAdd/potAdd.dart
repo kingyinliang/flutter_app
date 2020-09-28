@@ -202,6 +202,7 @@ class _PotAddPageState extends State<PotAddPage> {
           ),
           InputWidget(
               label: '领用数量',
+              keyboardType: 'number',
               prop: formMap['consumeAmount'].toString(),
               requiredFlg: true,
               onChange: (val) {
@@ -238,6 +239,7 @@ class _PotAddPageState extends State<PotAddPage> {
           ),
           InputWidget(
               label: '备注',
+              keyboardType: 'text',
               prop: formMap['remark'].toString(),
               onChange: (val) {
                 formMap['remark'] = val;

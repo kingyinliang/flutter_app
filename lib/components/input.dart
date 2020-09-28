@@ -7,6 +7,7 @@ class InputWidget extends StatefulWidget {
   final String prop;
   final bool enabled;
   final List<TextInputFormatter> inputFormatters;
+  final String keyboardType;
   final bool eye;
   final bool requiredFlg;
   final Function onChange;
@@ -18,6 +19,7 @@ class InputWidget extends StatefulWidget {
       this.enabled = true,
       @required this.onChange,
       this.inputFormatters,
+      this.keyboardType,
       this.eye = false,
       this.requiredFlg = false})
       : super(key: key);
@@ -46,6 +48,11 @@ class _InputWidgetState extends State<InputWidget> {
       child: TextField(
         enabled: widget.enabled,
         obscureText: widget.eye,
+        keyboardType: widget.keyboardType == 'number'
+            ? TextInputType.number
+            : widget.keyboardType == 'text'
+                ? TextInputType.text
+                : TextInputType.visiblePassword,
         inputFormatters: widget.inputFormatters ?? <TextInputFormatter>[],
         controller: TextEditingController.fromValue(
           TextEditingValue(

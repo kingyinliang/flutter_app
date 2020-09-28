@@ -114,21 +114,20 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
             },
           ),
           InputWidget(
-            label: '温度(℃)',
-            prop: formMap['temp'].toString(),
-            onChange: (val) {
-              formMap['temp'] = val;
-              setState(() {});
-            }
-           ),
+              label: '温度(℃)',
+              prop: formMap['temp'].toString(),
+              onChange: (val) {
+                formMap['temp'] = val;
+                setState(() {});
+              }),
           InputWidget(
               label: '备注',
+              keyboardType: 'text',
               prop: formMap['remark'].toString(),
               onChange: (val) {
                 formMap['remark'] = val;
                 setState(() {});
-              }
-          ),
+              }),
         ],
       ),
     );
@@ -141,7 +140,7 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
     }
     Future.delayed(
       Duration.zero,
-          () => setState(() {
+      () => setState(() {
         _getTypeList();
         if (formMap['controlType'] != '') {
           _getStageList(formMap['controlType']);
@@ -157,7 +156,8 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: formMap['id'] == null ? '工艺控制新增' : '工艺控制修改'),
+      appBar: MdsAppBarWidget(
+          titleData: formMap['id'] == null ? '工艺控制新增' : '工艺控制修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[

@@ -87,6 +87,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
       setState(() => this.progress = progress);
       if (taskId == id && status == DownloadTaskStatus.complete) {
         _installApk();
+        Navigator.of(context, rootNavigator: true).pop();
       }
       setState(() {});
     });
