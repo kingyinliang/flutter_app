@@ -11,15 +11,15 @@ import 'package:dfmdsapp/utils/toast.dart';
 import '../common/text_card.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 
-class CraftExceptionList extends StatefulWidget {
+class ExceptionList extends StatefulWidget {
   final arguments;
-  CraftExceptionList({Key key, this.arguments}) : super(key: key);
+  ExceptionList({Key key, this.arguments}) : super(key: key);
 
   @override
-  _CraftExceptionListState createState() => _CraftExceptionListState();
+  _ExceptionListState createState() => _ExceptionListState();
 }
 
-class _CraftExceptionListState extends State<CraftExceptionList> {
+class _ExceptionListState extends State<ExceptionList> {
   bool _floatingActionButtonFlag = true;
   int _tabIndex = 0;
   List exceptionList = []; // 异常列表

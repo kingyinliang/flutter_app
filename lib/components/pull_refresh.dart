@@ -97,6 +97,12 @@ class _PullRefreshState extends State<PullRefresh> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       child: ListView.builder(

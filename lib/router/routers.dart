@@ -5,8 +5,8 @@ import 'package:dfmdsapp/pages/index/user/user_info.dart';
 import 'package:dfmdsapp/pages/index/user/versions.dart';
 import 'package:dfmdsapp/pages/index/user/update_pasword.dart';
 import 'package:dfmdsapp/pages/sterilize/barcode.dart';
+import 'package:dfmdsapp/pages/sterilize/craft/home.dart';
 import 'package:dfmdsapp/pages/sterilize/craft/list.dart';
-import 'package:dfmdsapp/pages/sterilize/craft/materialList.dart';
 import 'package:dfmdsapp/pages/sterilize/craft/materialAdd.dart';
 import 'package:dfmdsapp/pages/sterilize/craft/timeAdd.dart';
 import 'package:dfmdsapp/pages/sterilize/exception/home.dart';
@@ -34,17 +34,17 @@ Map<String, Function> routers = {
   '/sterilize/list': (contxt, {arguments}) =>
       AcceAddListPage(arguments: arguments),
   '/sterilize/craft/list': (contxt, {arguments}) =>
-      CraftListPage(arguments: arguments),
+      CraftHome(arguments: arguments),
   '/sterilize/craft/materialList': (contxt, {arguments}) =>
-      CraftMaterialList(arguments: arguments),
+      CraftList(arguments: arguments),
   '/sterilize/craft/materialAdd': (contxt, {arguments}) =>
       CraftMaterialAdd(arguments: arguments),
   '/sterilize/craft/timeAdd': (contxt, {arguments}) =>
       CraftTimeAdd(arguments: arguments),
   '/sterilize/exception/home': (contxt, {arguments}) =>
-      CraftExceptionHome(arguments: arguments),
+      ExceptionHome(arguments: arguments),
   '/sterilize/exception/list': (contxt, {arguments}) =>
-      CraftExceptionList(arguments: arguments),
+      ExceptionList(arguments: arguments),
   '/sterilize/exception/add': (contxt, {arguments}) =>
       ExceptionAdd(arguments: arguments),
   '/sterilize/exception/textAdd': (contxt, {arguments}) =>
