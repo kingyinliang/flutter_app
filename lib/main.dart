@@ -46,6 +46,7 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           home: new SplashScreen(),
           navigatorKey: Router.navigatorKey,
+          navigatorObservers: [MyObserver()],
           debugShowCheckedModeBanner: false,
           // initialRoute: '/home',
           onGenerateRoute: onGenerateRoute,

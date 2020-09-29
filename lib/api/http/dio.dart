@@ -166,7 +166,7 @@ class HttpManager {
   }
 
   // 响应拦截
-  Future onRequest(response) {
+  Future onRequest(response) async {
     final _com = Completer();
     final _future = _com.future;
     if (response.data['code'] == ResultCode.SUCCESS) {
@@ -175,10 +175,15 @@ class HttpManager {
     } else if (response.data['code'] == ResultCode.EXPIRED_TOKEN) {
       endLoading();
       WebSocketManager.dispos();
-      Future.delayed(Duration.zero, () {
-        Router.navigatorKey.currentState
-            .pushNamedAndRemoveUntil('/login', (route) => false);
-      });
+      var loginStatus = await SharedUtil.instance.getStorage('loginStatus');
+      print(loginStatus);
+      if (loginStatus == false || loginStatus == null) {
+        Future.delayed(Duration.zero, () {
+          Router.navigatorKey.currentState
+              .pushNamedAndRemoveUntil('/login', (route) => false);
+        });
+      }
+
       _com.complete(response.data);
       return _future;
     } else {
