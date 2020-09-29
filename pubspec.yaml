@@ -41,6 +41,7 @@ dependencies:
   permission_handler: ^5.0.1
   install_plugin: ^2.0.1
   connectivity: ^0.4.9
+  flutter_svg: ^0.17.3
   english_words: ^3.1.5
   barcode_scan: ^3.0.1
   flutter_dong_scan: ^1.0.8

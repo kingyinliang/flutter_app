@@ -6,6 +6,7 @@ import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/api/http/socket.dart';
 import 'package:dfmdsapp/utils/path_provider.dart';
+import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -121,39 +122,31 @@ class _UserPageState extends State<UserPage>
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  // UserItem(
-                  //   icon: IconData(0xe63d, fontFamily: 'MdsIcon'),
-                  //   iconColor: Color(0xFFA0DD94),
-                  //   text: '信息安全/隐私政策',
-                  // ),
                   UserItem(
-                    icon: IconData(0xe674, fontFamily: 'MdsIcon'),
-                    iconColor: Color(0xFFE86452),
+                    icon: IconNames.icon_2_shanchu,
+                    iconColor: ['#E86452', 'white'],
                     text: '清除缓存',
                     onTap: () {
-                      // Navigator.of(context).push(DialogRouter(MessageDialog()));
-
                       showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (context) {
-                          // return VersionUpdateDialog();
                           return StorageDialog();
                         },
                       );
                     },
                   ),
                   UserItem(
-                    icon: IconData(0xe6ba, fontFamily: 'MdsIcon'),
-                    iconColor: Color(0xFFF6BD16),
+                    icon: IconNames.icon_49_quanxianshezhi,
+                    iconColor: ['white', '#F6BD16', '#F6BD16', 'white'],
                     text: '修改密码',
                     onTap: () {
                       Navigator.pushNamed(context, '/user/updatepasword');
                     },
                   ),
                   UserItem(
-                    icon: IconData(0xe6ac, fontFamily: 'MdsIcon'),
-                    iconColor: Color(0xFF5B8FF9),
+                    icon: IconNames.icon_52_ap_pguanli,
+                    iconColor: [],
                     text: '系统版本',
                     onTap: () {
                       Navigator.pushNamed(context, '/user/versions');
@@ -224,10 +217,10 @@ class _UserPageState extends State<UserPage>
 }
 
 class UserItem extends StatefulWidget {
-  final IconData icon;
+  final IconNames icon;
   final String text;
   final Function onTap;
-  final Color iconColor;
+  final List<String> iconColor;
   UserItem({Key key, this.icon, this.text, this.onTap, this.iconColor})
       : super(key: key);
 
@@ -250,11 +243,12 @@ class _UserItemState extends State<UserItem> {
         ),
         child: Row(
           children: <Widget>[
-            Icon(
-              widget.icon,
-              size: 26,
-              color: widget.iconColor,
-            ),
+            IconFont(widget.icon, size: 26, colors: widget.iconColor),
+            // Icon(
+            //   widget.icon,
+            //   size: 26,
+            //   color: widget.iconColor,
+            // ),
             SizedBox(width: 17),
             Expanded(
               flex: 1,
