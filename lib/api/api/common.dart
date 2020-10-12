@@ -19,6 +19,12 @@ class Common {
         .post('/sysUser/password/update', params: params);
   }
 
+// 版本更新
+  static getVersion() {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .get('/sysApp/getLastedVersion');
+  }
+
 // 消息查询
   static msgQueryApi(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
@@ -71,5 +77,4 @@ class Common {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
         .post('/sysDevice/listByType', params: params);
   }
-
 }
