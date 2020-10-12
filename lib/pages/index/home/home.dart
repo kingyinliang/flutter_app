@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dfmdsapp/api/api/index.dart';
-import 'package:dfmdsapp/utils/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
+import 'package:dfmdsapp/utils/pxunit.dart';
+import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -12,20 +14,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  double _opacity = 0;
   List menuList = [];
   String factoryName = '';
   String workShopName = '';
-
-  _onScroll(offset) {
-    double alpha = offset / 80;
-    if (alpha > 1) {
-      alpha = 1;
-    }
-    setState(() {
-      _opacity = alpha;
-    });
-  }
 
   _initState() async {
     factoryName = await SharedUtil.instance.getStorage('factory');
@@ -56,36 +47,25 @@ class _HomePageState extends State<HomePage>
     return Container(
       child: Stack(
         children: <Widget>[
-          NotificationListener(
-            onNotification: (ScrollNotification notification) {
-              if (notification is ScrollUpdateNotification &&
-                  notification.depth == 0) {
-                _onScroll(notification.metrics.pixels);
-              }
-              return true;
-            },
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  HomeHead(
-                    factoryName: factoryName,
-                    workShopName: workShopName,
-                  ),
-                  HomeMenu(
-                    menu: menuList,
-                  ),
-                ],
+          ListView(
+            padding: EdgeInsets.fromLTRB(0, pxUnit(50), 0, 0),
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            children: <Widget>[
+              HomeHead(
+                factoryName: factoryName,
+                workShopName: workShopName,
               ),
-            ),
+              HomeMenu(
+                menu: menuList,
+              ),
+            ],
           ),
-          Opacity(
-            opacity: _opacity,
+          Positioned(
+            top: 0,
             child: Container(
-              height: 50,
+              width: pxUnit(375),
+              height: pxUnit(50),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -127,38 +107,15 @@ class _HomeHeadState extends State<HomeHead> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+      padding: EdgeInsets.all(10),
       width: double.infinity,
-      height: 125.0,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF4E7FFE), Color(0xFF83A5FC), Color(0xFF9CB7FD)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+      height: 160.0,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          color: Colors.blue,
         ),
       ),
-      child: Padding(
-          padding: EdgeInsets.fromLTRB(15, 22, 15, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                widget.factoryName ?? '',
-                style: TextStyle(
-                  fontSize: 28.0,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                widget.workShopName ?? '',
-                style: TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.white,
-                ),
-              )
-            ],
-          )),
     );
   }
 }
@@ -178,11 +135,11 @@ class _HomeMenuState extends State<HomeMenu> {
     return GridView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(8, 10, 8, 10),
+      padding: EdgeInsets.all(10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisSpacing: 6,
         mainAxisSpacing: 8,
-        crossAxisCount: 2,
+        crossAxisCount: 4,
         childAspectRatio: 1.06,
       ),
       itemCount: widget.menu.length,
@@ -192,8 +149,7 @@ class _HomeMenuState extends State<HomeMenu> {
           menuData: widget.menu[index]['remark'],
           menuTitle: widget.menu[index]['menuName'],
           menuSubTitle: widget.menu[index]['remark'],
-          menuIcon: IconData(getColorFromHex(widget.menu[index]['menuIcon']),
-              fontFamily: 'MdsIcon'),
+          menuIcon: widget.menu[index]['menuIcon'],
         );
       },
     );
@@ -202,7 +158,7 @@ class _HomeMenuState extends State<HomeMenu> {
 
 // 首页单个菜单widget
 class MenuItem extends StatefulWidget {
-  final IconData menuIcon;
+  final String menuIcon;
   final String menuTitle;
   final String menuSubTitle;
   final String url;
@@ -222,8 +178,15 @@ class MenuItem extends StatefulWidget {
 
 class _MenuItemState extends State<MenuItem> {
   Map menu = {};
+  IconNames iconNames;
+
+  IconNames iconNamesFromString(String value) {
+    return IconNames.values.firstWhere(
+        (e) => e.toString().split('.')[1].toUpperCase() == value.toUpperCase());
+  }
 
   _initState() {
+    // iconNames = iconNamesFromString(widget.menuIcon);
     switch (widget.menuData) {
       case 'semi':
         menu = {
@@ -292,56 +255,37 @@ class _MenuItemState extends State<MenuItem> {
   Widget build(BuildContext context) {
     return InkWell(
       child: Container(
-        padding: EdgeInsets.fromLTRB(12, 14, 12, 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Color(menu['menuColor']),
-        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            // IconFont(iconNames, size: 30),
+            SizedBox(height: 10),
             Text(
               widget.menuTitle,
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-              ),
-            ),
-            Text(
-              menu['menuSubTitle'],
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Icon(
-                      widget.menuIcon,
-                      size: 62,
-                    )
-                  ],
-                ),
+                color: Color(0xFF333333),
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
               ),
             ),
           ],
         ),
       ),
-      onTap: () {
+      onTap: () async {
         String urlString = '/sterilize/barcode';
         if (menu['workingType'] == 'processor') {
           urlString = widget.url;
         }
+        if (widget.menuData == 'kojimaking') {
+          urlString = '/kojiMaking/List';
+        }
+        var workShopId = await SharedUtil.instance.getStorage('workShopId');
         Navigator.pushNamed(
           context,
           urlString,
           arguments: {
+            'workShopId': workShopId,
             'url': widget.url,
             'workingType': menu['workingType'],
             'title': widget.menuTitle,
