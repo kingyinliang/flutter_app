@@ -67,7 +67,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
     try {
       final path = (await getExternalStorageDirectory()).path.toString();
       InstallPlugin.installApk(
-              path + '/dfmds-${widget.varsion}.apk', 'com.shinho.dfmdsapp')
+              path + '/dfmds-${widget.varsion}.apk', 'com.shinho.dfmdsappuat')
           .then((result) {
         print('install apk $result');
       }).catchError((error) {
