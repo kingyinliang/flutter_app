@@ -46,15 +46,20 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           Positioned(
             bottom: 70,
             right: 5,
-            child: RawMaterialButton(
-              fillColor: Color(0xFF1677FF),
-              splashColor: Colors.amber[100],
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
+            child: Container(
+              width: 50,
+              height: 50,
+              child: RawMaterialButton(
+                fillColor: Color(0xFF1677FF),
+                splashColor: Colors.amber[100],
+                child: Icon(
+                  Icons.add,
+                  size: 26,
+                  color: Colors.white,
+                ),
+                shape: CircleBorder(),
+                onPressed: () {},
               ),
-              shape: CircleBorder(),
-              onPressed: () {},
             ),
           ),
           Positioned(
