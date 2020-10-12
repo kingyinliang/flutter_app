@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
+import 'package:dfmdsapp/utils/version_update.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage>
     try {
       var res = await Common.getMenuApi();
       menuList = res['data']['menuList'];
+      varsionUpdateInit(context);
       setState(() {});
     } catch (e) {}
   }

@@ -2,6 +2,8 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:dfmdsapp/utils/pxunit.dart';
+import 'package:dfmdsapp/api/api/index.dart';
+import 'package:dfmdsapp/components/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,19 +11,41 @@ import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:install_plugin/install_plugin.dart';
 
-varsionUpdateInit(BuildContext context) async {
+varsionUpdateInit(BuildContext context, {flag: false}) async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   String version = packageInfo.version;
-  String newVersion = '1.0.1';
+  print(version);
+  var versionData = await Common.getVersion();
+  String newVersion = versionData['data']['appVersion'];
+  String downLoadUrl = versionData['data']['downLoadUrl'];
+  String versionInfo = versionData['data']['versionInfo'];
   if (version != newVersion) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return VersionUpdateDialog(
-            varsion: newVersion,
-            url:
-                'https://s3-033-shinho-mds-uat-bjs.s3.cn-north-1.amazonaws.com.cn/apk/app-release.apk');
+          version: newVersion,
+          oldVersion: version,
+          versionInfo: versionInfo,
+          url: downLoadUrl,
+        );
+      },
+    );
+  } else if (flag) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return DiaLogContainer(
+          success: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+          child: Container(
+            alignment: Alignment.center,
+            child: Text('已经是最新版'),
+          ),
+        );
       },
     );
   }
@@ -29,8 +53,12 @@ varsionUpdateInit(BuildContext context) async {
 
 class VersionUpdateDialog extends StatefulWidget {
   final String url;
-  final String varsion;
-  VersionUpdateDialog({Key key, this.url, this.varsion}) : super(key: key);
+  final String version;
+  final String oldVersion;
+  final String versionInfo;
+  VersionUpdateDialog(
+      {Key key, this.url, this.version, this.oldVersion, this.versionInfo})
+      : super(key: key);
 
   @override
   _VersionUpdateDialogState createState() => _VersionUpdateDialogState();
@@ -49,7 +77,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
       //发起请求
       taskId = await FlutterDownloader.enqueue(
           url: widget.url,
-          fileName: 'dfmds-${widget.varsion}.apk',
+          fileName: 'dfmds-${widget.version}.apk',
           savedDir: path,
           showNotification: true,
           openFileFromNotification: true);
@@ -67,7 +95,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
     try {
       final path = (await getExternalStorageDirectory()).path.toString();
       InstallPlugin.installApk(
-              path + '/dfmds-${widget.varsion}.apk', 'com.shinho.dfmdsappuat')
+              path + '/dfmds-${widget.version}.apk', 'com.shinho.dfmdsappuat')
           .then((result) {
         print('install apk $result');
       }).catchError((error) {
@@ -93,6 +121,15 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
     });
 
     FlutterDownloader.registerCallback(downloadCallback);
+  }
+
+  List<Widget> _getVersionInfo() {
+    List<Widget> infoList = [];
+    infoList.add(Text(
+      '${widget.versionInfo}',
+      style: TextStyle(fontSize: 12, color: Color(0xFF666666)),
+    ));
+    return infoList;
   }
 
   @override
@@ -132,7 +169,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '是否升级到V${widget.varsion}版本',
+                        '是否升级到V${widget.version}版本',
                         style: TextStyle(
                             fontSize: 14,
                             color: Colors.white,
@@ -140,7 +177,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        '新版本大小：32.0M',
+                        '当前版本：V${widget.oldVersion}',
                         style: TextStyle(fontSize: 12, color: Colors.white),
                       ),
                     ],
@@ -160,18 +197,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
                     children: <Widget>[
                       ListView(
                         padding: EdgeInsets.fromLTRB(15, 0, 20, 0),
-                        children: <Widget>[
-                          Text(
-                            '1、优化api接口',
-                            style: TextStyle(
-                                fontSize: 12, color: Color(0xFF666666)),
-                          ),
-                          Text(
-                            '2、添加demo演示',
-                            style: TextStyle(
-                                fontSize: 12, color: Color(0xFF666666)),
-                          ),
-                        ],
+                        children: _getVersionInfo(),
                       ),
                       Positioned(
                         bottom: 15,
@@ -199,7 +225,23 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
                                 elevation: 10,
                                 onPressed: _download,
                               ),
-                            )
+                            ),
+                            // Container(
+                            //   width: pxUnit(280),
+                            //   height: 38,
+                            //   padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
+                            //   child: RaisedButton(
+                            //     child: Text('立即更新',
+                            //         style: TextStyle(fontSize: 16.0)),
+                            //     color: Color.fromRGBO(72, 123, 255, 1),
+                            //     textColor: Colors.white,
+                            //     elevation: 10,
+                            //     onPressed: () {
+                            //       Navigator.of(context, rootNavigator: true)
+                            //           .pop();
+                            //     },
+                            //   ),
+                            // ),
                           ],
                         ),
                       )
