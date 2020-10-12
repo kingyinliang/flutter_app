@@ -14,6 +14,7 @@ import 'package:install_plugin/install_plugin.dart';
 varsionUpdateInit(BuildContext context, {flag: false}) async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   String version = packageInfo.version;
+  print(version);
   var versionData = await Common.getVersion();
   String newVersion = versionData['data']['appVersion'];
   String downLoadUrl = versionData['data']['downLoadUrl'];
@@ -176,7 +177,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        '当前版本：V${widget.version}',
+                        '当前版本：V${widget.oldVersion}',
                         style: TextStyle(fontSize: 12, color: Colors.white),
                       ),
                     ],
@@ -225,6 +226,22 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
                                 onPressed: _download,
                               ),
                             ),
+                            // Container(
+                            //   width: pxUnit(280),
+                            //   height: 38,
+                            //   padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
+                            //   child: RaisedButton(
+                            //     child: Text('立即更新',
+                            //         style: TextStyle(fontSize: 16.0)),
+                            //     color: Color.fromRGBO(72, 123, 255, 1),
+                            //     textColor: Colors.white,
+                            //     elevation: 10,
+                            //     onPressed: () {
+                            //       Navigator.of(context, rootNavigator: true)
+                            //           .pop();
+                            //     },
+                            //   ),
+                            // ),
                           ],
                         ),
                       )
