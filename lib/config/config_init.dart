@@ -20,7 +20,6 @@ class ConfigInt {
     connect = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) async {
-      print(result);
       if (result != ConnectivityResult.mobile &&
           result != ConnectivityResult.wifi) {
         await SharedUtil.instance.saveBoolStorage('netStatus', false);

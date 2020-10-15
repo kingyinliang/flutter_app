@@ -179,9 +179,13 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
               setState(() {});
             },
           ),
-          FormTextWidget(
+          InputWidget(
             label: '发酵罐库存',
             prop: formMap['fermentStorage'].toString(),
+            onChange: (val) {
+              formMap['fermentStorage'] = val;
+              setState(() {});
+            },
           ),
           SelectWidget(
             label: '转运罐号',

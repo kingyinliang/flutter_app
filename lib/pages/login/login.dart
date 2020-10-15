@@ -81,10 +81,7 @@ class _LoginPageState extends State<LoginPage> {
       await HttpManager.getInstance().updateToken();
       Navigator.pop(context);
       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
-    } catch (e) {
-      print('catchError');
-      print(e);
-    }
+    } catch (e) {}
   }
 
   @override

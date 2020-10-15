@@ -40,18 +40,23 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterEasyLoading(
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: MaterialApp(
-          home: new SplashScreen(),
-          navigatorKey: Router.navigatorKey,
-          navigatorObservers: [MyObserver()],
-          debugShowCheckedModeBanner: false,
-          // initialRoute: '/home',
-          onGenerateRoute: onGenerateRoute,
-        ),
-      ),
+    return MaterialApp(
+      home: new SplashScreen(),
+      navigatorKey: Router.navigatorKey,
+      navigatorObservers: [MyObserver()],
+      debugShowCheckedModeBanner: false,
+      // initialRoute: '/home',
+      onGenerateRoute: onGenerateRoute,
+      builder: (BuildContext context, Widget child) {
+        return Material(
+          child: FlutterEasyLoading(
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.dark,
+              child: child,
+            ),
+          ),
+        );
+      },
     );
   }
 }

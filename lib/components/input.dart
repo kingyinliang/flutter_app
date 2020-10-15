@@ -9,6 +9,7 @@ class InputWidget extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
   final String keyboardType;
   final bool eye;
+  final String suffix;
   final bool requiredFlg;
   final Function onChange;
 
@@ -20,6 +21,7 @@ class InputWidget extends StatefulWidget {
       @required this.onChange,
       this.inputFormatters,
       this.keyboardType,
+      this.suffix,
       this.eye = false,
       this.requiredFlg = false})
       : super(key: key);
@@ -67,7 +69,25 @@ class _InputWidgetState extends State<InputWidget> {
         ),
         textAlign: TextAlign.end,
         style: TextStyle(color: Color(0xFF999999)),
-        decoration: InputDecoration(border: InputBorder.none),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: '请输入',
+          suffixIcon: widget.suffix != null
+              ? Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        widget.suffix,
+                        style:
+                            TextStyle(fontSize: 15, color: Color(0xFF999999)),
+                      ),
+                    ],
+                  ),
+                )
+              : null,
+        ),
         onChanged: (value) {
           widget.onChange(value);
         },
