@@ -4,6 +4,7 @@ import 'package:dfmdsapp/components/pull_refresh.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/components/no_data.dart';
+import 'package:dfmdsapp/components/search.dart';
 
 class AcceAddListPage extends StatefulWidget {
   final arguments;
@@ -40,7 +41,7 @@ class _AcceAddListPageState extends State<AcceAddListPage> {
                     unselectedLabelColor: Color(0xFF333333),
                     unselectedLabelStyle: TextStyle(fontSize: 17),
                     tabs: <Widget>[
-                      Tab(text: '未录入'),
+                      Tab(text: '待维护'),
                       Tab(text: '已保存'),
                       Tab(text: '已提交'),
                     ],
@@ -74,42 +75,6 @@ class _AcceAddListPageState extends State<AcceAddListPage> {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class HeadSearchWidget extends StatefulWidget {
-  HeadSearchWidget({Key key}) : super(key: key);
-
-  @override
-  _HeadSearchWidgetState createState() => _HeadSearchWidgetState();
-}
-
-class _HeadSearchWidgetState extends State<HeadSearchWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 7, 0, 7),
-      height: 44,
-      color: Color(0xFFF5F5F5),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0x0A000000),
-          borderRadius: BorderRadius.all(Radius.circular(6.0)),
-        ),
-        child: TextField(
-          style: TextStyle(color: Color(0xFF999999), fontSize: 13),
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-            prefixIcon: Icon(Icons.search, color: Color(0xFF999999)),
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-            ),
-            hintText: '锅序号',
-            fillColor: Color(0xFF999999),
           ),
         ),
       ),
