@@ -11,7 +11,7 @@ import 'package:dfmdsapp/api/api/index.dart';
 
 import '../common/page_head.dart';
 import '../common/item_card.dart';
-import '../common/remove_btn.dart';
+import '../../../components/remove_btn.dart';
 
 class SemiReceivePage extends StatefulWidget {
   final arguments;

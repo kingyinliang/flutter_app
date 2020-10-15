@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
 import 'package:dfmdsapp/components/page_head.dart';
+import 'package:dfmdsapp/components/no_data.dart';
 import 'package:dfmdsapp/utils/pxunit.dart' show pxUnit;
 
 class HomePageWidget extends StatefulWidget {
@@ -10,13 +11,21 @@ class HomePageWidget extends StatefulWidget {
   final String headSubTitle;
   final String headThreeTitle;
   final String headFourTitle;
+  final List listData;
+  final Function submitFn;
+  final Function addFn;
+  final Function listWidget;
   HomePageWidget(
       {Key key,
       this.title,
       this.headTitle,
       this.headSubTitle,
       this.headThreeTitle,
-      this.headFourTitle})
+      this.headFourTitle,
+      @required this.submitFn,
+      @required this.addFn,
+      @required this.listWidget,
+      @required this.listData})
       : super(key: key);
 
   @override
@@ -24,6 +33,25 @@ class HomePageWidget extends StatefulWidget {
 }
 
 class _HomePageWidgetState extends State<HomePageWidget> {
+  List<Widget> _getListCard() {
+    List<Widget> listWidget = [];
+    listWidget = widget.listData.asMap().keys.map((index) {
+      return Container(
+        child: widget.listWidget(index),
+      );
+    }).toList();
+    if (widget.listData.length == 0) {
+      return [
+        Container(
+          padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+          child: NoDataWidget(),
+        )
+      ];
+    } else {
+      return listWidget;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +69,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 fourTitle: '${widget.headFourTitle}',
               ),
               SizedBox(height: 5),
+              Container(
+                padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+                child: Column(
+                  children: _getListCard(),
+                ),
+              ),
             ],
           ),
           Positioned(
@@ -58,7 +92,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   color: Colors.white,
                 ),
                 shape: CircleBorder(),
-                onPressed: () {},
+                onPressed: widget.addFn,
               ),
             ),
           ),
@@ -67,7 +101,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             width: pxUnit(375),
             child: MdsWidthButton(
               text: '提交',
-              onPressed: () {},
+              onPressed: widget.submitFn,
             ),
           ),
         ],

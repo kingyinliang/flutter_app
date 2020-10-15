@@ -22,7 +22,7 @@ class _KojiMakingListPageState extends State<KojiMakingListPage> {
         'potNo': '1',
       },
       itemOnTap: (context, index, listviewList) {
-        return Navigator.pushNamed(context, '/kojiMaking/steamSide',
+        return Navigator.pushNamed(context, widget.arguments['url'],
             arguments: {
               'title': widget.arguments['title'],
               'status': listviewList[index]['status'],

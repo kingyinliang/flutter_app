@@ -10,7 +10,7 @@ import 'package:dfmdsapp/utils/toast.dart';
 
 import '../common/page_head.dart';
 import '../common/item_card.dart';
-import '../common/remove_btn.dart';
+import '../../../components/remove_btn.dart';
 
 class AcceAddHomePage extends StatefulWidget {
   final arguments;
