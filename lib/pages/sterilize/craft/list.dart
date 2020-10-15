@@ -6,7 +6,7 @@ import 'package:dfmdsapp/components/slide_button.dart';
 import '../common/page_head.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import '../common/item_card.dart';
-import '../common/remove_btn.dart';
+import '../../../components/remove_btn.dart';
 import 'package:dfmdsapp/utils/toast.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
 
@@ -32,7 +32,8 @@ class _CraftListState extends State<CraftList> {
       _floatingActionButtonFlag = true;
       _submitButtonFlag = true;
     } else {
-      _floatingActionButtonFlag = getFloatingActionButtonFlag(index, materialInfo, 0);
+      _floatingActionButtonFlag =
+          getFloatingActionButtonFlag(index, materialInfo, 0);
       _submitButtonFlag = getFloatingActionButtonFlag(index, materialInfo, 1);
     }
     _tabIndex = index;
@@ -46,10 +47,9 @@ class _CraftListState extends State<CraftList> {
 
   _initState() async {
     try {
-      var res = await Sterilize.sterilizeCraftMaterialListApi({
-        "potOrderNo": widget.arguments['potNum']['potNo']
-      });
-      if (res['data'] != null ) {
+      var res = await Sterilize.sterilizeCraftMaterialListApi(
+          {"potOrderNo": widget.arguments['potNum']['potNo']});
+      if (res['data'] != null) {
         materialInfo = [res['data']];
         print('123456789');
         print(materialInfo);
@@ -76,8 +76,10 @@ class _CraftListState extends State<CraftList> {
 //        }
 //        print('print: potList');
 //        print(potList);
-        _floatingActionButtonFlag = getFloatingActionButtonFlag(_tabIndex, materialInfo, 0);
-        _submitButtonFlag = getFloatingActionButtonFlag(_tabIndex, materialInfo, 1);
+        _floatingActionButtonFlag =
+            getFloatingActionButtonFlag(_tabIndex, materialInfo, 0);
+        _submitButtonFlag =
+            getFloatingActionButtonFlag(_tabIndex, materialInfo, 1);
       } else {
         _floatingActionButtonFlag = true;
         _submitButtonFlag = true;
@@ -93,7 +95,9 @@ class _CraftListState extends State<CraftList> {
       if (type == 1) {
         ButtonFlag = data[0]['checkStatus'] == 'M' ? false : true;
       } else {
-        ButtonFlag = (materialInfo.length == 1 || data[0]['checkStatus'] == 'M') ? false : true;
+        ButtonFlag = (materialInfo.length == 1 || data[0]['checkStatus'] == 'M')
+            ? false
+            : true;
       }
     } else {
       if (data[0]['item'].length == 0) {
@@ -112,9 +116,9 @@ class _CraftListState extends State<CraftList> {
     super.initState();
     Future.delayed(
       Duration.zero,
-        () => setState(() {
-          _initState();
-        }),
+      () => setState(() {
+        _initState();
+      }),
     );
   }
 
@@ -154,154 +158,178 @@ class _CraftListState extends State<CraftList> {
         appBar: MdsAppBarWidget(titleData: '工艺控制'),
         backgroundColor: Color(0xFFF5F5F5),
         body: SliverTabBarWidget(
-          tabChange: setFloatingActionButtonFlag,
-          children: <Widget>[
-            SizedBox(height: 5),
-            PageHead(
-              title: '${widget.arguments['potNum']['potName']} 第${widget.arguments['potNum']['potOrder']}锅',
-              subTitle: '${widget.arguments['potNum']['materialName']}',
-              orderNo: '${widget.arguments['potNum']['orderNo']}',
-              potNo: '${widget.arguments['potNum']['potNo']}',
-            ),
-            SizedBox(height: 5),
-          ],
-          tabBarChildren: <Widget>[
-            Tab(text: '入料&升温'),
-            Tab(text: '杀菌时间&温度'),
-          ],
-          tabBarViewChildren: <Widget>[
-            ListView.builder(
-              itemCount: materialInfo.length,
-              itemBuilder: (context, idx) {
-                return Container(
-                  padding: EdgeInsets.all(5),
+            tabChange: setFloatingActionButtonFlag,
+            children: <Widget>[
+              SizedBox(height: 5),
+              PageHead(
+                title:
+                    '${widget.arguments['potNum']['potName']} 第${widget.arguments['potNum']['potOrder']}锅',
+                subTitle: '${widget.arguments['potNum']['materialName']}',
+                orderNo: '${widget.arguments['potNum']['orderNo']}',
+                potNo: '${widget.arguments['potNum']['potNo']}',
+              ),
+              SizedBox(height: 5),
+            ],
+            tabBarChildren: <Widget>[
+              Tab(text: '入料&升温'),
+              Tab(text: '杀菌时间&温度'),
+            ],
+            tabBarViewChildren: <Widget>[
+              ListView.builder(
+                  itemCount: materialInfo.length,
+                  itemBuilder: (context, idx) {
+                    return Container(
+                      padding: EdgeInsets.all(5),
 //                  margin: EdgeInsets.only(bottom: 6.0),
-                  child: Card(
-                    color: Colors.white,
-                    margin: EdgeInsets.all(2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(15.0),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Text('入料时间', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                              Expanded(
-                                child: Text(''), // 中间用Expanded控件
-                              ),
-                              InkWell(
-                                child: _submitButtonFlag ? Icon(
-                                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                                  size: 16.0,
-                                  color: Color(0xFF487BFF),
-                                ) : SizedBox(),
-                                onTap: (){
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/sterilize/craft/materialAdd',
-                                    arguments: {
-                                      'potOrderNo': widget.arguments['potOrderNo'],
-                                      'potOrderId': widget.arguments['potOrderId'],
-                                      'data': materialInfo[idx],
-                                    },
-                                  ).then((value) => value != null ? _initState() : null);
-                                },
-                              ),
-                            ],
+                      child: Card(
+                          color: Colors.white,
+                          margin: EdgeInsets.all(2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15.0)),
                           ),
-                          SizedBox(height: 6),
-                          Row(
-                            children: <Widget>[
-                              Text('开始时间'),
-                              Expanded(
-                                child: Text(''),
-                              ),
-                              Text('结束时间')
-                            ],
-                          ),
-                          SizedBox(height: 6),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text('${materialInfo[idx]['feedStartDate'] == null ? '' : materialInfo[idx]['feedStartDate']}', style: TextStyle(fontSize: 14)),
-                              Expanded(
-                                child: Text(''),
-                              ),
-                              Text('${materialInfo[idx]['feeEndDate'] == null ? '' : materialInfo[idx]['feeEndDate']}', style: TextStyle(fontSize: 14))
-                            ],
-                          ),
-                          SizedBox(height: 6),
-                          Row(
-                            children: <Widget>[
-                              Text('入料时间', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                              Expanded(
-                                child: Text(''), // 中间用Expanded控件
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 6),
-                          Row(
-                            children: <Widget>[
-                              Text('开始时间'),
-                              Expanded(
-                                child: Text(''),
-                              ),
-                              Text('结束时间')
-                            ],
-                          ),
-                          SizedBox(height: 6),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text('${materialInfo[idx]['riseStartDate'] == null ? '' : materialInfo[idx]['riseStartDate']}', style: TextStyle(fontSize: 14)),
-                              Expanded(
-                                child: Text(''),
-                              ),
-                              Text('${materialInfo[idx]['riseEndDate'] == null ? '' : materialInfo[idx]['riseEndDate']}', style: TextStyle(fontSize: 14))
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFF8D0CB),
-                                    borderRadius: BorderRadius.all(Radius.circular(17))),
-                                child: Text('保温阶段-ZK：${materialInfo[idx]['keepZkFlagString']}'),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 10.0),
-                                padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFFCEBB9),
-                                    borderRadius: BorderRadius.all(Radius.circular(17))),
-                                child: Text('降温阶段-ZK：${materialInfo[idx]['coolZkFlagString']}'),
-                              ),
-                            ],
-                          ),
-                        ]
-                      )
-                    )
-                  ),
-                );
-              }
-            ),
-            PotListWidget(
-              data: potList,
-              updataFn: _initState,
-              arguments: {
-                'potOrderNo': widget.arguments['potNum']['potNo'],
-                'potOrderId': widget.arguments['potNum']['potOrderId'],
-              },
-              delFn: _delPot,
-              submitButtonFlag: _submitButtonFlag
-            ),
-          ]
-        ),
+                          child: Container(
+                              padding: EdgeInsets.all(15.0),
+                              child: Column(children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Text('入料时间',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600)),
+                                    Expanded(
+                                      child: Text(''), // 中间用Expanded控件
+                                    ),
+                                    InkWell(
+                                      child: _submitButtonFlag
+                                          ? Icon(
+                                              IconData(0xe62c,
+                                                  fontFamily: 'MdsIcon'),
+                                              size: 16.0,
+                                              color: Color(0xFF487BFF),
+                                            )
+                                          : SizedBox(),
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/sterilize/craft/materialAdd',
+                                          arguments: {
+                                            'potOrderNo':
+                                                widget.arguments['potOrderNo'],
+                                            'potOrderId':
+                                                widget.arguments['potOrderId'],
+                                            'data': materialInfo[idx],
+                                          },
+                                        ).then((value) => value != null
+                                            ? _initState()
+                                            : null);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 6),
+                                Row(
+                                  children: <Widget>[
+                                    Text('开始时间'),
+                                    Expanded(
+                                      child: Text(''),
+                                    ),
+                                    Text('结束时间')
+                                  ],
+                                ),
+                                SizedBox(height: 6),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Text(
+                                        '${materialInfo[idx]['feedStartDate'] == null ? '' : materialInfo[idx]['feedStartDate']}',
+                                        style: TextStyle(fontSize: 14)),
+                                    Expanded(
+                                      child: Text(''),
+                                    ),
+                                    Text(
+                                        '${materialInfo[idx]['feeEndDate'] == null ? '' : materialInfo[idx]['feeEndDate']}',
+                                        style: TextStyle(fontSize: 14))
+                                  ],
+                                ),
+                                SizedBox(height: 6),
+                                Row(
+                                  children: <Widget>[
+                                    Text('入料时间',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600)),
+                                    Expanded(
+                                      child: Text(''), // 中间用Expanded控件
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 6),
+                                Row(
+                                  children: <Widget>[
+                                    Text('开始时间'),
+                                    Expanded(
+                                      child: Text(''),
+                                    ),
+                                    Text('结束时间')
+                                  ],
+                                ),
+                                SizedBox(height: 6),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Text(
+                                        '${materialInfo[idx]['riseStartDate'] == null ? '' : materialInfo[idx]['riseStartDate']}',
+                                        style: TextStyle(fontSize: 14)),
+                                    Expanded(
+                                      child: Text(''),
+                                    ),
+                                    Text(
+                                        '${materialInfo[idx]['riseEndDate'] == null ? '' : materialInfo[idx]['riseEndDate']}',
+                                        style: TextStyle(fontSize: 14))
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      padding:
+                                          EdgeInsets.fromLTRB(12, 3, 12, 3),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFF8D0CB),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(17))),
+                                      child: Text(
+                                          '保温阶段-ZK：${materialInfo[idx]['keepZkFlagString']}'),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(left: 10.0),
+                                      padding:
+                                          EdgeInsets.fromLTRB(12, 3, 12, 3),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFFCEBB9),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(17))),
+                                      child: Text(
+                                          '降温阶段-ZK：${materialInfo[idx]['coolZkFlagString']}'),
+                                    ),
+                                  ],
+                                ),
+                              ]))),
+                    );
+                  }),
+              PotListWidget(
+                  data: potList,
+                  updataFn: _initState,
+                  arguments: {
+                    'potOrderNo': widget.arguments['potNum']['potNo'],
+                    'potOrderId': widget.arguments['potNum']['potOrderId'],
+                  },
+                  delFn: _delPot,
+                  submitButtonFlag: _submitButtonFlag),
+            ]),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(
           width: double.infinity,
@@ -312,38 +340,47 @@ class _CraftListState extends State<CraftList> {
               Container(
                 alignment: Alignment.bottomRight,
                 margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
-                child: _floatingActionButtonFlag ?
-                  FloatingActionButton(
-                    onPressed: () {
-                      if (_tabIndex == 0) {
-                        Navigator.pushNamed(
-                          context,
-                          '/sterilize/craft/materialAdd',
-                          arguments: {
-                            'potOrderNo': widget.arguments['potNum']['potNo'],
-                            'potOrderId': widget.arguments['potNum']['potOrderId'],
-                          },
-                        ).then((value) => value != null ? _initState() : null);
-                      } else {
-                        Navigator.pushNamed(
-                          context,
-                          '/sterilize/craft/timeAdd',
-                          arguments: {
-                            'potOrderNo': widget.arguments['potNum']['potNo'],
-                            'potOrderId': widget.arguments['potNum']['potOrderId'],
-                          },
-                        ).then((value) => value != null ? _initState() : null);
-                      }
-                    },
-                    child: Icon(Icons.add),
-                  ) : SizedBox(),
+                child: _floatingActionButtonFlag
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          if (_tabIndex == 0) {
+                            Navigator.pushNamed(
+                              context,
+                              '/sterilize/craft/materialAdd',
+                              arguments: {
+                                'potOrderNo': widget.arguments['potNum']
+                                    ['potNo'],
+                                'potOrderId': widget.arguments['potNum']
+                                    ['potOrderId'],
+                              },
+                            ).then(
+                                (value) => value != null ? _initState() : null);
+                          } else {
+                            Navigator.pushNamed(
+                              context,
+                              '/sterilize/craft/timeAdd',
+                              arguments: {
+                                'potOrderNo': widget.arguments['potNum']
+                                    ['potNo'],
+                                'potOrderId': widget.arguments['potNum']
+                                    ['potOrderId'],
+                              },
+                            ).then(
+                                (value) => value != null ? _initState() : null);
+                          }
+                        },
+                        child: Icon(Icons.add),
+                      )
+                    : SizedBox(),
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: _submitButtonFlag ? MdsWidthButton(
-                  text: '提交',
-                  onPressed: _submitPage,
-                ) : SizedBox(),
+                child: _submitButtonFlag
+                    ? MdsWidthButton(
+                        text: '提交',
+                        onPressed: _submitPage,
+                      )
+                    : SizedBox(),
               ),
             ],
           ),
@@ -360,14 +397,21 @@ class PotListWidget extends StatefulWidget {
   final Function updataFn;
   final Function delFn;
   final bool submitButtonFlag;
-  PotListWidget({Key key, this.arguments, this.data, this.updataFn, this.delFn, this.submitButtonFlag}) : super(key: key);
+  PotListWidget(
+      {Key key,
+      this.arguments,
+      this.data,
+      this.updataFn,
+      this.delFn,
+      this.submitButtonFlag})
+      : super(key: key);
 
   @override
   _PotListWidgetState createState() => _PotListWidgetState();
 }
 
 class _PotListWidgetState extends State<PotListWidget>
-with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   List wrapList = [
     {'label': '类型：', 'value': 'controlTypeName'},
     {'label': '阶段：', 'value': 'controlStage'},

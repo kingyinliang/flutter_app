@@ -6,7 +6,7 @@ import 'package:dfmdsapp/components/slide_button.dart';
 import '../common/page_head.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import '../common/exception_card.dart';
-import '../common/remove_btn.dart';
+import '../../../components/remove_btn.dart';
 import 'package:dfmdsapp/utils/toast.dart';
 import '../common/text_card.dart';
 import 'package:dfmdsapp/utils/storage.dart';
@@ -30,14 +30,14 @@ class _ExceptionListState extends State<ExceptionList> {
     super.initState();
     Future.delayed(
       Duration.zero,
-        () => setState(() {
-          _initState();
-        }),
+      () => setState(() {
+        _initState();
+      }),
     );
   }
 
   _initState() async {
-	var workShopId = await SharedUtil.instance.getStorage('workShopId');
+    var workShopId = await SharedUtil.instance.getStorage('workShopId');
     try {
       // 异常列表
       var res = await Sterilize.sterilizeExceptionDetailListApi({
@@ -61,7 +61,7 @@ class _ExceptionListState extends State<ExceptionList> {
         this.textList = [testRes['data']];
       }
       _floatingActionButtonFlag = this._isButtonFlag(_tabIndex);
-      setState(() {});//
+      setState(() {}); //
     } catch (e) {}
   }
 
@@ -86,7 +86,8 @@ class _ExceptionListState extends State<ExceptionList> {
   // 异常删除
   _delPot(index) async {
     try {
-      await Sterilize.sterilizeExceptionDetailDeleteApi([this.exceptionList[index]['id']]);
+      await Sterilize.sterilizeExceptionDetailDeleteApi(
+          [this.exceptionList[index]['id']]);
       successToast(msg: '操作成功');
       this.exceptionList.removeAt(index);
       setState(() {});
@@ -101,55 +102,54 @@ class _ExceptionListState extends State<ExceptionList> {
         appBar: MdsAppBarWidget(titleData: '${widget.arguments['barTitle']}'),
         backgroundColor: Color(0xFFF5F5F5),
         body: SliverTabBarWidget(
-          tabChange: setFloatingActionButtonFlag,
-          children: <Widget>[
-            SizedBox(height: 5),
-            PageHead(
-              title: '${widget.arguments['potDetail']['potName']} 第${widget.arguments['potDetail']['potOrder']}锅',
-              subTitle: '${widget.arguments['potDetail']['materialName']}',
-              orderNo: '${widget.arguments['potDetail']['orderNo']}',
-              potNo: '${widget.arguments['potDetail']['potNo']}',
-            ),
-            SizedBox(height: 5),
-          ],
-          tabBarChildren: <Widget>[
-            Tab(text: '异常记录'),
-            Tab(text: '其他记录'),
-          ],
-          tabBarViewChildren: <Widget>[
-            DateListWidget(
-              data: this.exceptionList,
-              updataFn: _initState,
-              arguments: {
-                'typeCode': widget.arguments['typeCode'],
-                'potDetail': widget.arguments['potDetail'],
-              },
-              delFn: _delPot,
-            ),
-            ListView.builder(
-              padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
-              itemCount: this.textList.length,
-              itemBuilder: (context, index) {
-                return TextCard(
-                  dataList: this.textList,
-                  text: 'text',
-                  idx: index,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/sterilize/exception/textAdd',
-                      arguments: {
-                        'typeCode': widget.arguments['typeCode'],
-                        'potDetail': widget.arguments['potDetail'],
-                        'data': this.textList[index],
+            tabChange: setFloatingActionButtonFlag,
+            children: <Widget>[
+              SizedBox(height: 5),
+              PageHead(
+                title:
+                    '${widget.arguments['potDetail']['potName']} 第${widget.arguments['potDetail']['potOrder']}锅',
+                subTitle: '${widget.arguments['potDetail']['materialName']}',
+                orderNo: '${widget.arguments['potDetail']['orderNo']}',
+                potNo: '${widget.arguments['potDetail']['potNo']}',
+              ),
+              SizedBox(height: 5),
+            ],
+            tabBarChildren: <Widget>[
+              Tab(text: '异常记录'),
+              Tab(text: '其他记录'),
+            ],
+            tabBarViewChildren: <Widget>[
+              DateListWidget(
+                data: this.exceptionList,
+                updataFn: _initState,
+                arguments: {
+                  'typeCode': widget.arguments['typeCode'],
+                  'potDetail': widget.arguments['potDetail'],
+                },
+                delFn: _delPot,
+              ),
+              ListView.builder(
+                  padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+                  itemCount: this.textList.length,
+                  itemBuilder: (context, index) {
+                    return TextCard(
+                      dataList: this.textList,
+                      text: 'text',
+                      idx: index,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/sterilize/exception/textAdd',
+                          arguments: {
+                            'typeCode': widget.arguments['typeCode'],
+                            'potDetail': widget.arguments['potDetail'],
+                            'data': this.textList[index],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
                       },
-                    ).then((value) => value != null ? _initState() : null);
-                  },
-                );
-              }
-            )
-          ]
-        ),
+                    );
+                  })
+            ]),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(
           width: double.infinity,
@@ -160,31 +160,34 @@ class _ExceptionListState extends State<ExceptionList> {
               Container(
                 alignment: Alignment.bottomRight,
                 margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
-                child: _floatingActionButtonFlag ?
-                  FloatingActionButton(
-                    onPressed: () {
-                      if (_tabIndex == 0) {
-                        Navigator.pushNamed(
-                          context,
-                          '/sterilize/exception/add',
-                          arguments: {
-                            'typeCode': widget.arguments['typeCode'],
-                            'potDetail': widget.arguments['potDetail'],
-                          },
-                        ).then((value) => value != null ? _initState() : null);
-                      } else {
-                        Navigator.pushNamed(
-                          context,
-                          '/sterilize/exception/textAdd',
-                          arguments: {
-                            'typeCode': widget.arguments['typeCode'],
-                            'potDetail': widget.arguments['potDetail'],
-                          },
-                        ).then((value) => value != null ? _initState() : null);
-                      }
-                    },
-                    child: Icon(Icons.add),
-                  ) : SizedBox(),
+                child: _floatingActionButtonFlag
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          if (_tabIndex == 0) {
+                            Navigator.pushNamed(
+                              context,
+                              '/sterilize/exception/add',
+                              arguments: {
+                                'typeCode': widget.arguments['typeCode'],
+                                'potDetail': widget.arguments['potDetail'],
+                              },
+                            ).then(
+                                (value) => value != null ? _initState() : null);
+                          } else {
+                            Navigator.pushNamed(
+                              context,
+                              '/sterilize/exception/textAdd',
+                              arguments: {
+                                'typeCode': widget.arguments['typeCode'],
+                                'potDetail': widget.arguments['potDetail'],
+                              },
+                            ).then(
+                                (value) => value != null ? _initState() : null);
+                          }
+                        },
+                        child: Icon(Icons.add),
+                      )
+                    : SizedBox(),
               )
             ],
           ),
@@ -200,14 +203,16 @@ class DateListWidget extends StatefulWidget {
   final List data;
   final Function updataFn;
   final Function delFn;
-  DateListWidget({Key key, this.arguments, this.data, this.updataFn, this.delFn}) : super(key: key);
+  DateListWidget(
+      {Key key, this.arguments, this.data, this.updataFn, this.delFn})
+      : super(key: key);
 
   @override
   _DateListWidgetState createState() => _DateListWidgetState();
 }
 
 class _DateListWidgetState extends State<DateListWidget>
-with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   List wrapList = [
     {'label': '班次：', 'value': 'classesName'},
     {'label': '异常情况：', 'value': 'exceptionSituationName'},

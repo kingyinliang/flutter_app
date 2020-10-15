@@ -71,12 +71,14 @@ class _BarCodePageState extends State<BarCodePage> {
     );
   }
 
-  _goList(val) {
+  _goList(val) async {
     String urlString = '/sterilize/list';
     if (widget.arguments['blockType'] == 'exception') {
       urlString = widget.arguments['url'];
     }
+    var workShopId = await SharedUtil.instance.getStorage('workShopId');
     var arguments = {
+      'workShopId': workShopId,
       'pot': val['holderNo'],
       'potName': val['holderName'],
       'url': widget.arguments['url'],
@@ -94,71 +96,6 @@ class _BarCodePageState extends State<BarCodePage> {
       }),
     );
   }
-
-  // Widget _body() {
-  //   return Container(
-  //     child: ListView(
-  //       children: <Widget>[
-  //         InkWell(
-  //           onTap: _barcode,
-  //           child: Container(
-  //             alignment: Alignment.center,
-  //             width: 100,
-  //             height: 50,
-  //             color: Colors.blue,
-  //             child: Text('扫一扫'),
-  //           ),
-  //         ),
-  //         SizedBox(height: 10),
-  //         Text(string1.toString()),
-  //         SizedBox(height: 10),
-  //         InkWell(
-  //           onTap: _dongscan,
-  //           child: Container(
-  //             alignment: Alignment.center,
-  //             width: 100,
-  //             height: 50,
-  //             color: Colors.blue,
-  //             child: Text('扫一扫'),
-  //           ),
-  //         ),
-  //         SizedBox(height: 10),
-  //         Text(string2.toString()),
-  //         SizedBox(height: 10),
-  //         Column(
-  //           children: potList.asMap().keys.map((index) {
-  //             return InkWell(
-  //               onTap: () {
-  //                 String urlString = '/sterilize/list';
-  //                 if (widget.arguments['blockType'] == 'exception') {
-  //                   urlString = widget.arguments['url'];
-  //                 }
-  //                 Navigator.pushNamed(
-  //                   context,
-  //                   urlString,
-  //                   arguments: {
-  //                     'pot': potList[index]['holderNo'],
-  //                     'potName': potList[index]['holderName'],
-  //                     'url': widget.arguments['url'],
-  //                     'title': widget.arguments['title'],
-  //                     'workingType': widget.arguments['workingType'],
-  //                     'typeParameters': widget.arguments['typeParameters'],
-  //                   },
-  //                 );
-  //               },
-  //               child: Container(
-  //                 padding: EdgeInsets.all(10),
-  //                 child: Center(
-  //                   child: Text(potList[index]['holderName']),
-  //                 ),
-  //               ),
-  //             );
-  //           }).toList(),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget body() {
     return Column(
