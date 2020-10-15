@@ -11,6 +11,7 @@ class AcceAddListPage extends StatefulWidget {
 }
 
 class _AcceAddListPageState extends State<AcceAddListPage> {
+  var potOrder;
   @override
   Widget build(BuildContext context) {
     return ListPageWidget(
@@ -20,6 +21,12 @@ class _AcceAddListPageState extends State<AcceAddListPage> {
         'workShop': widget.arguments['workShopId'],
         'workingType': widget.arguments['workingType'],
         'potNo': widget.arguments['pot'],
+        'potOrder': potOrder,
+      },
+      hintText: '锅序号',
+      searchFn: (val) {
+        this.potOrder = val;
+        setState(() {});
       },
       itemOnTap: (context, index, listviewList) {
         return Navigator.pushNamed(context, widget.arguments['url'],

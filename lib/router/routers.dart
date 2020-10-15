@@ -7,12 +7,14 @@ import 'package:dfmdsapp/pages/index/index.dart';
 import 'package:dfmdsapp/pages/index/user/user_info.dart';
 import 'package:dfmdsapp/pages/index/user/versions.dart';
 import 'package:dfmdsapp/pages/index/user/update_pasword.dart';
+import 'package:dfmdsapp/components/search.dart';
 
 Map<String, Function> commonRouters = {
   '/noNet': (contxt, {arguments}) => NoNetPage(),
   '/login': (contxt, {arguments}) => LoginPage(),
   '/home': (contxt, {arguments}) => IndexPage(arguments: arguments),
   '/list': (contxt, {arguments}) => IndexPage(arguments: arguments),
+  '/search': (contxt, {arguments}) => SearchWidget(arguments: arguments),
   '/user/userinfo': (contxt, {arguments}) => UserInfoPage(arguments: arguments),
   '/user/versions': (contxt, {arguments}) => VersionsPage(arguments: arguments),
   '/user/updatepasword': (contxt, {arguments}) =>

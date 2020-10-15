@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/no_data.dart';
 import 'package:dfmdsapp/components/pull_refresh.dart';
+import 'package:dfmdsapp/components/search.dart';
 
 const List _tabs = [
   {'label': '待维护', 'type': 'not'},
@@ -11,6 +12,8 @@ const List _tabs = [
 
 class ListPageWidget extends StatefulWidget {
   final String title;
+  final String hintText;
+  final Function searchFn;
   final List tabs;
   final Function itemBuilder;
   final Map params;
@@ -20,6 +23,8 @@ class ListPageWidget extends StatefulWidget {
       {Key key,
       this.title,
       this.itemOnTap,
+      this.hintText,
+      this.searchFn,
       this.tabs = _tabs,
       @required this.api,
       @required this.itemBuilder,
@@ -30,28 +35,56 @@ class ListPageWidget extends StatefulWidget {
   _ListPageWidgetState createState() => _ListPageWidgetState();
 }
 
-class _ListPageWidgetState extends State<ListPageWidget> {
+class _ListPageWidgetState extends State<ListPageWidget>
+    with SingleTickerProviderStateMixin {
   List tabs = [];
+  List<GlobalKey> keyList = [];
+  TabController _tabController;
+  var index = 0;
+  bool tmp = true;
+
   @override
   void initState() {
     super.initState();
     setState(() {
       _initeState();
+      _tabController = TabController(vsync: this, length: widget.tabs.length);
+      _tabController.addListener(() {
+        index = _tabController.index;
+      });
     });
   }
 
   _initeState() {}
 
   List<Widget> _getTabsViews() {
-    return widget.tabs.asMap().keys.map((index) {
-      return ListPageTabItemWidget(
-        type: widget.tabs[index]['type'],
-        api: widget.api,
-        params: widget.params,
-        itemOnTap: widget.itemOnTap,
-        itemBuilder: widget.itemBuilder,
-      );
-    }).toList();
+    if (tmp) {
+      tmp = false;
+      keyList.clear();
+      return widget.tabs.asMap().keys.map((index) {
+        GlobalKey childKey = GlobalKey();
+        keyList.add(childKey);
+        return ListPageTabItemWidget(
+          key: keyList[index],
+          type: widget.tabs[index]['type'],
+          api: widget.api,
+          params: widget.params,
+          itemOnTap: widget.itemOnTap,
+          itemBuilder: widget.itemBuilder,
+        );
+      }).toList();
+    } else {
+      return widget.tabs.asMap().keys.map((index) {
+        return ListPageTabItemWidget(
+          key: keyList[index],
+          type: widget.tabs[index]['type'],
+          api: widget.api,
+          params: widget.params,
+          itemOnTap: widget.itemOnTap,
+          itemBuilder: widget.itemBuilder,
+        );
+      }).toList();
+    }
   }
 
   List _getTabs() {
@@ -65,34 +98,46 @@ class _ListPageWidgetState extends State<ListPageWidget> {
     return DefaultTabController(
       length: widget.tabs.length,
       child: Scaffold(
-          appBar: MdsAppBarWidget(titleData: widget.title),
-          backgroundColor: Color(0xFFF5F5F5),
-          body: Container(
-            child: Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Color(0xFFF5F5F5),
-                  automaticallyImplyLeading: false,
-                  title: HeadSearchWidget(),
-                  elevation: 1.5,
-                  bottom: PreferredSize(
-                    preferredSize: Size.fromHeight(42),
-                    child: Material(
-                      color: Colors.white,
-                      child: TabBar(
-                        indicatorSize: TabBarIndicatorSize.label,
-                        indicatorColor: Color(0xFF1677FF),
-                        labelColor: Color(0xFF1677FF),
-                        labelStyle: TextStyle(fontSize: 17),
-                        unselectedLabelColor: Color(0xFF333333),
-                        unselectedLabelStyle: TextStyle(fontSize: 17),
-                        tabs: _getTabs(),
-                      ),
-                    ),
+        appBar: MdsAppBarWidget(titleData: widget.title),
+        backgroundColor: Color(0xFFF5F5F5),
+        body: Container(
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Color(0xFFF5F5F5),
+              automaticallyImplyLeading: false,
+              title: HeadSearchWidget(
+                hintText: widget.hintText ?? '订单号',
+                searchFn: (String text) {
+                  widget.searchFn(text);
+                  tmp = true;
+                },
+              ),
+              elevation: 1.5,
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(42),
+                child: Material(
+                  color: Colors.white,
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorColor: Color(0xFF1677FF),
+                    labelColor: Color(0xFF1677FF),
+                    labelStyle: TextStyle(fontSize: 17),
+                    unselectedLabelColor: Color(0xFF333333),
+                    unselectedLabelStyle: TextStyle(fontSize: 17),
+                    tabs: _getTabs(),
                   ),
                 ),
-                backgroundColor: Color(0xFFF5F5F5),
-                body: TabBarView(children: _getTabsViews())),
-          )),
+              ),
+            ),
+            backgroundColor: Color(0xFFF5F5F5),
+            body: TabBarView(
+              controller: _tabController,
+              children: _getTabsViews(),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -198,41 +243,5 @@ class _ListPageTabItemWidgetState extends State<ListPageTabItemWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return data.length != 0 ? _pullR() : NoDataWidget();
-  }
-}
-
-class HeadSearchWidget extends StatefulWidget {
-  HeadSearchWidget({Key key}) : super(key: key);
-
-  @override
-  _HeadSearchWidgetState createState() => _HeadSearchWidgetState();
-}
-
-class _HeadSearchWidgetState extends State<HeadSearchWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 7, 0, 7),
-      height: 44,
-      color: Color(0xFFF5F5F5),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0x0A000000),
-          borderRadius: BorderRadius.all(Radius.circular(6.0)),
-        ),
-        child: TextField(
-          style: TextStyle(color: Color(0xFF999999), fontSize: 13),
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-            prefixIcon: Icon(Icons.search, color: Color(0xFF999999)),
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-            ),
-            hintText: '锅序号',
-            fillColor: Color(0xFF999999),
-          ),
-        ),
-      ),
-    );
   }
 }
