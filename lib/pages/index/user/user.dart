@@ -7,6 +7,7 @@ import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/api/http/socket.dart';
 import 'package:dfmdsapp/utils/path_provider.dart';
 import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
+import 'package:dfmdsapp/utils/toast.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -279,7 +280,7 @@ class StorageDialog extends StatefulWidget {
 class _StorageDialogState extends State<StorageDialog> {
   var size = '';
   _initState() async {
-    size = await getStorageSize();
+    size = await getFileStorageSize();
     setState(() {});
   }
 
@@ -298,11 +299,9 @@ class _StorageDialogState extends State<StorageDialog> {
   Widget build(BuildContext context) {
     return DiaLogContainer(
       success: () async {
-        clearCache(() {
+        clearFileCache(() {
           Navigator.of(context, rootNavigator: true).pop();
-          Navigator.pop(context);
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil('/login', (route) => false);
+          successToast(msg: '操作成功');
         });
       },
       child: Column(
