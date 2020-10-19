@@ -49,6 +49,19 @@ getStorageSize() async {
   return _sizeStr.toString();
 }
 
+// 获取文件存储大小
+getFileStorageSize() async {
+  Directory tempDir = await getTemporaryDirectory();
+  double pathProviderSize = await _getTotalSizeOfFilesInDir(tempDir);
+
+  Directory storageDir = await getExternalStorageDirectory();
+  double storageSize = await _getTotalSizeOfFilesInDir(storageDir);
+
+  double size = pathProviderSize + storageSize;
+  var _sizeStr = _renderSize(size);
+  return _sizeStr.toString();
+}
+
 // 获取文件大小
 Future<double> _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
   if (file is File) {
@@ -86,6 +99,14 @@ void clearCache(Function callback) async {
   Directory tempDir = await getTemporaryDirectory();
   Directory storageDir = await getExternalStorageDirectory();
   SharedUtil.instance.clear();
+  await delDir(tempDir);
+  await delDir(storageDir);
+  callback();
+}
+
+void clearFileCache(Function callback) async {
+  Directory tempDir = await getTemporaryDirectory();
+  Directory storageDir = await getExternalStorageDirectory();
   await delDir(tempDir);
   await delDir(storageDir);
   callback();

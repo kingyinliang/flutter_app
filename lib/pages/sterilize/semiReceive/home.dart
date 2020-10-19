@@ -25,11 +25,11 @@ class _SemiReceivePageState extends State<SemiReceivePage>
     with TickerProviderStateMixin {
   AnimationController _ctrlAnimationCircle;
   List wrapList = [
-    {'label': '', 'value': 'fermentPotNo'},
+    {'label': '', 'value': 'fermentPotName'},
     {'label': '', 'value': 'materialName'},
     {'label': '', 'value': 'consumeBatch'},
     {'label': '发酵罐库存', 'value': 'fermentStorage'},
-    {'label': '', 'value': 'tankNo'},
+    {'label': '', 'value': 'tankName'},
     {'label': '', 'value': 'changer'},
     {'label': '', 'value': 'changed'},
     {'label': '备注：', 'value': 'remark'},

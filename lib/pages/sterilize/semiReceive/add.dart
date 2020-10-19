@@ -20,12 +20,14 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
   Map<String, dynamic> formMap = {
     'consumeType': '1',
     'fermentPotNo': '',
+    'fermentPotName': '',
     'materialCode': '',
     'consumeUnit': '',
     'consumeAmount': '',
     'consumeBatch': '',
     'fermentStorage': '',
     'tankNo': '',
+    'tankName': '',
     'remark': '',
   };
 
@@ -136,7 +138,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
             optionsval: 'holderNo',
             onChange: (val) {
               formMap['fermentPotNo'] = val['holderNo'];
-              formMap['fermentStorage'] = val['holderVolume'];
+              formMap['fermentPotName'] = val['holderName'];
               setState(() {});
             },
           ),
@@ -195,6 +197,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
             optionsval: 'holderNo',
             onChange: (val) {
               formMap['tankNo'] = val['holderNo'];
+              formMap['tankName'] = val['holderName'];
               setState(() {});
             },
           ),
