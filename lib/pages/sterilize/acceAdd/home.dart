@@ -492,9 +492,14 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                       child: ColumnItem(
                         btnFlag: childSubmitButtonFlag,
                         startText: widget.data[index]['child'][childIndex]
-                                    ['useAmount']
-                                .toString() +
-                            widget.data[index]['child'][childIndex]['useUnit'],
+                                    ['useAmount'] ==
+                                null
+                            ? ''
+                            : widget.data[index]['child'][childIndex]
+                                        ['useAmount']
+                                    .toString() +
+                                widget.data[index]['child'][childIndex]
+                                    ['useUnit'],
                         centerText: widget.data[index]['child'][childIndex]
                             ['useBatch'],
                         onTap: () {
