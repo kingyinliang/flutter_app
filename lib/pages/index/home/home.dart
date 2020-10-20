@@ -4,6 +4,7 @@ import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/utils/pxunit.dart';
 import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -14,9 +15,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  double _opacity = 0;
   List menuList = [];
   String factoryName = '';
   String workShopName = '';
+
+  _onScroll(offset) {
+    double alpha = offset / 80;
+    if (alpha > 1) {
+      alpha = 1;
+    }
+    setState(() {
+      _opacity = alpha;
+    });
+  }
 
   _initState() async {
     factoryName = await SharedUtil.instance.getStorage('factory');
@@ -47,25 +59,37 @@ class _HomePageState extends State<HomePage>
     return Container(
       child: Stack(
         children: <Widget>[
-          ListView(
-            padding: EdgeInsets.fromLTRB(0, pxUnit(50), 0, 0),
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              HomeHead(
-                factoryName: factoryName,
-                workShopName: workShopName,
+          NotificationListener(
+            onNotification: (ScrollNotification notification) {
+              if (notification is ScrollUpdateNotification &&
+                  notification.depth == 0) {
+                _onScroll(notification.metrics.pixels);
+              }
+              return true;
+            },
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                children: <Widget>[
+                  HomeHead(
+                    factoryName: factoryName,
+                    workShopName: workShopName,
+                  ),
+                  SizedBox(height: 10),
+                  HomeMenu(
+                    menu: menuList,
+                  ),
+                ],
               ),
-              HomeMenu(
-                menu: menuList,
-              ),
-            ],
+            ),
           ),
-          Positioned(
-            top: 0,
+          Opacity(
+            opacity: _opacity,
             child: Container(
-              width: pxUnit(375),
-              height: pxUnit(50),
+              height: 50,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -104,17 +128,81 @@ class HomeHead extends StatefulWidget {
 }
 
 class _HomeHeadState extends State<HomeHead> {
+  List imgList = [
+    'lib/assets/images/homeswiper1.png',
+    'lib/assets/images/homeswiper2.png'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
       width: double.infinity,
-      height: 160.0,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Colors.blue,
+      height: pxUnit(281),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.elliptical(187.5, 40),
+            bottomRight: Radius.elliptical(187.5, 40)),
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF487BFF),
+            Color(0xFFE2EEFE),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            height: pxUnit(45),
+            alignment: Alignment.center,
+            child: Text(
+              '首页',
+              style: TextStyle(color: Colors.white, fontSize: 17),
+            ),
+          ),
+          Container(
+            height: pxUnit(140),
+            child: Swiper(
+              autoplay: true,
+              loop: true,
+              autoplayDisableOnInteraction: true,
+              itemCount: 2,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Image.asset(
+                    imgList[index],
+                    fit: BoxFit.fill,
+                  ),
+                );
+              },
+              pagination: SwiperPagination(
+                alignment: Alignment.bottomCenter,
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                builder: DotSwiperPaginationBuilder(
+                  space: 7,
+                  size: 6,
+                  activeSize: 6,
+                  color: Colors.white,
+                  activeColor: Color(0xFF487BFF),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Container(
+              height: pxUnit(40),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -186,7 +274,7 @@ class _MenuItemState extends State<MenuItem> {
   }
 
   _initState() {
-    // iconNames = iconNamesFromString(widget.menuIcon);
+    iconNames = iconNamesFromString(widget.menuIcon);
     switch (widget.menuData) {
       case 'semi':
         menu = {
@@ -259,7 +347,7 @@ class _MenuItemState extends State<MenuItem> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            // IconFont(iconNames, size: 30),
+            iconNames == null ? SizedBox() : IconFont(iconNames, size: 30),
             SizedBox(height: 10),
             Text(
               widget.menuTitle,
