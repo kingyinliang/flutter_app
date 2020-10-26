@@ -48,6 +48,10 @@ class Common {
         .get('/sysDictItem/dropDown', params: params);
   }
 
+  static getDictDropAll(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API).post('/sysDictItem/batchDropDown', params: params);
+  }
+
 // 容器下拉
   static holderDropDownQuery(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)

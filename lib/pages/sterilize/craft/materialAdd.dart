@@ -156,6 +156,9 @@ class _CraftMaterialAddState extends State<CraftMaterialAdd> {
       if (formMap['riseEndDate'] == null) {
         formMap['riseEndDate'] = '';
       }
+    } else {
+      formMap['keepZkFlag'] = 'N';
+      formMap['coolZkFlag'] = 'N';
     }
     Future.delayed(
       Duration.zero,
