@@ -25,6 +25,7 @@ class _CraftListState extends State<CraftList> {
   int _tabIndex = 0;
   List materialInfo = [];
   List potList = [];
+  List StageList = []; // 阶段list
 
   // 获取tab切换index
   void setFloatingActionButtonFlag(int index) {
@@ -47,12 +48,12 @@ class _CraftListState extends State<CraftList> {
 
   _initState() async {
     try {
+      var res1 = await Common.getDictDropAll(['COOL', 'HEAT', 'DISCHARGE']);
+      StageList = res1['data'];
       var res = await Sterilize.sterilizeCraftMaterialListApi(
           {"potOrderNo": widget.arguments['potNum']['potNo']});
       if (res['data'] != null) {
         materialInfo = [res['data']];
-        print('123456789');
-        print(materialInfo);
         if (res['data']['keepZkFlag'] == 'Y') {
           materialInfo[0]['keepZkFlagString'] = '是';
         } else {
@@ -64,18 +65,10 @@ class _CraftListState extends State<CraftList> {
           materialInfo[0]['coolZkFlagString'] = '否';
         }
         potList = res['data']['item'];
-//        for(int i=0; i<potList.length; i++) {
-//          getcontrolTypeName(potList[i]['controlType']).then((controlTypeList) {
-//            print('----------start -----');
-//            print(potList[i]['controlStage']);
-//            var testFirstWhere = controlTypeList.firstWhere((item) => item["dictCode"] == potList[i]['controlStage']);
-//            print(testFirstWhere['dictValue']);
-//            potList[i]['test'] = testFirstWhere['dictValue'];
-//            print('----------end -------');
-//          });
-//        }
-//        print('print: potList');
-//        print(potList);
+        for(int i=0; i<potList.length; i++) {
+          var testFirstWhere = StageList.firstWhere((item) => item["dictCode"] == potList[i]['controlStage']);
+          potList[i]['controlStageName'] = testFirstWhere['dictValue'];
+        }
         _floatingActionButtonFlag =
             getFloatingActionButtonFlag(_tabIndex, materialInfo, 0);
         _submitButtonFlag =
@@ -414,7 +407,7 @@ class _PotListWidgetState extends State<PotListWidget>
     with AutomaticKeepAliveClientMixin {
   List wrapList = [
     {'label': '类型：', 'value': 'controlTypeName'},
-    {'label': '阶段：', 'value': 'controlStage'},
+    {'label': '阶段：', 'value': 'controlStageName'},
     {'label': '记录时间：', 'value': 'recordDate'},
     {'label': '', 'value': 'cookingOrderNo'},
     {'label': '', 'value': 'changer'},

@@ -17,6 +17,7 @@ class ListPageWidget extends StatefulWidget {
   final List tabs;
   final Function itemBuilder;
   final Map params;
+  final paramsOther;
   final Function api;
   final Function itemOnTap;
   ListPageWidget(
@@ -28,7 +29,8 @@ class ListPageWidget extends StatefulWidget {
       this.tabs = _tabs,
       @required this.api,
       @required this.itemBuilder,
-      this.params})
+      this.params,
+      this.paramsOther = 0})
       : super(key: key);
 
   @override
@@ -52,6 +54,7 @@ class _ListPageWidgetState extends State<ListPageWidget>
       _tabController.addListener(() {
         index = _tabController.index;
       });
+//      _getTabsViews();
     });
   }
 
@@ -69,6 +72,7 @@ class _ListPageWidgetState extends State<ListPageWidget>
           type: widget.tabs[index]['type'],
           api: widget.api,
           params: widget.params,
+          paramsOther: widget.paramsOther,
           itemOnTap: widget.itemOnTap,
           itemBuilder: widget.itemBuilder,
         );
@@ -80,6 +84,7 @@ class _ListPageWidgetState extends State<ListPageWidget>
           type: widget.tabs[index]['type'],
           api: widget.api,
           params: widget.params,
+          paramsOther: widget.paramsOther,
           itemOnTap: widget.itemOnTap,
           itemBuilder: widget.itemBuilder,
         );
@@ -145,6 +150,7 @@ class _ListPageWidgetState extends State<ListPageWidget>
 class ListPageTabItemWidget extends StatefulWidget {
   final String type;
   final Map params;
+  final paramsOther;
   final Function api;
   final Function itemOnTap;
   final Function itemBuilder;
@@ -154,6 +160,7 @@ class ListPageTabItemWidget extends StatefulWidget {
       this.itemOnTap,
       this.itemBuilder,
       this.params,
+      this.paramsOther,
       this.api})
       : super(key: key);
 
@@ -187,9 +194,15 @@ class _ListPageTabItemWidgetState extends State<ListPageTabItemWidget>
   _getData() async {
     try {
       var params = widget.params;
-      params['size'] = '10';
-      params['current'] = '1';
-      params['type'] = widget.type;
+      if (widget.paramsOther == 1) {
+        params['size'] = '10';
+        params['current'] = '1';
+        params['saveType'] = widget.type;
+      } else {
+        params['size'] = '10';
+        params['current'] = '1';
+        params['type'] = widget.type;
+      }
       var res = await widget.api(params);
       data = res['data']['records'];
       setState(() {});
@@ -205,9 +218,15 @@ class _ListPageTabItemWidgetState extends State<ListPageTabItemWidget>
     try {
       current++;
       var params = widget.params;
-      params['size'] = '10';
-      params['current'] = current;
-      params['type'] = widget.type;
+      if (widget.paramsOther == 1) {
+        params['size'] = '10';
+        params['current'] = '1';
+        params['saveType'] = widget.type;
+      } else {
+        params['size'] = '10';
+        params['current'] = current;
+        params['type'] = widget.type;
+      }
       var res = await widget.api(params);
       data.addAll(res['data']['records']);
       setState(() {});
