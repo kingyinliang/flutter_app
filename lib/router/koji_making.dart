@@ -15,6 +15,8 @@ import 'package:dfmdsapp/pages/koji_making/steam_grow_evaluate.dart';
 import 'package:dfmdsapp/pages/koji_making/steam_grow_evaluate_add.dart';
 import 'package:dfmdsapp/pages/koji_making/steam_turn_record.dart';
 import 'package:dfmdsapp/pages/koji_making/steam_turn_record_add.dart';
+import 'package:dfmdsapp/pages/koji_making/steam_out_record.dart';
+import 'package:dfmdsapp/pages/koji_making/steam_out_record_add.dart';
 
 Map<String, Function> kojiMakingRouters = {
   '/kojiMaking/List': (contxt, {arguments}) =>
@@ -51,4 +53,8 @@ Map<String, Function> kojiMakingRouters = {
       SteamTurnRecordPage(arguments: arguments),
   '/kojiMaking/steamTurnRecordAdd': (contxt, {arguments}) =>
       SteamTurnRecordAddPage(arguments: arguments),
+  '/kojiMaking/steamOutRecord': (contxt, {arguments}) =>
+      SteamOutRecordPage(arguments: arguments),
+  '/kojiMaking/steamOutRecordAdd': (contxt, {arguments}) =>
+      SteamOutRecordAddPage(arguments: arguments),
 };

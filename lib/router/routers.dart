@@ -7,12 +7,19 @@ import 'package:dfmdsapp/pages/index/index.dart';
 import 'package:dfmdsapp/pages/index/user/user_info.dart';
 import 'package:dfmdsapp/pages/index/user/versions.dart';
 import 'package:dfmdsapp/pages/index/user/update_pasword.dart';
+import 'package:dfmdsapp/components/pagesComponents/exeption_list.dart';
+import 'package:dfmdsapp/components/pagesComponents/exeption.dart';
+import 'package:dfmdsapp/components/org_select_user_page.dart';
 
 Map<String, Function> commonRouters = {
   '/noNet': (contxt, {arguments}) => NoNetPage(),
   '/login': (contxt, {arguments}) => LoginPage(),
   '/home': (contxt, {arguments}) => IndexPage(arguments: arguments),
-  '/list': (contxt, {arguments}) => IndexPage(arguments: arguments),
+  '/exeptionList': (contxt, {arguments}) =>
+      ExeptionListPage(arguments: arguments),
+  '/exeption': (contxt, {arguments}) => ExeptionPage(arguments: arguments),
+  '/orgSelectUser': (contxt, {arguments}) =>
+      OrgSelectUserPage(arguments: arguments),
   '/user/userinfo': (contxt, {arguments}) => UserInfoPage(arguments: arguments),
   '/user/versions': (contxt, {arguments}) => VersionsPage(arguments: arguments),
   '/user/updatepasword': (contxt, {arguments}) =>

@@ -4,6 +4,7 @@ import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/utils/pxunit.dart';
 import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
+import 'package:dfmdsapp/utils/picker.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +18,8 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   double _opacity = 0;
   List menuList = [];
+  List menu = [];
+  List workShopList = [];
   String factoryName = '';
   String workShopName = '';
 
@@ -32,12 +35,51 @@ class _HomePageState extends State<HomePage>
 
   _initState() async {
     factoryName = await SharedUtil.instance.getStorage('factory');
-    workShopName = await SharedUtil.instance.getStorage('workShop');
+    // workShopName = await SharedUtil.instance.getStorage('workShop');
     try {
       var res = await Common.getMenuApi();
       menuList = res['data']['menuList'];
-      setState(() {});
+      filterMenuList();
     } catch (e) {}
+  }
+
+  filterMenuList() {
+    var workShopSet = new Set();
+    menuList.forEach((element) {
+      workShopSet.add(element['parentName']);
+    });
+    workShopSet.toList().forEach((element) {
+      workShopList.add({
+        'label': element,
+        'value': element,
+      });
+    });
+    workShopName = workShopList[0]['label'];
+    setMenu();
+  }
+
+  setMenu() {
+    menu = [];
+    menuList.forEach((element) {
+      if (element['parentName'] == workShopName) {
+        menu.add(element);
+      }
+    });
+    setState(() {});
+  }
+
+  changeWorkShop() {
+    PickerTool.showOneRow(
+      context,
+      label: 'label',
+      value: 'value',
+      selectVal: workShopName,
+      data: workShopList,
+      clickCallBack: (val) {
+        workShopName = val['value'];
+        setMenu();
+      },
+    );
   }
 
   @override
@@ -77,10 +119,11 @@ class _HomePageState extends State<HomePage>
                   HomeHead(
                     factoryName: factoryName,
                     workShopName: workShopName,
+                    changeWorkShop: changeWorkShop,
                   ),
                   SizedBox(height: 10),
                   HomeMenu(
-                    menu: menuList,
+                    menu: menu,
                   ),
                 ],
               ),
@@ -121,7 +164,9 @@ class _HomePageState extends State<HomePage>
 class HomeHead extends StatefulWidget {
   final factoryName;
   final workShopName;
-  HomeHead({Key key, this.factoryName, this.workShopName}) : super(key: key);
+  final changeWorkShop;
+  HomeHead({Key key, this.factoryName, this.workShopName, this.changeWorkShop})
+      : super(key: key);
 
   @override
   _HomeHeadState createState() => _HomeHeadState();
@@ -137,11 +182,11 @@ class _HomeHeadState extends State<HomeHead> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: pxUnit(281),
+      height: pxUnit(270),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-            bottomLeft: Radius.elliptical(187.5, 40),
-            bottomRight: Radius.elliptical(187.5, 40)),
+            bottomLeft: Radius.elliptical(187.5, 25),
+            bottomRight: Radius.elliptical(187.5, 25)),
         gradient: LinearGradient(
           colors: [
             Color(0xFF487BFF),
@@ -191,7 +236,7 @@ class _HomeHeadState extends State<HomeHead> {
               ),
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Container(
@@ -199,6 +244,33 @@ class _HomeHeadState extends State<HomeHead> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(4.0)),
                 color: Colors.white,
+              ),
+              child: InkWell(
+                onTap: () {
+                  widget.changeWorkShop();
+                },
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        child: Text(
+                          '我的权限-${widget.workShopName}',
+                          style:
+                              TextStyle(color: Color(0xFF487BFF), fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           )
@@ -266,7 +338,6 @@ class MenuItem extends StatefulWidget {
 
 class _MenuItemState extends State<MenuItem> {
   Map menu = {};
-  IconNames iconNames;
 
   IconNames iconNamesFromString(String value) {
     return IconNames.values.firstWhere(
@@ -274,7 +345,6 @@ class _MenuItemState extends State<MenuItem> {
   }
 
   _initState() {
-    iconNames = iconNamesFromString(widget.menuIcon);
     switch (widget.menuData) {
       case 'semi':
         menu = {
@@ -347,7 +417,7 @@ class _MenuItemState extends State<MenuItem> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            iconNames == null ? SizedBox() : IconFont(iconNames, size: 30),
+            IconFont(iconNamesFromString(widget.menuIcon), size: 30),
             SizedBox(height: 10),
             Text(
               widget.menuTitle,
@@ -367,6 +437,9 @@ class _MenuItemState extends State<MenuItem> {
         }
         if (widget.menuData == 'kojimaking') {
           urlString = '/kojiMaking/List';
+        }
+        if (widget.menuData == 'exeption') {
+          urlString = '/exeptionList';
         }
         var workShopId = await SharedUtil.instance.getStorage('workShopId');
         Navigator.pushNamed(

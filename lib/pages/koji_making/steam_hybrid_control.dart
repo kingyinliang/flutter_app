@@ -12,17 +12,20 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   List listData = [{}];
 
   Widget _listWidget(index) {
-    return SlideButton(
-      index: index,
-      singleButtonWidth: 70,
-      child: MdsCard(
-        child: _listItemWidget(index),
+    return Container(
+      padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+      child: SlideButton(
+        index: index,
+        singleButtonWidth: 70,
+        child: MdsCard(
+          child: _listItemWidget(index),
+        ),
+        buttons: <Widget>[
+          CardRemoveBtn(
+            removeOnTab: () {},
+          )
+        ],
       ),
-      buttons: <Widget>[
-        CardRemoveBtn(
-          removeOnTab: () {},
-        )
-      ],
     );
   }
 

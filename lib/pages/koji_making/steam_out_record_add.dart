@@ -1,17 +1,16 @@
 import 'package:dfmdsapp/utils/index.dart';
 import 'package:date_format/date_format.dart';
 
-class SteamInStatusAddPage extends StatefulWidget {
+class SteamOutRecordAddPage extends StatefulWidget {
   final arguments;
-  SteamInStatusAddPage({Key key, this.arguments}) : super(key: key);
+  SteamOutRecordAddPage({Key key, this.arguments}) : super(key: key);
 
   @override
-  _SteamInStatusAddPageState createState() => _SteamInStatusAddPageState();
+  _SteamOutRecordAddPageState createState() => _SteamOutRecordAddPageState();
 }
 
-class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
+class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
   Map<String, dynamic> formMap = {
-    'userList': [],
     'configDate': '',
     'changed': '',
     'changer': '',
@@ -48,44 +47,8 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
       margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(children: <Widget>[
-        InputWidget(
-          label: '入曲情况',
-          keyboardType: 'number',
-          prop: formMap['consumeAmount'].toString(),
-          requiredFlg: true,
-          onChange: (val) {
-            formMap['consumeAmount'] = val;
-            setState(() {});
-          },
-        ),
-        OrgSelectUser(
-          label: '入曲人',
-          prop: formMap['userList'],
-          requiredFlg: true,
-        ),
-        InputWidget(
-          label: '入曲人',
-          keyboardType: 'number',
-          prop: formMap['consumeAmount'].toString(),
-          requiredFlg: true,
-          onChange: (val) {
-            formMap['consumeAmount'] = val;
-            setState(() {});
-          },
-        ),
-        InputWidget(
-          label: '入曲温度',
-          suffix: '℃',
-          keyboardType: 'number',
-          prop: formMap['consumeAmount'].toString(),
-          requiredFlg: true,
-          onChange: (val) {
-            formMap['consumeAmount'] = val;
-            setState(() {});
-          },
-        ),
         DataPickerWidget(
-          label: '入曲开始时间',
+          label: '出曲开始时间',
           prop: formMap['configDate'],
           requiredFlg: true,
           onChange: (val) {
@@ -94,7 +57,7 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
           },
         ),
         DataPickerWidget(
-          label: '入曲结束时间',
+          label: '出曲结束时间',
           prop: formMap['configDate'],
           requiredFlg: true,
           onChange: (val) {
@@ -103,8 +66,30 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
           },
         ),
         FormTextWidget(
-          label: '入曲时长',
+          label: '出曲时长',
+          requiredFlg: true,
           prop: formMap['time'].toString(),
+        ),
+        InputWidget(
+          label: '出曲人',
+          keyboardType: 'number',
+          prop: formMap['consumeAmount'].toString(),
+          requiredFlg: true,
+          onChange: (val) {
+            formMap['consumeAmount'] = val;
+            setState(() {});
+          },
+        ),
+        InputWidget(
+          label: '出曲温度',
+          suffix: '℃',
+          keyboardType: 'number',
+          prop: formMap['consumeAmount'].toString(),
+          requiredFlg: true,
+          onChange: (val) {
+            formMap['consumeAmount'] = val;
+            setState(() {});
+          },
         ),
         FormTextWidget(
           label: '操作人',
