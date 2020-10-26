@@ -1,14 +1,14 @@
 import 'package:dfmdsapp/utils/index.dart';
 
-class SteamBeanRecordPage extends StatefulWidget {
+class SteamTurnRecordPage extends StatefulWidget {
   final arguments;
-  SteamBeanRecordPage({Key key, this.arguments}) : super(key: key);
+  SteamTurnRecordPage({Key key, this.arguments}) : super(key: key);
 
   @override
-  _SteamBeanRecordPageState createState() => _SteamBeanRecordPageState();
+  _SteamTurnRecordPageState createState() => _SteamTurnRecordPageState();
 }
 
-class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
+class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
   List wrapList = [
     {
       'label': '',
@@ -47,7 +47,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  '1#蒸球',
+                  '一翻',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
@@ -112,6 +112,86 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
             cardMap: listData[index],
             wrapList: wrapList,
           ),
+          SizedBox(height: 10),
+          Row(
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: Text(
+                  '二翻',
+                  style: TextStyle(
+                    color: Color(0xFF333333),
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {},
+                child: Icon(
+                  IconData(0xe62c, fontFamily: 'MdsIcon'),
+                  size: 14,
+                  color: Color(0xFF487BFF),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      '开始时间',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 12),
+                    ),
+                    Text(
+                      '2020.05.21 10:23',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  Text(
+                    '10min',
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 12),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      '结束时间',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 12),
+                    ),
+                    Text(
+                      '2020.05.21 10:23',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          SizedBox(height: 10),
+          WrapWidget(
+            cardMap: listData[index],
+            wrapList: wrapList,
+          ),
+          SizedBox(height: 10),
+          Text(
+            '异常情况',
+            style: TextStyle(fontSize: 15, color: Color(0xFF333333)),
+          ),
+          Text(
+            '1.翻曲出现异常 2.曲房异常',
+            style: TextStyle(fontSize: 15, color: Color(0xFF333333)),
+          ),
         ],
       ),
     );
@@ -127,7 +207,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
       headFourTitle: '入曲日期：2020-07-20',
       listData: listData,
       addFn: () {
-        Navigator.pushNamed(context, '/kojiMaking/steamBeanRecordAdd',
+        Navigator.pushNamed(context, '/kojiMaking/steamTurnRecordAdd',
             arguments: {});
       },
       submitFn: () {},

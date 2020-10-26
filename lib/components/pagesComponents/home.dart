@@ -6,6 +6,7 @@ import 'package:dfmdsapp/components/no_data.dart';
 import 'package:dfmdsapp/utils/pxunit.dart' show pxUnit;
 
 class HomePageWidget extends StatefulWidget {
+  final bool addFlg;
   final String title;
   final String headTitle;
   final String headSubTitle;
@@ -17,13 +18,14 @@ class HomePageWidget extends StatefulWidget {
   final Function listWidget;
   HomePageWidget(
       {Key key,
+      this.addFlg = true,
       this.title,
       this.headTitle,
       this.headSubTitle,
       this.headThreeTitle,
       this.headFourTitle,
       @required this.submitFn,
-      @required this.addFn,
+      this.addFn,
       @required this.listWidget,
       @required this.listData})
       : super(key: key);
@@ -70,32 +72,34 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               ),
               SizedBox(height: 5),
               Container(
-                padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 60),
                 child: Column(
                   children: _getListCard(),
                 ),
               ),
             ],
           ),
-          Positioned(
-            bottom: 70,
-            right: 5,
-            child: Container(
-              width: 50,
-              height: 50,
-              child: RawMaterialButton(
-                fillColor: Color(0xFF1677FF),
-                splashColor: Colors.amber[100],
-                child: Icon(
-                  Icons.add,
-                  size: 26,
-                  color: Colors.white,
-                ),
-                shape: CircleBorder(),
-                onPressed: widget.addFn,
-              ),
-            ),
-          ),
+          widget.addFlg
+              ? Positioned(
+                  bottom: 70,
+                  right: 5,
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    child: RawMaterialButton(
+                      fillColor: Color(0xFF1677FF),
+                      splashColor: Colors.amber[100],
+                      child: Icon(
+                        Icons.add,
+                        size: 26,
+                        color: Colors.white,
+                      ),
+                      shape: CircleBorder(),
+                      onPressed: widget.addFn,
+                    ),
+                  ),
+                )
+              : SizedBox(),
           Positioned(
             bottom: 10,
             width: pxUnit(375),

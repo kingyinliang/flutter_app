@@ -1,14 +1,14 @@
 import 'package:dfmdsapp/utils/index.dart';
 
-class SteamBeanRecordPage extends StatefulWidget {
+class SteamInStatusPage extends StatefulWidget {
   final arguments;
-  SteamBeanRecordPage({Key key, this.arguments}) : super(key: key);
+  SteamInStatusPage({Key key, this.arguments}) : super(key: key);
 
   @override
-  _SteamBeanRecordPageState createState() => _SteamBeanRecordPageState();
+  _SteamInStatusPageState createState() => _SteamInStatusPageState();
 }
 
-class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
+class _SteamInStatusPageState extends State<SteamInStatusPage> {
   List wrapList = [
     {
       'label': '',
@@ -47,7 +47,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  '1#蒸球',
+                  'NO.1',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
@@ -127,7 +127,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
       headFourTitle: '入曲日期：2020-07-20',
       listData: listData,
       addFn: () {
-        Navigator.pushNamed(context, '/kojiMaking/steamBeanRecordAdd',
+        Navigator.pushNamed(context, '/kojiMaking/steamInStatusAdd',
             arguments: {});
       },
       submitFn: () {},

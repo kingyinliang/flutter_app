@@ -10,6 +10,7 @@ export 'package:dfmdsapp/components/pagesComponents/home.dart';
 export 'package:dfmdsapp/components/slide_button.dart';
 export 'package:dfmdsapp/components/remove_btn.dart';
 export 'package:dfmdsapp/components/card.dart';
+export 'package:dfmdsapp/components/wrap_home.dart';
 
 export 'package:dfmdsapp/assets/iconfont/IconFont.dart';
 
