@@ -28,7 +28,9 @@ class _OrgSelectUserState extends State<OrgSelectUser> {
     Navigator.pushNamed(
       context,
       '/orgSelectUser',
-    );
+    ).then((value) {
+      print(value);
+    });
   }
 
   @override
