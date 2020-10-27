@@ -48,8 +48,27 @@ class Common {
         .get('/sysDictItem/dropDown', params: params);
   }
 
+// 获取组织架构树
+  static orgTreeQuery(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .get('/sysDept/all/dropDown', params: params);
+  }
+
+// 根据组织架构查人
+  static getUserByOrgTree(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API)
+        .post('/sysUser/userRole/all/query', params: params);
+  }
+
+// 根据部门和工号姓名查人
+  static getUserByQuery(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API)
+        .post('/sysUser/query', params: params);
+  }
+
   static getDictDropAll(params) {
-    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API).post('/sysDictItem/batchDropDown', params: params);
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API)
+        .post('/sysDictItem/batchDropDown', params: params);
   }
 
 // 容器下拉

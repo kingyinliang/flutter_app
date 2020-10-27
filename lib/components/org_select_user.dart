@@ -4,10 +4,12 @@ class OrgSelectUser extends StatefulWidget {
   final String label;
   final List prop;
   final bool requiredFlg;
+  final Function onChange;
   OrgSelectUser(
       {Key key,
       @required this.label,
       @required this.prop,
+      @required this.onChange,
       this.requiredFlg = false})
       : super(key: key);
 
@@ -19,7 +21,7 @@ class _OrgSelectUserState extends State<OrgSelectUser> {
   getName() {
     String name = '';
     widget.prop.forEach((element) {
-      name += element;
+      name += element + ',';
     });
     return name;
   }
@@ -28,8 +30,19 @@ class _OrgSelectUserState extends State<OrgSelectUser> {
     Navigator.pushNamed(
       context,
       '/orgSelectUser',
-    ).then((value) {
-      print(value);
+      arguments: {
+        'selectUser': widget.prop,
+      },
+    ).then((dynamic value) {
+      if (value != null) {
+        List userList = [];
+        value.forEach((element) {
+          var item =
+              '${element['realName']}(${element['workNum'] != null && element['workNum'] != '' ? element['workNum'] : element['workNumTemp']})';
+          userList.add(item);
+        });
+        widget.onChange(userList);
+      }
     });
   }
 
@@ -44,10 +57,18 @@ class _OrgSelectUserState extends State<OrgSelectUser> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              Text(
-                getName(),
-                style: TextStyle(color: Color(0xFF999999), fontSize: 15),
-                textAlign: TextAlign.end,
+              Expanded(
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      getName(),
+                      style: TextStyle(color: Color(0xFF999999), fontSize: 15),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ),
               ),
               Icon(
                 Icons.arrow_forward_ios,

@@ -62,14 +62,8 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
           label: '入曲人',
           prop: formMap['userList'],
           requiredFlg: true,
-        ),
-        InputWidget(
-          label: '入曲人',
-          keyboardType: 'number',
-          prop: formMap['consumeAmount'].toString(),
-          requiredFlg: true,
-          onChange: (val) {
-            formMap['consumeAmount'] = val;
+          onChange: (List val) {
+            formMap['userList'] = val;
             setState(() {});
           },
         ),

@@ -24,8 +24,82 @@ class _ExeptionListPageState extends State<ExeptionListPage> {
         'workingType': widget.arguments['workingType'],
         'potNo': '1',
       },
+      itemOnTap: (context, index, listviewList) {
+        return Navigator.pushNamed(
+          context,
+          '/exeption',
+          arguments: {
+            'title': widget.arguments['title'],
+            'status': listviewList[index]['status'],
+            'statusName': listviewList[index]['statusName'],
+            'pot': widget.arguments['pot'],
+            'potName': widget.arguments['potName'],
+            'potNum': listviewList[index],
+          },
+        );
+      },
       itemBuilder: (context, index, listviewList) {
-        return Container();
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.all(12),
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 52,
+                height: 60,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('lib/assets/images/potDetail.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  color: Color(0xF2F2F2FF),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      '第${listviewList[index]['potOrder']}锅',
+                      style: TextStyle(fontSize: 17, color: Color(0xFF333333)),
+                    ),
+                    Text(
+                      '${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 13, color: Color(0xFF999999)),
+                    ),
+                    Text(
+                      '${listviewList[index]['orderNo']}',
+                      style: TextStyle(fontSize: 13, color: Color(0xFF999999)),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  Text(
+                    '${listviewList[index]['statusName']}',
+                    style: TextStyle(fontSize: 13, color: Color(0xFF333333)),
+                  ),
+                  Text(
+                    '2020-07-20',
+                    style: TextStyle(fontSize: 13, color: Color(0xFF666666)),
+                  ),
+                ],
+              ),
+              Icon(
+                Icons.keyboard_arrow_right,
+                size: 16,
+                color: Color(0xFFCCCCCC),
+              ),
+            ],
+          ),
+        );
+        ;
       },
     );
   }
