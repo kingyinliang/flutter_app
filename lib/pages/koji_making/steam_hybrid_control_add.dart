@@ -11,7 +11,16 @@ class SteamHybridControlAddPage extends StatefulWidget {
 }
 
 class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
-  Map<String, dynamic> formMap = {'configDate': ''};
+  Map<String, dynamic> formMap = {
+    'flourWindTemp': '',
+    'beanWindTempOne': '',
+    'beanWindTempTwo': '',
+    'mixtureTempOne': '',
+    'mixtureTempTwo': '',
+    'beanWindFrequency': '',
+    'mixtrueEnd': '',
+    'mixtureStart': '',
+  };
 
   @override
   void initState() {
@@ -36,7 +45,33 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
     formMap['changer'] = userData['realName'];
   }
 
-  _submitForm() {}
+  _submitForm() async {
+    if (formMap['beanWindTempOne'] == null ||
+        formMap['beanWindTempOne'] == '') {
+      errorToast(msg: '请填写大豆风冷温度1');
+      return;
+    }
+    if (formMap['mixtureTempOne'] == null || formMap['mixtureTempOne'] == '') {
+      errorToast(msg: '请填写混合料温度1');
+      return;
+    }
+    if (formMap['beanWindFrequency'] == null ||
+        formMap['beanWindFrequency'] == '') {
+      errorToast(msg: '请填写大豆风冷变频');
+      return;
+    }
+    if (formMap['id'] != null) {
+      try {
+        await KojiMaking.steamHybridControlUpdate(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await KojiMaking.steamHybridControlAdd(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
 
   Widget formWidget() {
     return Container(
@@ -49,9 +84,9 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
             label: '蒸面风冷温度',
             suffix: '℃',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['flourWindTemp'].toString(),
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['flourWindTemp'] = val;
               setState(() {});
             },
           ),
@@ -59,10 +94,10 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
             label: '大豆风冷温度1',
             suffix: '℃',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['beanWindTempOne'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['beanWindTempOne'] = val;
               setState(() {});
             },
           ),
@@ -70,9 +105,9 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
             label: '大豆风冷温度2',
             suffix: '℃',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['beanWindTempTwo'].toString(),
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['beanWindTempTwo'] = val;
               setState(() {});
             },
           ),
@@ -80,10 +115,10 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
             label: '混合料温度1',
             suffix: '℃',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['mixtureTempOne'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['mixtureTempOne'] = val;
               setState(() {});
             },
           ),
@@ -91,46 +126,36 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
             label: '混合料温度2',
             suffix: '℃',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['mixtureTempTwo'].toString(),
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['mixtureTempTwo'] = val;
               setState(() {});
             },
           ),
           InputWidget(
             label: '大豆风冷变频',
-            suffix: '℃',
+            suffix: 'Hz',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['beanWindFrequency'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['consumeAmount'] = val;
-              setState(() {});
-            },
-          ),
-          InputWidget(
-            label: '大豆风冷变频',
-            suffix: '℃',
-            keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
-            onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['beanWindFrequency'] = val;
               setState(() {});
             },
           ),
           DataPickerWidget(
             label: '混合开始时间',
-            prop: formMap['configDate'],
+            prop: formMap['mixtureStart'],
             onChange: (val) {
-              formMap['configDate'] = val;
+              formMap['mixtureStart'] = val;
               setState(() {});
             },
           ),
           DataPickerWidget(
             label: '混合结束时间',
-            prop: formMap['configDate'],
+            prop: formMap['mixtrueEnd'],
             onChange: (val) {
-              formMap['configDate'] = val;
+              formMap['mixtrueEnd'] = val;
               setState(() {});
             },
           ),

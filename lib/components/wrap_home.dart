@@ -33,7 +33,10 @@ class _WrapWidgetState extends State<WrapWidget> {
             widget.wrapList[i]['label'] +
                 (widget.cardMap[widget.wrapList[i]['value']] == null
                     ? ''
-                    : widget.cardMap[widget.wrapList[i]['value']].toString()),
+                    : widget.cardMap[widget.wrapList[i]['value']].toString()) +
+                (widget.wrapList[i]['endlabel'] == null
+                    ? ''
+                    : widget.wrapList[i]['endlabel']),
             style: TextStyle(fontSize: 13, height: 1.4),
           ),
         ));

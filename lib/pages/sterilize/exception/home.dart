@@ -23,7 +23,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
         'type': 'semiReceive',
         'potOrder': potOrder,
       },
-      paramsOther: 1,
+      tabsStatus: 'saveType',
       hintText: '锅序号',
       searchFn: (val) {
         this.potOrder = val;
@@ -39,7 +39,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
               'potName': widget.arguments['potName'],
               'potDetail': listviewList[index],
               'barTitle': widget.arguments['title'],
-              'typeCode': widget.arguments['typeParameters'],
+              'typeCode': widget.arguments['workingType'],
             });
       },
       itemBuilder: (context, index, listviewList) {

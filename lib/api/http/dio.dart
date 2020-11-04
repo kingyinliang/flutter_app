@@ -176,7 +176,6 @@ class HttpManager {
       endLoading();
       WebSocketManager.dispos();
       var loginStatus = await SharedUtil.instance.getStorage('loginStatus');
-      print(loginStatus);
       if (loginStatus == false || loginStatus == null) {
         Future.delayed(Duration.zero, () {
           Router.navigatorKey.currentState

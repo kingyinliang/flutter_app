@@ -26,7 +26,27 @@ class _ExeptionPageState extends State<ExeptionPage> {
   }
 
   _initState() async {
-    _floatingActionButtonFlag = this._isButtonFlag(_tabIndex);
+    var workShopId = await SharedUtil.instance.getStorage('workShopId');
+    try {
+      // 异常列表
+      var res = await KojiMaking.steamExeptionQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "exceptionStage": '',
+      });
+      this.exceptionList = res['data'];
+      // 文本列表
+      var testRes = await KojiMaking.steamTextQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "textStage": '',
+      });
+      if (testRes['data'] != null) {
+        this.textList = [testRes['data']];
+      }
+      _floatingActionButtonFlag = this._isButtonFlag(_tabIndex);
+      setState(() {});
+    } catch (e) {}
     setState(() {});
   }
 
@@ -51,10 +71,11 @@ class _ExeptionPageState extends State<ExeptionPage> {
   // 异常删除
   _delPot(index) async {
     try {
-      await Sterilize.sterilizeExceptionDetailDeleteApi(
-          [this.exceptionList[index]['id']]);
+      await KojiMaking.steamExeptionDel({
+        'id': exceptionList[index]['id'],
+      });
       successToast(msg: '操作成功');
-      this.exceptionList.removeAt(index);
+      exceptionList.removeAt(index);
       setState(() {});
     } catch (e) {}
   }
@@ -67,53 +88,57 @@ class _ExeptionPageState extends State<ExeptionPage> {
         appBar: MdsAppBarWidget(titleData: widget.arguments['title']),
         backgroundColor: Color(0xFFF5F5F5),
         body: SliverTabBarWidget(
-            tabChange: setFloatingActionButtonFlag,
-            children: <Widget>[
-              SizedBox(height: 5),
-              PageHead(
-                title: 'A-1  曲房',
-                subTitle: '六月香生酱',
-                threeTitle: '生产订单：83300023456',
-                fourTitle: '入曲日期：2020-07-20',
-              ),
-              SizedBox(height: 5),
-            ],
-            tabBarChildren: <Widget>[
-              Tab(text: '异常记录'),
-              Tab(text: '其他记录'),
-            ],
-            tabBarViewChildren: <Widget>[
-              DateListWidget(
-                data: this.exceptionList,
-                updataFn: _initState,
-                arguments: {
-                  'typeCode': widget.arguments['typeCode'],
-                  'potDetail': widget.arguments['potDetail'],
-                },
-                delFn: _delPot,
-              ),
-              ListView.builder(
-                  padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
-                  itemCount: this.textList.length,
-                  itemBuilder: (context, index) {
-                    return TextCard(
-                      dataList: this.textList,
-                      text: 'text',
-                      idx: index,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/sterilize/exception/textAdd',
-                          arguments: {
-                            'typeCode': widget.arguments['typeCode'],
-                            'potDetail': widget.arguments['potDetail'],
-                            'data': this.textList[index],
-                          },
-                        ).then((value) => value != null ? _initState() : null);
+          tabChange: setFloatingActionButtonFlag,
+          children: <Widget>[
+            SizedBox(height: 5),
+            PageHead(
+              status: '${widget.arguments['data']['status']}',
+              statusName: '${widget.arguments['data']['statusName']}',
+              title: '${widget.arguments['data']['kojiHouseName']}',
+              subTitle: '${widget.arguments['data']['materialName']}',
+              threeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
+              fourTitle: '生产日期：${widget.arguments['data']['productDate']}',
+            ),
+            SizedBox(height: 5),
+          ],
+          tabBarChildren: <Widget>[
+            Tab(text: '异常记录'),
+            Tab(text: '其他记录'),
+          ],
+          tabBarViewChildren: <Widget>[
+            DateListWidget(
+              data: this.exceptionList,
+              updataFn: _initState,
+              arguments: {
+                'typeCode': widget.arguments['typeCode'],
+                'potDetail': widget.arguments['potDetail'],
+              },
+              delFn: _delPot,
+            ),
+            ListView.builder(
+              padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+              itemCount: this.textList.length,
+              itemBuilder: (context, index) {
+                return TextCard(
+                  dataList: this.textList,
+                  text: 'text',
+                  idx: index,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/sterilize/exception/textAdd',
+                      arguments: {
+                        'typeCode': widget.arguments['typeCode'],
+                        'potDetail': widget.arguments['potDetail'],
+                        'data': this.textList[index],
                       },
-                    );
-                  })
-            ]),
+                    ).then((value) => value != null ? _initState() : null);
+                  },
+                );
+              },
+            )
+          ],
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(
           width: double.infinity,

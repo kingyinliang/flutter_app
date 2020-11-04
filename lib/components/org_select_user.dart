@@ -20,9 +20,7 @@ class OrgSelectUser extends StatefulWidget {
 class _OrgSelectUserState extends State<OrgSelectUser> {
   getName() {
     String name = '';
-    widget.prop.forEach((element) {
-      name += element + ',';
-    });
+    name = widget.prop.join(',');
     return name;
   }
 

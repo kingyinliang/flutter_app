@@ -9,7 +9,55 @@ class SteamHybridControlPage extends StatefulWidget {
 }
 
 class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
-  List listData = [{}];
+  List listData = [];
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
+  _initState({type: false}) async {
+    try {
+      var res = await KojiMaking.steamHybridControlHome({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      listData = res['data'];
+      if (type) successToast(msg: '操作成功');
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submit() async {
+    try {
+      await KojiMaking.steamHybridControlSubmit({
+        'id': listData[0]['id'],
+        'orderNo': widget.arguments['data']['orderNo'],
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      _initState(type: true);
+    } catch (e) {}
+  }
+
+  _del(index) async {
+    try {
+      await KojiMaking.steamHybridControlDel({
+        'id': listData[index]['id'],
+        'orderNo': widget.arguments['data']['orderNo'],
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      listData.removeAt(index);
+      setState(() {});
+    } catch (e) {}
+  }
 
   Widget _listWidget(index) {
     return Container(
@@ -22,7 +70,16 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
         ),
         buttons: <Widget>[
           CardRemoveBtn(
-            removeOnTab: () {},
+            removeOnTab: () {
+              if (!(listData[index]['status'] == 'N' ||
+                  listData[index]['status'] == 'R' ||
+                  listData[index]['status'] == 'S' ||
+                  listData[index]['status'] == 'T' ||
+                  listData[index]['status'] == '')) {
+                return;
+              }
+              _del(index);
+            },
           )
         ],
       ),
@@ -46,14 +103,31 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              (listData[index]['status'] == 'N' ||
+                      listData[index]['status'] == 'R' ||
+                      listData[index]['status'] == 'S' ||
+                      listData[index]['status'] == 'T' ||
+                      listData[index]['status'] == '')
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/kojiMaking/steamHybridControlAdd',
+                          arguments: {
+                            'data': listData[index],
+                            'orderNo': widget.arguments['data']['orderNo'],
+                            'kojiOrderNo': widget.arguments['data']
+                                ['kojiOrderNo'],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      },
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 14,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 10),
@@ -68,7 +142,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['mixtureStart']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -91,7 +165,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['mixtrueEnd']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -110,7 +184,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                     style: TextStyle(color: Color(0xFF999999), fontSize: 14),
                   ),
                   Text(
-                    '45℃',
+                    '${listData[index]['flourWindTemp']}℃',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                   ),
                   SizedBox(height: 10),
@@ -119,7 +193,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                     style: TextStyle(color: Color(0xFF999999), fontSize: 14),
                   ),
                   Text(
-                    '45℃',
+                    '${listData[index]['mixtureTempOne']}℃',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                   ),
                 ],
@@ -135,7 +209,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                             TextStyle(color: Color(0xFF999999), fontSize: 14),
                       ),
                       Text(
-                        '45℃',
+                        '${listData[index]['beanWindTempOne']}℃',
                         style:
                             TextStyle(color: Color(0xFF333333), fontSize: 16),
                       ),
@@ -146,7 +220,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                             TextStyle(color: Color(0xFF999999), fontSize: 14),
                       ),
                       Text(
-                        '45℃',
+                        '${listData[index]['mixtureTempTwo']}℃',
                         style:
                             TextStyle(color: Color(0xFF333333), fontSize: 16),
                       ),
@@ -162,7 +236,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                     style: TextStyle(color: Color(0xFF999999), fontSize: 14),
                   ),
                   Text(
-                    '45℃',
+                    '${listData[index]['beanWindTempTwo']}℃',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                   ),
                   SizedBox(height: 10),
@@ -171,7 +245,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
                     style: TextStyle(color: Color(0xFF999999), fontSize: 14),
                   ),
                   Text(
-                    '45℃',
+                    '${listData[index]['beanWindFrequency']}Hz',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                   ),
                 ],
@@ -187,16 +261,24 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      headTitle: 'A-1  曲房',
-      headSubTitle: '六月香生酱',
-      headThreeTitle: '生产订单：83300023456',
-      headFourTitle: '入曲日期：2020-07-20',
+      status: listData.length > 0 ? listData[0]['status'] : '',
+      statusName: listData.length > 0 ? listData[0]['statusName'] : '未录入',
+      headTitle: '${widget.arguments['data']['kojiHouseName']}',
+      headSubTitle: '${widget.arguments['data']['materialName']}',
+      headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
+      headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
+      addFlg: listData.length > 0 ? false : true,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamHybridControlAdd',
-            arguments: {});
+            arguments: {
+              'orderNo': widget.arguments['data']['orderNo'],
+              'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+            }).then((value) => value != null ? _initState() : null);
       },
-      submitFn: () {},
+      submitFn: () {
+        _submit();
+      },
       listWidget: _listWidget,
     );
   }

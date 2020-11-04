@@ -16,8 +16,8 @@ class _ExeptionListPageState extends State<ExeptionListPage> {
       title: widget.arguments['title'],
       api: Sterilize.sterilizeListApi,
       tabs: [
-        {'label': '未录入', 'type': 'not'},
-        {'label': '已录入', 'type': 'not'},
+        {'label': '未录入', 'type': 'N'},
+        {'label': '已录入', 'type': 'S'},
       ],
       params: {
         'workShop': '85002011',

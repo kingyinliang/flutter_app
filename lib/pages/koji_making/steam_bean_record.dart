@@ -10,14 +10,68 @@ class SteamBeanRecordPage extends StatefulWidget {
 
 class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   List wrapList = [
-    {
-      'label': '',
-      'value': 'potNoName',
-    }
+    {'label': '气泡压力：', 'value': 'steamPocketPressure', 'endlabel': 'Mpa'},
+    {'label': '蒸煮', 'value': 'cookingDuration', 'endlabel': 'min'},
+    {'label': '圈数', 'value': 'turnCount'},
+    {'label': '保压', 'value': 'pressureDuration', 'endlabel': 'min'},
+    {'label': '熟豆放豆时间', 'value': 'addBeanDate'},
+    {'label': '备注：', 'value': 'remark'},
+    {'label': '', 'value': 'changer'},
+    {'label': '', 'value': 'changed'},
   ];
-  List listData = [
-    {'potNoName': '111'}
-  ];
+  List listData = [];
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
+  _initState({type: false}) async {
+    try {
+      var res = await KojiMaking.steamBeanRecordHome({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      listData = res['data'];
+      if (type) successToast(msg: '操作成功');
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submit() async {
+    try {
+      var ids = [];
+      listData.forEach((element) {
+        ids.add(element['id']);
+      });
+      await KojiMaking.steamBeanRecordSubmit({
+        'ids': ids,
+        'orderNo': widget.arguments['data']['orderNo'],
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      _initState(type: true);
+    } catch (e) {}
+  }
+
+  _del(index) async {
+    try {
+      await KojiMaking.steamBeanRecordDel({
+        'id': listData[index]['id'],
+        'orderNo': widget.arguments['data']['orderNo'],
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      listData.removeAt(index);
+      setState(() {});
+    } catch (e) {}
+  }
 
   Widget _listWidget(index) {
     return Container(
@@ -30,7 +84,16 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
         ),
         buttons: <Widget>[
           CardRemoveBtn(
-            removeOnTab: () {},
+            removeOnTab: () {
+              if (!(listData[index]['status'] == 'N' ||
+                  listData[index]['status'] == 'R' ||
+                  listData[index]['status'] == 'S' ||
+                  listData[index]['status'] == 'T' ||
+                  listData[index]['status'] == '')) {
+                return;
+              }
+              _del(index);
+            },
           )
         ],
       ),
@@ -47,21 +110,38 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  '1#蒸球',
+                  '${listData[index]['steamBallNo']}',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              (listData[index]['status'] == 'N' ||
+                      listData[index]['status'] == 'R' ||
+                      listData[index]['status'] == 'S' ||
+                      listData[index]['status'] == 'T' ||
+                      listData[index]['status'] == '')
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/kojiMaking/steamBeanRecordAdd',
+                          arguments: {
+                            'data': listData[index],
+                            'orderNo': widget.arguments['data']['orderNo'],
+                            'kojiOrderNo': widget.arguments['data']
+                                ['kojiOrderNo'],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      },
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 14,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 10),
@@ -76,7 +156,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['addSteamStart']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -99,7 +179,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['addSteamEnd']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -121,16 +201,23 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      headTitle: 'A-1  曲房',
-      headSubTitle: '六月香生酱',
-      headThreeTitle: '生产订单：83300023456',
-      headFourTitle: '入曲日期：2020-07-20',
+      status: '${widget.arguments['data']['status']}',
+      statusName: '${widget.arguments['data']['statusName']}',
+      headTitle: '${widget.arguments['data']['kojiHouseName']}',
+      headSubTitle: '${widget.arguments['data']['materialName']}',
+      headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
+      headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamBeanRecordAdd',
-            arguments: {});
+            arguments: {
+              'orderNo': widget.arguments['data']['orderNo'],
+              'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+            }).then((value) => value != null ? _initState() : null);
       },
-      submitFn: () {},
+      submitFn: () {
+        _submit();
+      },
       listWidget: _listWidget,
     );
   }

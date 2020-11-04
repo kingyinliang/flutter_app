@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:date_format/date_format.dart';
+import 'package:dfmdsapp/api/api/index.dart';
+import 'package:dfmdsapp/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:dfmdsapp/components/form.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
@@ -17,6 +19,9 @@ class SteamSideAddPage extends StatefulWidget {
 
 class _SteamSideAddPageState extends State<SteamSideAddPage> {
   Map<String, dynamic> formMap = {
+    'steamPacketPressure': '',
+    'steamFlourSpeed': '',
+    'steamFlourMans': '',
     'changed': '',
     'changer': '',
   };
@@ -33,6 +38,8 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
         }),
       );
     }
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     super.initState();
   }
 
@@ -44,7 +51,33 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
     formMap['changer'] = userData['realName'];
   }
 
-  _submitForm() {}
+  _submitForm() async {
+    if (formMap['steamPacketPressure'] == null ||
+        formMap['steamPacketPressure'] == '') {
+      errorToast(msg: '请填写气泡压力');
+      return;
+    }
+    if (formMap['steamFlourSpeed'] == null ||
+        formMap['steamFlourSpeed'] == '') {
+      errorToast(msg: '请填写蒸面加水加压');
+      return;
+    }
+    if (formMap['steamFlourMans'] == null || formMap['steamFlourMans'] == '') {
+      errorToast(msg: '请选择蒸面操作人');
+      return;
+    }
+    if (formMap['id'] != null) {
+      try {
+        await KojiMaking.steamSideUpdate(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await KojiMaking.steamSideAdd(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
 
   Widget formWidget() {
     return Container(
@@ -56,10 +89,10 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
           label: '气泡压力',
           suffix: 'Mpa',
           keyboardType: 'number',
-          prop: formMap['consumeAmount'].toString(),
+          prop: formMap['steamPacketPressure'].toString(),
           requiredFlg: true,
           onChange: (val) {
-            formMap['consumeAmount'] = val;
+            formMap['steamPacketPressure'] = val;
             setState(() {});
           },
         ),
@@ -67,20 +100,19 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
           label: '蒸面加水加压',
           suffix: 'L/H',
           keyboardType: 'number',
-          prop: formMap['consumeAmount'].toString(),
+          prop: formMap['steamFlourSpeed'].toString(),
           requiredFlg: true,
           onChange: (val) {
-            formMap['consumeAmount'] = val;
+            formMap['steamFlourSpeed'] = val;
             setState(() {});
           },
         ),
-        InputWidget(
+        OrgSelectUser(
           label: '蒸面操作人',
-          keyboardType: 'number',
-          prop: formMap['consumeAmount'].toString(),
+          prop: formMap['steamFlourMans'].split(','),
           requiredFlg: true,
-          onChange: (val) {
-            formMap['consumeAmount'] = val;
+          onChange: (List val) {
+            formMap['steamFlourMans'] = val.join(',');
             setState(() {});
           },
         ),

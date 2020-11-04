@@ -22,6 +22,8 @@ class _HomePageState extends State<HomePage>
   List workShopList = [];
   String factoryName = '';
   String workShopName = '';
+  String workShopId = '';
+  String parentName = '';
 
   _onScroll(offset) {
     double alpha = offset / 80;
@@ -35,35 +37,25 @@ class _HomePageState extends State<HomePage>
 
   _initState() async {
     factoryName = await SharedUtil.instance.getStorage('factory');
-    // workShopName = await SharedUtil.instance.getStorage('workShop');
+    Map userData = await SharedUtil.instance.getMapStorage('userData');
+    workShopList = userData['userWorkShop'];
+    workShopName = workShopList[0]['deptName'];
+    workShopId = workShopList[0]['id'];
+    parentName = workShopList[0]['parentName'];
     try {
       var res = await Common.getMenuApi();
       menuList = res['data']['menuList'];
-      filterMenuList();
+      setMenu();
     } catch (e) {}
-  }
-
-  filterMenuList() {
-    var workShopSet = new Set();
-    menuList.forEach((element) {
-      workShopSet.add(element['parentName']);
-    });
-    workShopSet.toList().forEach((element) {
-      workShopList.add({
-        'label': element,
-        'value': element,
-      });
-    });
-    workShopName = workShopList[0]['label'];
-    setMenu();
   }
 
   setMenu() {
     menu = [];
     menuList.forEach((element) {
-      if (element['parentName'] == workShopName) {
-        menu.add(element);
-      }
+      // if (element['parentName'] == parentName) {
+      //   menu.add(element);
+      // }
+      menu.add(element);
     });
     setState(() {});
   }
@@ -71,12 +63,14 @@ class _HomePageState extends State<HomePage>
   changeWorkShop() {
     PickerTool.showOneRow(
       context,
-      label: 'label',
-      value: 'value',
-      selectVal: workShopName,
+      label: 'deptName',
+      value: 'id',
+      selectVal: workShopId,
       data: workShopList,
       clickCallBack: (val) {
-        workShopName = val['value'];
+        workShopName = val['deptName'];
+        workShopId = val['id'];
+        parentName = val['parentName'];
         setMenu();
       },
     );
@@ -124,6 +118,7 @@ class _HomePageState extends State<HomePage>
                   SizedBox(height: 10),
                   HomeMenu(
                     menu: menu,
+                    workShopId: workShopId,
                   ),
                 ],
               ),
@@ -283,7 +278,8 @@ class _HomeHeadState extends State<HomeHead> {
 // 首页菜单widget
 class HomeMenu extends StatefulWidget {
   final List menu;
-  HomeMenu({Key key, this.menu}) : super(key: key);
+  final String workShopId;
+  HomeMenu({Key key, this.menu, this.workShopId}) : super(key: key);
 
   @override
   _HomeMenuState createState() => _HomeMenuState();
@@ -305,7 +301,9 @@ class _HomeMenuState extends State<HomeMenu> {
       itemCount: widget.menu.length,
       itemBuilder: (context, index) {
         return MenuItem(
+          menuItem: widget.menu[index],
           url: widget.menu[index]['menuUrl'],
+          workShopId: widget.workShopId,
           menuData: widget.menu[index]['remark'],
           menuTitle: widget.menu[index]['menuName'],
           menuSubTitle: widget.menu[index]['remark'],
@@ -323,12 +321,16 @@ class MenuItem extends StatefulWidget {
   final String menuSubTitle;
   final String url;
   final String menuData;
+  final String workShopId;
+  final Map menuItem;
   MenuItem(
       {Key key,
       this.url,
       this.menuData,
       this.menuIcon,
       this.menuTitle,
+      this.workShopId,
+      this.menuItem,
       this.menuSubTitle})
       : super(key: key);
 
@@ -344,64 +346,7 @@ class _MenuItemState extends State<MenuItem> {
         (e) => e.toString().split('.')[1].toUpperCase() == value.toUpperCase());
   }
 
-  _initState() {
-    switch (widget.menuData) {
-      case 'semi':
-        menu = {
-          'menuColor': 0xFFE86452,
-          'workingType': 'semi',
-          'menuSubTitle': 'Semi-finished goods',
-        };
-        break;
-      case 'semiAbnormal':
-        menu = {
-          'menuColor': 0xFFF6BD16,
-          'workingType': 'semiAbnormal',
-          'menuSubTitle': 'Abnormal records',
-          'blockType': 'exception',
-          'typeParameters': 'semiReceive',
-        };
-        break;
-      case 'material':
-        menu = {
-          'menuColor': 0xFF1677FF,
-          'workingType': 'material',
-          'menuSubTitle': 'Accessories add',
-        };
-        break;
-      case 'materialAbnormal':
-        menu = {
-          'menuColor': 0xFF454955,
-          'workingType': 'materialAbnormal',
-          'menuSubTitle': 'Abnormal records',
-          'blockType': 'exception',
-          'typeParameters': 'acceadd',
-        };
-        break;
-      case 'processor':
-        menu = {
-          'menuColor': 0xFF1E9493,
-          'workingType': 'processor',
-          'menuSubTitle': 'Process control',
-        };
-        break;
-      case 'processorAbnormal':
-        menu = {
-          'menuColor': 0xFF5D7092,
-          'workingType': 'processorAbnormal',
-          'menuSubTitle': 'Abnormal records',
-          'blockType': 'exception',
-          'typeParameters': 'craft',
-        };
-        break;
-      default:
-        menu = {
-          'menuColor': 0xFFE86452,
-          'workingType': '',
-          'menuSubTitle': '',
-        };
-    }
-  }
+  _initState() {}
 
   @override
   void initState() {
@@ -431,27 +376,33 @@ class _MenuItemState extends State<MenuItem> {
         ),
       ),
       onTap: () async {
-        String urlString = '/sterilize/barcode';
-        if (menu['workingType'] == 'processor') {
-          urlString = widget.url;
-        }
-        if (widget.menuData == 'kojimaking') {
+        String urlString = '';
+
+        if (widget.menuItem['parentName'] == '制曲车间') {
           urlString = '/kojiMaking/List';
+          // 异常记录列表（未完成）
         }
-        if (widget.menuData == 'exeption') {
-          urlString = '/exeptionList';
+        // 杀菌车间扫码
+        if (widget.menuItem['parentName'] == '杀菌车间') {
+          urlString = '/sterilize/barcode';
+          // 工艺控制不走二维码
+          if (widget.menuItem['remark'] == 'processor') {
+            urlString = widget.url;
+          }
         }
-        var workShopId = await SharedUtil.instance.getStorage('workShopId');
+        // if (widget.menuData == 'exeption') {
+        //   urlString = '/exeptionList';
+        // }
+        await SharedUtil.instance
+            .saveStringStorage('workShopId', widget.workShopId);
         Navigator.pushNamed(
           context,
           urlString,
           arguments: {
-            'workShopId': workShopId,
-            'url': widget.url,
-            'workingType': menu['workingType'],
+            'workShopId': widget.workShopId,
+            'url': widget.menuItem['menuUrl'],
+            'workingType': widget.menuItem['remark'],
             'title': widget.menuTitle,
-            'blockType': menu['blockType'],
-            'typeParameters': menu['typeParameters'],
           },
         );
       },
