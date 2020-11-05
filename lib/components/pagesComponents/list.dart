@@ -54,7 +54,6 @@ class _ListPageWidgetState extends State<ListPageWidget>
       _tabController.addListener(() {
         index = _tabController.index;
       });
-//      _getTabsViews();
     });
   }
 

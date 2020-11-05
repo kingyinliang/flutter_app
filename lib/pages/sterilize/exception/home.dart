@@ -5,13 +5,13 @@ import 'package:dfmdsapp/components/pagesComponents/list.dart';
 class ExceptionHome extends StatefulWidget {
   final arguments;
   ExceptionHome({Key key, this.arguments}) : super(key: key);
-
   @override
   _ExceptionHomeState createState() => _ExceptionHomeState();
 }
 
 class _ExceptionHomeState extends State<ExceptionHome> {
   var potOrder;
+
   @override
   Widget build(BuildContext context) {
     return ListPageWidget(
@@ -20,7 +20,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
       params: {
         'potNo': widget.arguments['pot'],
         'workShop': widget.arguments['workShopId'],
-        'type': 'semiReceive',
+        'type': widget.arguments['typeParameters'],
         'potOrder': potOrder,
       },
       paramsOther: 1,
@@ -40,7 +40,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
               'potDetail': listviewList[index],
               'barTitle': widget.arguments['title'],
               'typeCode': widget.arguments['typeParameters'],
-            });
+            }).then((value) => value != null ? ListPageWidget() : ListPageWidget());
       },
       itemBuilder: (context, index, listviewList) {
         return Container(
