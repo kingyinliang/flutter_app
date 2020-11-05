@@ -7,6 +7,18 @@ class KojiMaking {
         .post('/kojiOrderList/query', params: params);
   }
 
+// 制曲订单精确查询
+  static kojiMakingOrder(params) {
+    return HttpManager.getInstance()
+        .get('/kojiOrder/queryKojiOrder', params: params);
+  }
+
+// 制曲订单精确查询Sc
+  static kojiMakingOrderSc(params) {
+    return HttpManager.getInstance()
+        .get('/kojiOrder/queryScOrder', params: params);
+  }
+
 // 蒸面记录首页查询
   static steamSideHome(params) {
     return HttpManager.getInstance()

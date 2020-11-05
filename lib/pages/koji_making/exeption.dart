@@ -9,6 +9,7 @@ class ExeptionPage extends StatefulWidget {
 }
 
 class _ExeptionPageState extends State<ExeptionPage> {
+  String tag = '';
   List exceptionList = []; // 异常列表
   List textList = []; // 文本列表
 
@@ -25,7 +26,6 @@ class _ExeptionPageState extends State<ExeptionPage> {
 
   _initState() async {
     try {
-      String tag = '';
       if (widget.arguments['workingType'] == 'STEAM_BEAN_EXCEPTION') {
         tag = 'YP';
       } else if (widget.arguments['workingType'] == 'DISC_EXCEPTION') {
@@ -66,14 +66,32 @@ class _ExeptionPageState extends State<ExeptionPage> {
       exceptionList: exceptionList,
       textList: textList,
       textField: 'kojiText',
-      addOnFn: (index) {},
+      addOnFn: (index) {
+        if (index == 0) {
+        } else {
+          Navigator.pushNamed(
+            context,
+            '/textAdd',
+            arguments: {
+              'params': {
+                "orderNo": widget.arguments['data']['orderNo'],
+                "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+                'textStage': tag,
+              },
+              'api': KojiMaking.steamTextSave,
+              'textField': 'kojiText',
+            },
+          ).then((value) => value != null ? _initState() : null);
+        }
+      },
       textOnFn: (index) {
         Navigator.pushNamed(
           context,
           '/textAdd',
           arguments: {
-            'typeCode': widget.arguments['typeCode'],
-            'potDetail': widget.arguments['potDetail'],
+            'data': textList[0],
+            'api': KojiMaking.steamTextSave,
+            'textField': 'kojiText',
           },
         ).then((value) => value != null ? _initState() : null);
       },

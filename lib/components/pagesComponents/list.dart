@@ -227,13 +227,12 @@ class _ListPageTabItemWidgetState extends State<ListPageTabItemWidget>
       data.addAll(res['data']['records']);
       setState(() {});
       if (current * 10 >= res['data']['total']) {
-        print(111);
         return false;
       } else {
-        print(222);
         return true;
       }
     } catch (e) {
+      current--;
       return true;
     }
   }

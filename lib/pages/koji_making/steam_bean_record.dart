@@ -20,6 +20,8 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
     {'label': '', 'value': 'changed'},
   ];
   List listData = [];
+  String status = '';
+  String statusName = '';
 
   @override
   void initState() {
@@ -33,6 +35,15 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   }
 
   _initState({type: false}) async {
+    try {
+      var res = await KojiMaking.kojiMakingOrder({
+        "dataType": widget.arguments['workingType'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
     try {
       var res = await KojiMaking.steamBeanRecordHome({
         "orderNo": widget.arguments['data']['orderNo'],
@@ -110,7 +121,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  '${listData[index]['steamBallNo']}',
+                  '${listData[index]['steamBallName']}',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
@@ -201,8 +212,8 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      status: '${widget.arguments['data']['status']}',
-      statusName: '${widget.arguments['data']['statusName']}',
+      status: '$status',
+      statusName: '$statusName',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',

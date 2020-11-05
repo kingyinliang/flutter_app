@@ -12,7 +12,21 @@ class TextAddPage extends StatefulWidget {
 }
 
 class _TextAddPageState extends State<TextAddPage> {
-  Map<String, dynamic> formMap = {};
+  bool addOrUpdate = true;
+  Map<String, dynamic> formMap = {'text': ''};
+
+  @override
+  void initState() {
+    if (widget.arguments['data'] != null && widget.arguments['data'] != '') {
+      addOrUpdate = false;
+      formMap['text'] = jsonDecode(
+          jsonEncode(widget.arguments['data'][widget.arguments['textField']]));
+    } else {
+      addOrUpdate = true;
+    }
+    setState(() {});
+    super.initState();
+  }
 
   Widget formWidget() {
     return Container(
@@ -40,12 +54,32 @@ class _TextAddPageState extends State<TextAddPage> {
     );
   }
 
-  _submitForm() async {}
+  _submitForm() async {
+    if (formMap['text'] == null || formMap['text'] == '') {
+      EasyLoading.showError('请填写备注');
+      return;
+    }
+    if (addOrUpdate) {
+      var obj = jsonDecode(jsonEncode(widget.arguments['params']));
+      obj[widget.arguments['textField']] = formMap['text'];
+      try {
+        await widget.arguments['api'](obj);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      var obj = jsonDecode(jsonEncode(widget.arguments['data']));
+      obj[widget.arguments['textField']] = formMap['text'];
+      try {
+        await widget.arguments['api'](obj);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: formMap['id'] == null ? '新增' : '修改'),
+      appBar: MdsAppBarWidget(titleData: addOrUpdate ? '新增' : '修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[

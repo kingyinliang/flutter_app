@@ -10,6 +10,7 @@ import 'package:dfmdsapp/pages/index/user/update_pasword.dart';
 import 'package:dfmdsapp/components/org_select_user_page.dart';
 import 'package:dfmdsapp/components/search.dart';
 import 'package:dfmdsapp/components/pagesComponents/text_add.dart';
+import 'package:dfmdsapp/components/pagesComponents/exeption_add.dart';
 
 Map<String, Function> commonRouters = {
   '/noNet': (contxt, {arguments}) => NoNetPage(),
@@ -18,6 +19,8 @@ Map<String, Function> commonRouters = {
   '/list': (contxt, {arguments}) => IndexPage(arguments: arguments),
   '/search': (contxt, {arguments}) => SearchWidget(arguments: arguments),
   '/textAdd': (contxt, {arguments}) => TextAddPage(arguments: arguments),
+  '/exeptionAdd': (contxt, {arguments}) =>
+      ExeptionAddPage(arguments: arguments),
   '/orgSelectUser': (contxt, {arguments}) =>
       OrgSelectUserPage(arguments: arguments),
   '/user/userinfo': (contxt, {arguments}) => UserInfoPage(arguments: arguments),

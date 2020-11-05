@@ -494,7 +494,7 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                         startText: widget.data[index]['child'][childIndex]
                                     ['useAmount'] ==
                                 null
-                            ? '0${widget.data[index]["child"][childIndex]["useUnit"]}'
+                            ? ''
                             : widget.data[index]['child'][childIndex]
                                         ['useAmount']
                                     .toString() +

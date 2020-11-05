@@ -96,6 +96,12 @@ class Sterilize {
         .post('/ste/accessiruesConsume/steAccessoriesDelete', params: params);
   }
 
+// 辅料添加-增补料物料
+  static acceAddMaterialQueryApi(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .post('/ste/steSpeAccessories/listByType', params: params);
+  }
+
 // 辅料添加-增补料新增
   static acceAddMaterialAddApi(params) {
     return HttpManager.getInstance().post(
@@ -120,68 +126,98 @@ class Sterilize {
   /////////////////////////// 工艺 start  ////////////////////////////////////////////////
   // 列表 (type: not  save  submit)
   static sterilizeCraftListApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/processorQuery', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/processorQuery', params: params);
   }
+
   // 详情列表
   static sterilizeCraftMaterialListApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/query', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/query', params: params);
   }
+
   // 提交
   static sterilizeCraftMaterialTimeSubmitApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/mobileSubmit', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/mobileSubmit', params: params);
   }
+
   // 杀菌时间添加
   static sterilizeCraftMaterialTimeInsertApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/timeInsert', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/timeInsert', params: params);
   }
+
   // 杀菌时间修改
   static sterilizeCraftMaterialTimeUpdateApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/timeUpdate', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/timeUpdate', params: params);
   }
+
   // 杀菌时间删除
   static sterilizeCraftMaterialTimeDelApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/timeDelete', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/timeDelete', params: params);
   }
+
   // 杀菌升温添加
   static sterilizeCraftMaterialInsertApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/insert', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/insert', params: params);
   }
+
   // 杀菌升温修改
   static sterilizeCraftMaterialUpdateApi(params) {
-    return HttpManager.getInstance().post('/ste/steProcessorControl/update', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steProcessorControl/update', params: params);
   }
+
   ////////////////////////////// 工艺 end ////////////////////////////////////////
   // 异常 start
   // home查询
   static sterilizeExceptionHomeListApi(params) {
-    return HttpManager.getInstance().post('/ste/steException/potOrderQuery', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steException/potOrderQuery', params: params);
   }
+
   // list异常查询
   static sterilizeExceptionDetailListApi(params) {
-    return HttpManager.getInstance().post('/ste/steException/query', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steException/query', params: params);
   }
+
   // list异常添加
   static sterilizeExceptionDetailInsertApi(params) {
-    return HttpManager.getInstance().post('/ste/steException/insert', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steException/insert', params: params);
   }
+
   // list异常修改
   static sterilizeExceptionDetailUpdateApi(params) {
-    return HttpManager.getInstance().post('/ste/steException/update', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steException/update', params: params);
   }
+
   // list异常删除
   static sterilizeExceptionDetailDeleteApi(params) {
-    return HttpManager.getInstance().post('/ste/steException/delete', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steException/delete', params: params);
   }
+
   // list文本查询
   static sterilizeExceptionDetailTextApi(params) {
     return HttpManager.getInstance().post('/ste/steText/query', params: params);
   }
+
   // list文本添加
   static sterilizeExceptionDetailTextInsertApi(params) {
-    return HttpManager.getInstance().post('/ste/steText/insert', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steText/insert', params: params);
   }
+
   // list文本修改
   static sterilizeExceptionDetailTextUpdateApi(params) {
-    return HttpManager.getInstance().post('/ste/steText/update', params: params);
+    return HttpManager.getInstance()
+        .post('/ste/steText/update', params: params);
   }
 }
