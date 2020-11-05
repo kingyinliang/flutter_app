@@ -21,7 +21,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
       params: {
         'potNo': widget.arguments['pot'],
         'workShop': widget.arguments['workShopId'],
-        'type': 'semiReceive',
+        'type': widget.arguments['workingType'],
         'potOrder': potOrder,
       },
       tabsStatus: 'saveType',
@@ -41,7 +41,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
               'potDetail': listviewList[index],
               'barTitle': widget.arguments['title'],
               'typeCode': widget.arguments['workingType'],
-            }).then((value) => value != null ? ListPageWidget() : ListPageWidget());
+            });
       },
       itemBuilder: (context, index, listviewList) {
         return Container(
