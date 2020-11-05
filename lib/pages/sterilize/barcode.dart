@@ -73,18 +73,16 @@ class _BarCodePageState extends State<BarCodePage> {
 
   _goList(val) async {
     String urlString = '/sterilize/list';
-    if (widget.arguments['blockType'] == 'exception') {
+    if (widget.arguments['url'] == '/sterilize/exception/home') {
       urlString = widget.arguments['url'];
     }
-    var workShopId = await SharedUtil.instance.getStorage('workShopId');
     var arguments = {
-      'workShopId': workShopId,
+      'workShopId': widget.arguments['workShopId'],
       'pot': val['holderNo'],
       'potName': val['holderName'],
       'url': widget.arguments['url'],
       'title': widget.arguments['title'],
       'workingType': widget.arguments['workingType'],
-      'typeParameters': widget.arguments['typeParameters'],
     };
     Future.delayed(
       Duration(milliseconds: 1),

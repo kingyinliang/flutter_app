@@ -1,4 +1,4 @@
-package com.shinho.dfmdsappuat
+package com.shinho.dfmdsappdev
 
 import io.flutter.embedding.android.FlutterActivity
 

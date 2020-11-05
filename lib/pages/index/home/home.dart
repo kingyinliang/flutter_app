@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dfmdsapp/api/api/index.dart';
-import 'package:dfmdsapp/utils/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
-import 'package:dfmdsapp/utils/version_update.dart';
+import 'package:dfmdsapp/utils/pxunit.dart';
+import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
+import 'package:dfmdsapp/utils/picker.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -15,8 +18,12 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   double _opacity = 0;
   List menuList = [];
+  List menu = [];
+  List workShopList = [];
   String factoryName = '';
   String workShopName = '';
+  String workShopId = '';
+  String parentName = '';
 
   _onScroll(offset) {
     double alpha = offset / 80;
@@ -30,13 +37,42 @@ class _HomePageState extends State<HomePage>
 
   _initState() async {
     factoryName = await SharedUtil.instance.getStorage('factory');
-    workShopName = await SharedUtil.instance.getStorage('workShop');
+    Map userData = await SharedUtil.instance.getMapStorage('userData');
+    workShopList = userData['userWorkShop'];
+    workShopName = workShopList[0]['deptName'];
+    workShopId = workShopList[0]['id'];
+    parentName = workShopList[0]['parentName'];
     try {
       var res = await Common.getMenuApi();
       menuList = res['data']['menuList'];
-      varsionUpdateInit(context);
-      setState(() {});
+      setMenu();
     } catch (e) {}
+  }
+
+  setMenu() {
+    menu = [];
+    menuList.forEach((element) {
+      if (element['parentName'] == parentName) {
+        menu.add(element);
+      }
+    });
+    setState(() {});
+  }
+
+  changeWorkShop() {
+    PickerTool.showOneRow(
+      context,
+      label: 'deptName',
+      value: 'id',
+      selectVal: workShopId,
+      data: workShopList,
+      clickCallBack: (val) {
+        workShopName = val['deptName'];
+        workShopId = val['id'];
+        parentName = val['parentName'];
+        setMenu();
+      },
+    );
   }
 
   @override
@@ -76,9 +112,12 @@ class _HomePageState extends State<HomePage>
                   HomeHead(
                     factoryName: factoryName,
                     workShopName: workShopName,
+                    changeWorkShop: changeWorkShop,
                   ),
+                  SizedBox(height: 10),
                   HomeMenu(
-                    menu: menuList,
+                    menu: menu,
+                    workShopId: workShopId,
                   ),
                 ],
               ),
@@ -119,48 +158,118 @@ class _HomePageState extends State<HomePage>
 class HomeHead extends StatefulWidget {
   final factoryName;
   final workShopName;
-  HomeHead({Key key, this.factoryName, this.workShopName}) : super(key: key);
+  final changeWorkShop;
+  HomeHead({Key key, this.factoryName, this.workShopName, this.changeWorkShop})
+      : super(key: key);
 
   @override
   _HomeHeadState createState() => _HomeHeadState();
 }
 
 class _HomeHeadState extends State<HomeHead> {
+  List imgList = [
+    'lib/assets/images/homeswiper1.png',
+    'lib/assets/images/homeswiper2.png'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
       width: double.infinity,
-      height: 125.0,
+      height: pxUnit(270),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.elliptical(187.5, 25),
+            bottomRight: Radius.elliptical(187.5, 25)),
         gradient: LinearGradient(
-          colors: [Color(0xFF4E7FFE), Color(0xFF83A5FC), Color(0xFF9CB7FD)],
+          colors: [
+            Color(0xFF487BFF),
+            Color(0xFFE2EEFE),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
       ),
-      child: Padding(
-          padding: EdgeInsets.fromLTRB(15, 22, 15, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                widget.factoryName ?? '',
-                style: TextStyle(
-                  fontSize: 28.0,
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            height: pxUnit(45),
+            alignment: Alignment.center,
+            child: Text(
+              '首页',
+              style: TextStyle(color: Colors.white, fontSize: 17),
+            ),
+          ),
+          Container(
+            height: pxUnit(140),
+            child: Swiper(
+              autoplay: true,
+              loop: true,
+              autoplayDisableOnInteraction: true,
+              itemCount: 2,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Image.asset(
+                    imgList[index],
+                    fit: BoxFit.fill,
+                  ),
+                );
+              },
+              pagination: SwiperPagination(
+                alignment: Alignment.bottomCenter,
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                builder: DotSwiperPaginationBuilder(
+                  space: 7,
+                  size: 6,
+                  activeSize: 6,
                   color: Colors.white,
+                  activeColor: Color(0xFF487BFF),
                 ),
               ),
-              Text(
-                widget.workShopName ?? '',
-                style: TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Container(
+              height: pxUnit(40),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                color: Colors.white,
+              ),
+              child: InkWell(
+                onTap: () {
+                  widget.changeWorkShop();
+                },
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        child: Text(
+                          '我的权限-${widget.workShopName}',
+                          style:
+                              TextStyle(color: Color(0xFF487BFF), fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          )),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -168,7 +277,8 @@ class _HomeHeadState extends State<HomeHead> {
 // 首页菜单widget
 class HomeMenu extends StatefulWidget {
   final List menu;
-  HomeMenu({Key key, this.menu}) : super(key: key);
+  final String workShopId;
+  HomeMenu({Key key, this.menu, this.workShopId}) : super(key: key);
 
   @override
   _HomeMenuState createState() => _HomeMenuState();
@@ -180,22 +290,23 @@ class _HomeMenuState extends State<HomeMenu> {
     return GridView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(8, 10, 8, 10),
+      padding: EdgeInsets.all(10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisSpacing: 6,
         mainAxisSpacing: 8,
-        crossAxisCount: 2,
+        crossAxisCount: 4,
         childAspectRatio: 1.06,
       ),
       itemCount: widget.menu.length,
       itemBuilder: (context, index) {
         return MenuItem(
+          menuItem: widget.menu[index],
           url: widget.menu[index]['menuUrl'],
+          workShopId: widget.workShopId,
           menuData: widget.menu[index]['remark'],
           menuTitle: widget.menu[index]['menuName'],
           menuSubTitle: widget.menu[index]['remark'],
-          menuIcon: IconData(getColorFromHex(widget.menu[index]['menuIcon']),
-              fontFamily: 'MdsIcon'),
+          menuIcon: widget.menu[index]['menuIcon'],
         );
       },
     );
@@ -204,17 +315,21 @@ class _HomeMenuState extends State<HomeMenu> {
 
 // 首页单个菜单widget
 class MenuItem extends StatefulWidget {
-  final IconData menuIcon;
+  final String menuIcon;
   final String menuTitle;
   final String menuSubTitle;
   final String url;
   final String menuData;
+  final String workShopId;
+  final Map menuItem;
   MenuItem(
       {Key key,
       this.url,
       this.menuData,
       this.menuIcon,
       this.menuTitle,
+      this.workShopId,
+      this.menuItem,
       this.menuSubTitle})
       : super(key: key);
 
@@ -225,64 +340,12 @@ class MenuItem extends StatefulWidget {
 class _MenuItemState extends State<MenuItem> {
   Map menu = {};
 
-  _initState() {
-    switch (widget.menuData) {
-      case 'semi':
-        menu = {
-          'menuColor': 0xFFE86452,
-          'workingType': 'semi',
-          'menuSubTitle': 'Semi-finished goods',
-        };
-        break;
-      case 'semiAbnormal':
-        menu = {
-          'menuColor': 0xFFF6BD16,
-          'workingType': 'semiAbnormal',
-          'menuSubTitle': 'Abnormal records',
-          'blockType': 'exception',
-          'typeParameters': 'semiReceive',
-        };
-        break;
-      case 'material':
-        menu = {
-          'menuColor': 0xFF1677FF,
-          'workingType': 'material',
-          'menuSubTitle': 'Accessories add',
-        };
-        break;
-      case 'materialAbnormal':
-        menu = {
-          'menuColor': 0xFF454955,
-          'workingType': 'materialAbnormal',
-          'menuSubTitle': 'Abnormal records',
-          'blockType': 'exception',
-          'typeParameters': 'acceadd',
-        };
-        break;
-      case 'processor':
-        menu = {
-          'menuColor': 0xFF1E9493,
-          'workingType': 'processor',
-          'menuSubTitle': 'Process control',
-        };
-        break;
-      case 'processorAbnormal':
-        menu = {
-          'menuColor': 0xFF5D7092,
-          'workingType': 'processorAbnormal',
-          'menuSubTitle': 'Abnormal records',
-          'blockType': 'exception',
-          'typeParameters': 'craft',
-        };
-        break;
-      default:
-        menu = {
-          'menuColor': 0xFFE86452,
-          'workingType': '',
-          'menuSubTitle': '',
-        };
-    }
+  IconNames iconNamesFromString(String value) {
+    return IconNames.values.firstWhere(
+        (e) => e.toString().split('.')[1].toUpperCase() == value.toUpperCase());
   }
+
+  _initState() {}
 
   @override
   void initState() {
@@ -294,61 +357,51 @@ class _MenuItemState extends State<MenuItem> {
   Widget build(BuildContext context) {
     return InkWell(
       child: Container(
-        padding: EdgeInsets.fromLTRB(12, 14, 12, 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Color(menu['menuColor']),
-        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            IconFont(iconNamesFromString(widget.menuIcon), size: 30),
+            SizedBox(height: 10),
             Text(
               widget.menuTitle,
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-              ),
-            ),
-            Text(
-              menu['menuSubTitle'],
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Icon(
-                      widget.menuIcon,
-                      size: 62,
-                    )
-                  ],
-                ),
+                color: Color(0xFF333333),
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
               ),
             ),
           ],
         ),
       ),
-      onTap: () {
-        String urlString = '/sterilize/barcode';
-        if (menu['workingType'] == 'processor') {
-          urlString = widget.url;
+      onTap: () async {
+        String urlString = '';
+
+        if (widget.menuItem['parentName'] == '制曲车间') {
+          urlString = '/kojiMaking/List';
+          // 异常记录列表（未完成）
         }
+        // 杀菌车间扫码
+        if (widget.menuItem['parentName'] == '杀菌车间') {
+          urlString = '/sterilize/barcode';
+          // 工艺控制不走二维码
+          if (widget.menuItem['remark'] == 'processor') {
+            urlString = widget.url;
+          }
+        }
+        // if (widget.menuData == 'exeption') {
+        //   urlString = '/exeptionList';
+        // }
+        await SharedUtil.instance
+            .saveStringStorage('workShopId', widget.workShopId);
         Navigator.pushNamed(
           context,
           urlString,
           arguments: {
-            'url': widget.url,
-            'workingType': menu['workingType'],
+            'workShopId': widget.workShopId,
+            'url': widget.menuItem['menuUrl'],
+            'workingType': widget.menuItem['remark'],
             'title': widget.menuTitle,
-            'blockType': menu['blockType'],
-            'typeParameters': menu['typeParameters'],
           },
         );
       },

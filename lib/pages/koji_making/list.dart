@@ -11,25 +11,51 @@ class KojiMakingListPage extends StatefulWidget {
 }
 
 class _KojiMakingListPageState extends State<KojiMakingListPage> {
+  var orderNo;
+  List tabs = [];
+  @override
+  void initState() {
+    if (widget.arguments['workingType'] == 'STEAM_FLOUR_EXCEPTION' ||
+        widget.arguments['workingType'] == 'DISC_EXCEPTION' ||
+        widget.arguments['workingType'] == 'STEAM_BEAN_EXCEPTION') {
+      print(11);
+      tabs = [
+        {'label': '未录入', 'type': 'N'},
+        {'label': '已录入', 'type': 'S'},
+      ];
+    } else {
+      tabs = [
+        {'label': '待维护', 'type': 'N'},
+        {'label': '已保存', 'type': 'S'},
+        {'label': '已提交', 'type': 'D'}
+      ];
+    }
+    setState(() {});
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListPageWidget(
       title: widget.arguments['title'],
-      api: Sterilize.sterilizeListApi,
+      api: KojiMaking.kojiMakingList,
+      tabs: tabs,
+      tabsStatus: 'status',
       params: {
-        'workShop': '85002011',
-        'workingType': widget.arguments['workingType'],
-        'potNo': '1',
+        'workShop': widget.arguments['workShopId'],
+        'listType': widget.arguments['workingType'],
+        'orderNo': orderNo,
+      },
+      searchFn: (val) {
+        this.orderNo = val;
+        setState(() {});
       },
       itemOnTap: (context, index, listviewList) {
         return Navigator.pushNamed(context, widget.arguments['url'],
             arguments: {
               'title': widget.arguments['title'],
-              'status': listviewList[index]['status'],
-              'statusName': listviewList[index]['statusName'],
-              'pot': widget.arguments['pot'],
-              'potName': widget.arguments['potName'],
-              'potNum': listviewList[index],
+              'data': listviewList[index],
+              'workingType': widget.arguments['workingType']
             });
       },
       itemBuilder: (context, index, listviewList) {
@@ -57,10 +83,13 @@ class _KojiMakingListPageState extends State<KojiMakingListPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      '第${listviewList[index]['potOrder']}锅',
-                      style: TextStyle(fontSize: 17, color: Color(0xFF333333)),
-                    ),
+                    listviewList[index]['kojiHouseName'] == ''
+                        ? SizedBox()
+                        : Text(
+                            '${listviewList[index]['kojiHouseName']}',
+                            style: TextStyle(
+                                fontSize: 17, color: Color(0xFF333333)),
+                          ),
                     Text(
                       '${listviewList[index]['materialCode']} ${listviewList[index]['materialName']}',
                       overflow: TextOverflow.ellipsis,
@@ -80,7 +109,7 @@ class _KojiMakingListPageState extends State<KojiMakingListPage> {
                     style: TextStyle(fontSize: 13, color: Color(0xFF333333)),
                   ),
                   Text(
-                    '2020-07-20',
+                    '${listviewList[index]['productDate']}',
                     style: TextStyle(fontSize: 13, color: Color(0xFF666666)),
                   ),
                 ],

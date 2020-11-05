@@ -10,17 +10,89 @@ class SteamBeanHardnessAddPage extends StatefulWidget {
 }
 
 class _SteamBeanHardnessAddPageState extends State<SteamBeanHardnessAddPage> {
-  Map<String, dynamic> formMap = {};
+  Map<String, dynamic> formMap = {
+    'steamBallId': '',
+    'steamBallNo': '',
+    'steamBallName': '',
+    'hardnessOne': '',
+    'hardnessTwo': '',
+    'hardnessThree': '',
+    'hardnessFour': '',
+    'hardnessFive': '',
+    'hardnessSix': '',
+    'hardnessSeven': '',
+    'hardnessEight': '',
+    'hardnessNine': '',
+    'hardnessTen': '',
+    'remark': '',
+  };
+  List steamBallNo = [];
 
   @override
   void initState() {
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
     }
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _getSteamBallNo();
+      }),
+    );
     super.initState();
   }
 
-  _submitForm() {}
+  _getSteamBallNo() async {
+    var workShop = await SharedUtil.instance.getStorage('workShopId');
+    try {
+      var res = await Common.holderDropDownQuery(
+          {'deptId': workShop, 'holderType': '026'});
+      steamBallNo = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submitForm() async {
+    if (formMap['steamBallNo'] == null || formMap['steamBallNo'] == '') {
+      errorToast(msg: '请选择蒸球号');
+      return;
+    }
+    if (formMap['hardnessOne'] == null ||
+        formMap['hardnessOne'] == '' ||
+        formMap['hardnessTwo'] == null ||
+        formMap['hardnessTwo'] == '' ||
+        formMap['hardnessThree'] == null ||
+        formMap['hardnessThree'] == '' ||
+        formMap['hardnessFour'] == null ||
+        formMap['hardnessFour'] == '' ||
+        formMap['hardnessFive'] == null ||
+        formMap['hardnessFive'] == '' ||
+        formMap['hardnessSix'] == null ||
+        formMap['hardnessSix'] == '' ||
+        formMap['hardnessSeven'] == null ||
+        formMap['hardnessSeven'] == '' ||
+        formMap['hardnessEight'] == null ||
+        formMap['hardnessEight'] == '' ||
+        formMap['hardnessNine'] == null ||
+        formMap['hardnessNine'] == '' ||
+        formMap['hardnessTen'] == null ||
+        formMap['hardnessTen'] == '') {
+      errorToast(msg: '请输入蒸豆硬度');
+      return;
+    }
+    if (formMap['id'] != null) {
+      try {
+        await KojiMaking.steamBeanHardnessUpdate(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await KojiMaking.steamBeanHardnessAdd(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
 
   Widget formWidget() {
     return Container(
@@ -36,16 +108,16 @@ class _SteamBeanHardnessAddPageState extends State<SteamBeanHardnessAddPage> {
   _getInput() {
     List listWidget = [];
     List keyArr = [
-      'consumeAmount1',
-      'consumeAmount2',
-      'consumeAmount3',
-      'consumeAmount4',
-      'consumeAmount5',
-      'consumeAmount6',
-      'consumeAmount7',
-      'consumeAmount8',
-      'consumeAmount9',
-      'consumeAmount10'
+      'hardnessOne',
+      'hardnessTwo',
+      'hardnessThree',
+      'hardnessFour',
+      'hardnessFive',
+      'hardnessSix',
+      'hardnessSeven',
+      'hardnessEight',
+      'hardnessNine',
+      'hardnessTen'
     ];
     listWidget = keyArr.asMap().keys.map((index) {
       return Container(
@@ -61,6 +133,35 @@ class _SteamBeanHardnessAddPageState extends State<SteamBeanHardnessAddPage> {
         ),
       );
     }).toList();
+    listWidget.add(Container(
+      child: InputWidget(
+        label: '备注',
+        keyboardType: 'text',
+        prop: formMap['remark'],
+        onChange: (val) {
+          formMap['remark'] = val;
+          setState(() {});
+        },
+      ),
+    ));
+    listWidget.insert(
+        0,
+        Container(
+          child: SelectWidget(
+            label: '蒸球号',
+            prop: formMap['steamBallNo'].toString(),
+            requiredFlg: true,
+            options: steamBallNo,
+            optionsLabel: 'holderName',
+            optionsval: 'holderNo',
+            onChange: (val) {
+              formMap['steamBallId'] = val['id'];
+              formMap['steamBallNo'] = val['holderNo'];
+              formMap['steamBallName'] = val['holderName'];
+              setState(() {});
+            },
+          ),
+        ));
     return listWidget;
   }
 

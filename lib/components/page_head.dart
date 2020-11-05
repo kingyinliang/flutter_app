@@ -6,15 +6,54 @@ class PageHead extends StatefulWidget {
   final String subTitle;
   final String threeTitle;
   final String fourTitle;
-  PageHead(
-      {Key key, this.title, this.subTitle, this.threeTitle, this.fourTitle})
-      : super(key: key);
+  final String status;
+  final String statusName;
+  PageHead({
+    Key key,
+    this.title,
+    this.status,
+    this.statusName,
+    this.subTitle,
+    this.threeTitle,
+    this.fourTitle,
+  }) : super(key: key);
 
   @override
   _PageHeadState createState() => _PageHeadState();
 }
 
 class _PageHeadState extends State<PageHead> {
+  Color statusColor;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  getColor() {
+    switch (widget.statusName) {
+      case '未录入':
+        statusColor = Color(0xFF52C41A);
+        break;
+      case '已保存':
+        statusColor = Color(0xFF52C41A);
+        break;
+      case '已退回':
+        statusColor = Color(0xFFF94630);
+        break;
+      case '待审核':
+        statusColor = Color(0xFF487BFF);
+        setState(() {});
+        break;
+      case '已审核':
+        statusColor = Color(0xFF52C41A);
+        break;
+      default:
+        statusColor = Color(0xFF52C41A);
+    }
+    return statusColor;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,13 +70,13 @@ class _PageHeadState extends State<PageHead> {
                   width: 6,
                   height: 6,
                   decoration: BoxDecoration(
-                    color: Color(0xFF52C41A),
+                    color: getColor(),
                     borderRadius: BorderRadius.all(Radius.circular(3.0)),
                   ),
                 ),
                 SizedBox(width: 6),
                 Text(
-                  '未录入',
+                  '${widget.statusName}',
                   style: TextStyle(color: Color(0xFF666666)),
                 )
               ],

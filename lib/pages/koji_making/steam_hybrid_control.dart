@@ -1,24 +1,14 @@
 import 'package:dfmdsapp/utils/index.dart';
 
-class SteamBeanRecordPage extends StatefulWidget {
+class SteamHybridControlPage extends StatefulWidget {
   final arguments;
-  SteamBeanRecordPage({Key key, this.arguments}) : super(key: key);
+  SteamHybridControlPage({Key key, this.arguments}) : super(key: key);
 
   @override
-  _SteamBeanRecordPageState createState() => _SteamBeanRecordPageState();
+  _SteamHybridControlPageState createState() => _SteamHybridControlPageState();
 }
 
-class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
-  List wrapList = [
-    {'label': '气泡压力：', 'value': 'steamPocketPressure', 'endlabel': 'Mpa'},
-    {'label': '蒸煮', 'value': 'cookingDuration', 'endlabel': 'min'},
-    {'label': '圈数', 'value': 'turnCount'},
-    {'label': '保压', 'value': 'pressureDuration', 'endlabel': 'min'},
-    {'label': '熟豆放豆时间', 'value': 'addBeanDate'},
-    {'label': '备注：', 'value': 'remark'},
-    {'label': '', 'value': 'changer'},
-    {'label': '', 'value': 'changed'},
-  ];
+class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   List listData = [];
 
   @override
@@ -34,7 +24,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.steamBeanRecordHome({
+      var res = await KojiMaking.steamHybridControlHome({
         "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
@@ -46,12 +36,8 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
 
   _submit() async {
     try {
-      var ids = [];
-      listData.forEach((element) {
-        ids.add(element['id']);
-      });
-      await KojiMaking.steamBeanRecordSubmit({
-        'ids': ids,
+      await KojiMaking.steamHybridControlSubmit({
+        'id': listData[0]['id'],
         'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
@@ -60,42 +46,11 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
     } catch (e) {}
   }
 
-  _del(index) async {
-    try {
-      await KojiMaking.steamBeanRecordDel({
-        'id': listData[index]['id'],
-        'orderNo': widget.arguments['data']['orderNo'],
-        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
-      });
-      successToast(msg: '操作成功');
-      listData.removeAt(index);
-      setState(() {});
-    } catch (e) {}
-  }
-
   Widget _listWidget(index) {
     return Container(
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-      child: SlideButton(
-        index: index,
-        singleButtonWidth: 70,
-        child: MdsCard(
-          child: _listItemWidget(index),
-        ),
-        buttons: <Widget>[
-          CardRemoveBtn(
-            removeOnTab: () {
-              if (!(listData[index]['status'] == 'N' ||
-                  listData[index]['status'] == 'R' ||
-                  listData[index]['status'] == 'S' ||
-                  listData[index]['status'] == 'T' ||
-                  listData[index]['status'] == '')) {
-                return;
-              }
-              _del(index);
-            },
-          )
-        ],
+      child: MdsCard(
+        child: _listItemWidget(index),
       ),
     );
   }
@@ -110,7 +65,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  '${listData[index]['steamBallNo']}',
+                  'NO.1',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
@@ -126,7 +81,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          '/kojiMaking/steamBeanRecordAdd',
+                          '/kojiMaking/steamHybridControlAdd',
                           arguments: {
                             'data': listData[index],
                             'orderNo': widget.arguments['data']['orderNo'],
@@ -156,7 +111,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '${listData[index]['addSteamStart']}',
+                      '${listData[index]['mixtureStart']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -179,18 +134,92 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '${listData[index]['addSteamEnd']}',
+                      '${listData[index]['mixtrueEnd']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           SizedBox(height: 10),
-          WrapWidget(
-            cardMap: listData[index],
-            wrapList: wrapList,
+          Row(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    '蒸面风冷温度',
+                    style: TextStyle(color: Color(0xFF999999), fontSize: 14),
+                  ),
+                  Text(
+                    '${listData[index]['flourWindTemp']}℃',
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    '混合料温度1',
+                    style: TextStyle(color: Color(0xFF999999), fontSize: 14),
+                  ),
+                  Text(
+                    '${listData[index]['mixtureTempOne']}℃',
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        '大豆风冷温度1',
+                        style:
+                            TextStyle(color: Color(0xFF999999), fontSize: 14),
+                      ),
+                      Text(
+                        '${listData[index]['beanWindTempOne']}℃',
+                        style:
+                            TextStyle(color: Color(0xFF333333), fontSize: 16),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '混合料温度2',
+                        style:
+                            TextStyle(color: Color(0xFF999999), fontSize: 14),
+                      ),
+                      Text(
+                        '${listData[index]['mixtureTempTwo']}℃',
+                        style:
+                            TextStyle(color: Color(0xFF333333), fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    '大豆风冷温度2',
+                    style: TextStyle(color: Color(0xFF999999), fontSize: 14),
+                  ),
+                  Text(
+                    '${listData[index]['beanWindTempTwo']}℃',
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    '大豆风冷变频',
+                    style: TextStyle(color: Color(0xFF999999), fontSize: 14),
+                  ),
+                  Text(
+                    '${listData[index]['beanWindFrequency']}Hz',
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -201,15 +230,16 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      status: '${widget.arguments['data']['status']}',
-      statusName: '${widget.arguments['data']['statusName']}',
+      status: listData.length > 0 ? listData[0]['status'] : '',
+      statusName: listData.length > 0 ? listData[0]['statusName'] : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
-      headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
+      headFourTitle: '生产日期：${widget.arguments['data']['productDate']}',
       listData: listData,
+      addFlg: listData.length > 0 ? false : true,
       addFn: () {
-        Navigator.pushNamed(context, '/kojiMaking/steamBeanRecordAdd',
+        Navigator.pushNamed(context, '/kojiMaking/steamHybridControlAdd',
             arguments: {
               'orderNo': widget.arguments['data']['orderNo'],
               'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],

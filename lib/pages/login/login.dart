@@ -66,11 +66,6 @@ class _LoginPageState extends State<LoginPage> {
           SharedUtil.instance.saveStringStorage('factory', element['deptName']);
           SharedUtil.instance.saveStringStorage('factoryId', element['id']);
         }
-        if (element['deptType'] == 'WORK_SHOP') {
-          SharedUtil.instance
-              .saveStringStorage('workShop', element['deptName']);
-          SharedUtil.instance.saveStringStorage('workShopId', element['id']);
-        }
       });
       await SharedUtil.instance
           .saveStringStorage('token', res['data']['token']);
