@@ -11,6 +11,7 @@ class SteamBeanRecordAddPage extends StatefulWidget {
 class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
   Map<String, dynamic> formMap = {
     'steamBallPressure': '',
+    'steamBallId': '',
     'steamBallNo': '',
     'steamBallName': '',
     'addSteamStart': '',
@@ -107,6 +108,7 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
             optionsLabel: 'holderName',
             optionsval: 'holderNo',
             onChange: (val) {
+              formMap['steamBallId'] = val['id'];
               formMap['steamBallNo'] = val['holderNo'];
               formMap['steamBallName'] = val['holderName'];
               setState(() {});

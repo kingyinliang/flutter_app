@@ -19,12 +19,6 @@ class KojiMaking {
         .post('/kojiSteamFlour/insert', params: params);
   }
 
-  // 蒸面记录删除
-  static steamSideDel(params) {
-    return HttpManager.getInstance()
-        .post('/kojiSteamFlour/delete', params: params);
-  }
-
 // 蒸面记录修改
   static steamSideUpdate(params) {
     return HttpManager.getInstance()
@@ -107,12 +101,6 @@ class KojiMaking {
   static steamHybridControlAdd(params) {
     return HttpManager.getInstance()
         .post('/kojiSteamControl/insert', params: params);
-  }
-
-  // 混合控制删除
-  static steamHybridControlDel(params) {
-    return HttpManager.getInstance()
-        .post('/kojiSteamControl/delete', params: params);
   }
 
 // 混合控制修改

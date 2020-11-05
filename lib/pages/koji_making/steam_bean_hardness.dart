@@ -39,7 +39,7 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
       listData.forEach((element) {
         ids.add(element['id']);
       });
-      await KojiMaking.steamSideSubmit({
+      await KojiMaking.steamBeanHardnessSubmit({
         'ids': ids,
         'orderNo': widget.arguments['data']['orderNo'],
       });

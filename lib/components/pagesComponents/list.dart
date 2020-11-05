@@ -222,14 +222,16 @@ class _ListPageTabItemWidgetState extends State<ListPageTabItemWidget>
       current++;
       var params = widget.params;
       params['size'] = '10';
-      params['current'] = '1';
+      params['current'] = current;
       params[widget.tabsStatus] = widget.type;
       var res = await widget.api(params);
       data.addAll(res['data']['records']);
       setState(() {});
       if (current * 10 >= res['data']['total']) {
+        print(111);
         return false;
       } else {
+        print(222);
         return true;
       }
     } catch (e) {

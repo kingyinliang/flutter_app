@@ -52,10 +52,9 @@ class _HomePageState extends State<HomePage>
   setMenu() {
     menu = [];
     menuList.forEach((element) {
-      // if (element['parentName'] == parentName) {
-      //   menu.add(element);
-      // }
-      menu.add(element);
+      if (element['parentName'] == parentName) {
+        menu.add(element);
+      }
     });
     setState(() {});
   }

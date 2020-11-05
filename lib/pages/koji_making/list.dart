@@ -41,7 +41,6 @@ class _KojiMakingListPageState extends State<KojiMakingListPage> {
       api: KojiMaking.kojiMakingList,
       tabs: tabs,
       tabsStatus: 'status',
-      paging: false,
       params: {
         'workShop': widget.arguments['workShopId'],
         'listType': widget.arguments['workingType'],
@@ -55,7 +54,8 @@ class _KojiMakingListPageState extends State<KojiMakingListPage> {
         return Navigator.pushNamed(context, widget.arguments['url'],
             arguments: {
               'title': widget.arguments['title'],
-              'data': listviewList[index]
+              'data': listviewList[index],
+              'workingType': widget.arguments['workingType']
             });
       },
       itemBuilder: (context, index, listviewList) {

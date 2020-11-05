@@ -1,83 +1,70 @@
 import 'package:dfmdsapp/utils/index.dart';
 
-class ExeptionPage extends StatefulWidget {
-  final arguments;
-  ExeptionPage({Key key, this.arguments}) : super(key: key);
+class ExeptionWidget extends StatefulWidget {
+  final String title;
+  final String textField;
+  final List exceptionList;
+  final List textList;
+  final Function addOnFn;
+  final Function textOnFn;
+  final Function exeOnFn;
+  final Function delFn;
+  final String status;
+  final String statusName;
+  final String headTitle;
+  final String headSubTitle;
+  final String headThreeTitle;
+  final String headFourTitle;
+
+  ExeptionWidget({
+    Key key,
+    this.title,
+    this.textField,
+    this.exceptionList,
+    this.textList,
+    this.addOnFn,
+    this.textOnFn,
+    this.exeOnFn,
+    this.delFn,
+    this.status,
+    this.statusName,
+    this.headTitle,
+    this.headSubTitle,
+    this.headThreeTitle,
+    this.headFourTitle,
+  }) : super(key: key);
 
   @override
-  _ExeptionPageState createState() => _ExeptionPageState();
+  _ExeptionWidgetState createState() => _ExeptionWidgetState();
 }
 
-class _ExeptionPageState extends State<ExeptionPage> {
-  bool _floatingActionButtonFlag = true;
+class _ExeptionWidgetState extends State<ExeptionWidget> {
   int _tabIndex = 0;
-  List exceptionList = []; // 异常列表
-  List textList = []; // 文本列表
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(
-      Duration.zero,
-      () => setState(() {
-        _initState();
-      }),
-    );
-  }
-
-  _initState() async {
-    var workShopId = await SharedUtil.instance.getStorage('workShopId');
-    try {
-      // 异常列表
-      var res = await KojiMaking.steamExeptionQuery({
-        "orderNo": widget.arguments['data']['orderNo'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
-        "exceptionStage": '',
-      });
-      this.exceptionList = res['data'];
-      // 文本列表
-      var testRes = await KojiMaking.steamTextQuery({
-        "orderNo": widget.arguments['data']['orderNo'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
-        "textStage": '',
-      });
-      if (testRes['data'] != null) {
-        this.textList = [testRes['data']];
-      }
-      _floatingActionButtonFlag = this._isButtonFlag(_tabIndex);
-      setState(() {});
-    } catch (e) {}
-    setState(() {});
-  }
+  List wrapList = [
+    {'label': '班次：', 'value': 'classesName'},
+    {'label': '异常情况：', 'value': 'exceptionSituationName'},
+    {'label': '异常原因：', 'value': 'exceptionReasonName'},
+    {'label': '异常描述：', 'value': 'exceptionInfo'},
+    {'label': '备注：', 'value': 'remark'},
+    {'label': '', 'value': 'changer'},
+    {'label': '', 'value': 'changed'},
+  ];
 
   // 获取tab切换index
   void setFloatingActionButtonFlag(int index) {
-    _floatingActionButtonFlag = this._isButtonFlag(index);
     _tabIndex = index;
     setState(() {});
   }
 
   // 是否显示加号
-  _isButtonFlag(int tabIndex) {
+  bool _isButtonFlag(int tabIndex) {
     bool buttonFlag = true;
     if (tabIndex == 1) {
-      buttonFlag = this.textList.length == 1 ? false : true;
+      buttonFlag = widget.textList.length == 1 ? false : true;
     } else {
       buttonFlag = true;
     }
     return buttonFlag;
-  }
-
-  // 异常删除
-  _delPot(index) async {
-    try {
-      await KojiMaking.steamExeptionDel({
-        'id': exceptionList[index]['id'],
-      });
-      successToast(msg: '操作成功');
-      exceptionList.removeAt(index);
-      setState(() {});
-    } catch (e) {}
   }
 
   @override
@@ -85,19 +72,19 @@ class _ExeptionPageState extends State<ExeptionPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: MdsAppBarWidget(titleData: widget.arguments['title']),
+        appBar: MdsAppBarWidget(titleData: widget.title),
         backgroundColor: Color(0xFFF5F5F5),
         body: SliverTabBarWidget(
           tabChange: setFloatingActionButtonFlag,
           children: <Widget>[
             SizedBox(height: 5),
             PageHead(
-              status: '${widget.arguments['data']['status']}',
-              statusName: '${widget.arguments['data']['statusName']}',
-              title: '${widget.arguments['data']['kojiHouseName']}',
-              subTitle: '${widget.arguments['data']['materialName']}',
-              threeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
-              fourTitle: '生产日期：${widget.arguments['data']['productDate']}',
+              title: '${widget.headTitle}',
+              subTitle: '${widget.headSubTitle}',
+              threeTitle: '${widget.headThreeTitle}',
+              fourTitle: '${widget.headFourTitle}',
+              status: '${widget.status}',
+              statusName: '${widget.statusName}',
             ),
             SizedBox(height: 5),
           ],
@@ -106,37 +93,56 @@ class _ExeptionPageState extends State<ExeptionPage> {
             Tab(text: '其他记录'),
           ],
           tabBarViewChildren: <Widget>[
-            DateListWidget(
-              data: this.exceptionList,
-              updataFn: _initState,
-              arguments: {
-                'typeCode': widget.arguments['typeCode'],
-                'potDetail': widget.arguments['potDetail'],
+            ListView.builder(
+              padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
+              itemCount: widget.exceptionList.length,
+              itemBuilder: (context, index) {
+                return SlideButton(
+                  index: index,
+                  singleButtonWidth: 70,
+                  child: ExceptionItemCard(
+                    idx: index,
+                    startTime: 'startDate',
+                    endTime: 'endDate',
+                    cardMap: widget.exceptionList[index],
+                    wrapList: wrapList,
+                    onTap: () {
+                      widget.exeOnFn(index);
+                    },
+                  ),
+                  buttons: <Widget>[
+                    CardRemoveBtn(
+                      removeOnTab: () => widget.delFn(index),
+                    ),
+                  ],
+                );
               },
-              delFn: _delPot,
             ),
             ListView.builder(
               padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
-              itemCount: this.textList.length,
+              itemCount: widget.textList.length,
               itemBuilder: (context, index) {
-                return TextCard(
-                  dataList: this.textList,
-                  text: 'text',
-                  idx: index,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/sterilize/exception/textAdd',
-                      arguments: {
-                        'typeCode': widget.arguments['typeCode'],
-                        'potDetail': widget.arguments['potDetail'],
-                        'data': this.textList[index],
-                      },
-                    ).then((value) => value != null ? _initState() : null);
-                  },
+                return MdsCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: widget.textOnFn(index),
+                          child: Icon(
+                            IconData(0xe62c, fontFamily: 'MdsIcon'),
+                            size: 16,
+                            color: Color(0xFF487BFF),
+                          ),
+                        ),
+                      ),
+                      Text('${widget.textList[index][widget.textField]}'),
+                    ],
+                  ),
                 );
               },
-            )
+            ),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -149,30 +155,10 @@ class _ExeptionPageState extends State<ExeptionPage> {
               Container(
                 alignment: Alignment.bottomRight,
                 margin: EdgeInsets.fromLTRB(0, 0, 12, 10),
-                child: _floatingActionButtonFlag
+                child: _isButtonFlag(_tabIndex)
                     ? FloatingActionButton(
                         onPressed: () {
-                          if (_tabIndex == 0) {
-                            Navigator.pushNamed(
-                              context,
-                              '/sterilize/exception/add',
-                              arguments: {
-                                'typeCode': widget.arguments['typeCode'],
-                                'potDetail': widget.arguments['potDetail'],
-                              },
-                            ).then(
-                                (value) => value != null ? _initState() : null);
-                          } else {
-                            Navigator.pushNamed(
-                              context,
-                              '/sterilize/exception/textAdd',
-                              arguments: {
-                                'typeCode': widget.arguments['typeCode'],
-                                'potDetail': widget.arguments['potDetail'],
-                              },
-                            ).then(
-                                (value) => value != null ? _initState() : null);
-                          }
+                          widget.addOnFn(_tabIndex);
                         },
                         child: Icon(Icons.add),
                       )
@@ -186,128 +172,6 @@ class _ExeptionPageState extends State<ExeptionPage> {
   }
 }
 
-// 异常list
-class DateListWidget extends StatefulWidget {
-  final Map arguments;
-  final List data;
-  final Function updataFn;
-  final Function delFn;
-  DateListWidget(
-      {Key key, this.arguments, this.data, this.updataFn, this.delFn})
-      : super(key: key);
-
-  @override
-  _DateListWidgetState createState() => _DateListWidgetState();
-}
-
-class _DateListWidgetState extends State<DateListWidget>
-    with AutomaticKeepAliveClientMixin {
-  List wrapList = [
-    {'label': '班次：', 'value': 'classesName'},
-    {'label': '异常情况：', 'value': 'exceptionSituationName'},
-    {'label': '异常原因：', 'value': 'exceptionReasonName'},
-    {'label': '异常描述：', 'value': 'exceptionInfo'},
-    {'label': '备注：', 'value': 'remark'},
-    {'label': '', 'value': 'changer'},
-    {'label': '', 'value': 'changed'},
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return ListView.builder(
-      padding: EdgeInsets.fromLTRB(12, 10, 0, 60),
-      itemCount: widget.data.length,
-      itemBuilder: (context, index) {
-        return SlideButton(
-          index: index,
-          singleButtonWidth: 70,
-          child: ExceptionItemCard(
-            idx: index,
-            startTime: 'startDate',
-            endTime: 'endDate',
-            cardMap: widget.data[index],
-            wrapList: wrapList,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/sterilize/exception/add',
-                arguments: {
-                  'typeCode': widget.arguments['typeCode'],
-                  'potDetail': widget.arguments['potDetail'],
-                  'data': widget.data[index],
-                },
-              ).then((value) => value != null ? widget.updataFn() : null);
-            },
-          ),
-          buttons: <Widget>[
-            CardRemoveBtn(
-              removeOnTab: () => widget.delFn(index),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-}
-
-// 单个文本
-class TextCard extends StatefulWidget {
-  final Function onTap;
-  final List dataList; // 数据列表
-  final String text;
-  final int idx;
-  final bool isEdit; // 是否显示修改按钮
-  TextCard(
-      {Key key,
-      this.dataList,
-      this.text,
-      this.onTap,
-      this.idx,
-      this.isEdit = true})
-      : super(key: key);
-  @override
-  _TextCardState createState() => _TextCardState();
-}
-
-class _TextCardState extends State<TextCard> {
-  @override
-  Widget build(BuildContext context) {
-    return MdsCard(
-        child: Stack(children: <Widget>[
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: SizedBox(),
-            ),
-            Container(
-              child: widget.isEdit
-                  ? InkWell(
-                      onTap: widget.onTap,
-                      child: Icon(
-                        IconData(0xe62c, fontFamily: 'MdsIcon'),
-                        size: 16,
-                        color: Color(0xFF487BFF),
-                      ),
-                    )
-                  : SizedBox(),
-            )
-          ],
-        ),
-        SizedBox(height: 10),
-        Text('${widget.dataList[widget.idx][widget.text]}'),
-        SizedBox(height: 10),
-      ])
-    ]));
-  }
-}
-
-// 单个异常
 class ExceptionItemCard extends StatefulWidget {
   final int idx;
   final Function onTap;

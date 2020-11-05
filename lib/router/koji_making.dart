@@ -1,4 +1,5 @@
 import 'package:dfmdsapp/pages/koji_making/list.dart';
+import 'package:dfmdsapp/pages/koji_making/exeption.dart';
 import 'package:dfmdsapp/pages/koji_making/steam_side.dart';
 import 'package:dfmdsapp/pages/koji_making/steam_side_add.dart';
 import 'package:dfmdsapp/pages/koji_making/steam_bean_hardness.dart';
@@ -21,6 +22,8 @@ import 'package:dfmdsapp/pages/koji_making/steam_out_record_add.dart';
 Map<String, Function> kojiMakingRouters = {
   '/kojiMaking/List': (contxt, {arguments}) =>
       KojiMakingListPage(arguments: arguments),
+  '/kojiMaking/exeption': (contxt, {arguments}) =>
+      ExeptionPage(arguments: arguments),
   '/kojiMaking/steamSide': (contxt, {arguments}) =>
       SteamSidePage(arguments: arguments),
   '/kojiMaking/steamSideAdd': (contxt, {arguments}) =>

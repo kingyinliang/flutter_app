@@ -46,42 +46,11 @@ class _SteamSidePageState extends State<SteamSidePage> {
     } catch (e) {}
   }
 
-  _del(index) async {
-    try {
-      await KojiMaking.steamSideDel({
-        'id': listData[index]['id'],
-        'orderNo': widget.arguments['data']['orderNo'],
-        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
-      });
-      successToast(msg: '操作成功');
-      listData.removeAt(index);
-      setState(() {});
-    } catch (e) {}
-  }
-
   Widget _listWidget(index) {
     return Container(
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-      child: SlideButton(
-        index: index,
-        singleButtonWidth: 70,
-        child: MdsCard(
-          child: _listItemWidget(index),
-        ),
-        buttons: <Widget>[
-          CardRemoveBtn(
-            removeOnTab: () {
-              if (!(listData[index]['status'] == 'N' ||
-                  listData[index]['status'] == 'R' ||
-                  listData[index]['status'] == 'S' ||
-                  listData[index]['status'] == 'T' ||
-                  listData[index]['status'] == '')) {
-                return;
-              }
-              _del(index);
-            },
-          )
-        ],
+      child: MdsCard(
+        child: _listItemWidget(index),
       ),
     );
   }

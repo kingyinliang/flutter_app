@@ -34,6 +34,8 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
         }),
       );
     }
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     super.initState();
   }
 
