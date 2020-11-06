@@ -44,6 +44,7 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
         if (formMap['temp'] == '') {
           formMap['temp'] = 0;
         }
+        formMap['potOrderNo'] = widget.arguments['potOrderNo'];
         await Sterilize.sterilizeCraftMaterialTimeUpdateApi(formMap);
         Navigator.pop(context, true);
       } catch (e) {}
@@ -153,7 +154,7 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
           formMap['recordDate'] = '';
         }
         if (formMap['temp'] == null) {
-          formMap['recordDate'] = '';
+          formMap['temp'] = '';
         }
       }),
     );
