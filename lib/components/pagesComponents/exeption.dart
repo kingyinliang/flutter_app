@@ -129,7 +129,9 @@ class _ExeptionWidgetState extends State<ExeptionWidget> {
                       Container(
                         alignment: Alignment.centerRight,
                         child: InkWell(
-                          onTap: widget.textOnFn(index),
+                          onTap: () {
+                            widget.textOnFn(index);
+                          },
                           child: Icon(
                             IconData(0xe62c, fontFamily: 'MdsIcon'),
                             size: 16,
