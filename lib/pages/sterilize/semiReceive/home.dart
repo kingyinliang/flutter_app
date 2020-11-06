@@ -149,6 +149,8 @@ class _SemiReceivePageState extends State<SemiReceivePage>
   _copyBtnClick() async {
     try {
       await Sterilize.semiCopyApi({
+        'stePotNo': widget.arguments['pot'],
+        'stePotName': widget.arguments['potName'],
         "orderNo": widget.arguments['potNum']['orderNo'],
         "potOrderNo": widget.arguments['potNum']['potNo']
       });
