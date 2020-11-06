@@ -41,7 +41,7 @@ class _ExceptionHomeState extends State<ExceptionHome> {
               'potDetail': listviewList[index],
               'barTitle': widget.arguments['title'],
               'typeCode': widget.arguments['workingType'],
-            });
+            }).then((value) => value != null ? ListPageWidget() : ListPageWidget());
       },
       itemBuilder: (context, index, listviewList) {
         return Container(

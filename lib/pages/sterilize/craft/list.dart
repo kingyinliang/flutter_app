@@ -29,14 +29,14 @@ class _CraftListState extends State<CraftList> {
 
   // 获取tab切换index
   void setFloatingActionButtonFlag(int index) {
-    if (materialInfo.length == 0) {
-      _floatingActionButtonFlag = true;
-      _submitButtonFlag = true;
-    } else {
+//    if (materialInfo.length == 0) {
+//      _floatingActionButtonFlag = true;
+//      _submitButtonFlag = true;
+//    } else {
       _floatingActionButtonFlag =
-          getFloatingActionButtonFlag(index, materialInfo, 0);
-      _submitButtonFlag = getFloatingActionButtonFlag(index, materialInfo, 1);
-    }
+          getFloatingActionButtonFlag(index, 0, materialInfo, potList);
+      _submitButtonFlag = getFloatingActionButtonFlag(index, 1, materialInfo, potList);
+//    }
     _tabIndex = index;
     setState(() {});
   }
@@ -50,9 +50,11 @@ class _CraftListState extends State<CraftList> {
     try {
       var res1 = await Common.getDictDropAll(['COOL', 'HEAT', 'DISCHARGE']);
       StageList = res1['data'];
-      var res = await Sterilize.sterilizeCraftMaterialListApi(
-          {"potOrderNo": widget.arguments['potNum']['potNo']});
-      if (res['data'] != null) {
+      var res = await Sterilize.sterilizeCraftMaterialListApi({"potOrderNo": widget.arguments['potNum']['potNo']});
+      // 入料&升温
+      if (res['data']['id'] == '') {
+        materialInfo = [];
+      } else {
         materialInfo = [res['data']];
         if (res['data']['keepZkFlag'] == 'Y') {
           materialInfo[0]['keepZkFlagString'] = '是';
@@ -64,38 +66,39 @@ class _CraftListState extends State<CraftList> {
         } else {
           materialInfo[0]['coolZkFlagString'] = '否';
         }
-        potList = res['data']['item'];
-        for(int i=0; i<potList.length; i++) {
-          var testFirstWhere = StageList.firstWhere((item) => item["dictCode"] == potList[i]['controlStage']);
-          potList[i]['controlStageName'] = testFirstWhere['dictValue'];
-        }
-        _floatingActionButtonFlag =
-            getFloatingActionButtonFlag(_tabIndex, materialInfo, 0);
-        _submitButtonFlag =
-            getFloatingActionButtonFlag(_tabIndex, materialInfo, 1);
-      } else {
-        _floatingActionButtonFlag = true;
-        _submitButtonFlag = true;
       }
+      // 时间&温度
+      potList = res['data']['item'];
+      for(int i=0; i<potList.length; i++) {
+        var testFirstWhere = StageList.firstWhere((item) => item["dictCode"] == potList[i]['controlStage']);
+        potList[i]['controlStageName'] = testFirstWhere['dictValue'];
+      }
+      _floatingActionButtonFlag = getFloatingActionButtonFlag(_tabIndex, 0, materialInfo, potList);
+      _submitButtonFlag = getFloatingActionButtonFlag(_tabIndex, 1, materialInfo, potList);
+
       setState(() {});
     } catch (e) {}
   }
 
-  // 加号是否显示  type （0加号  1提交）
-  getFloatingActionButtonFlag(int index, List data, int type) {
+  // 加号是否显示  index( 0入料&升温  1杀菌时间 ) type （0加号  1提交）
+  getFloatingActionButtonFlag(int index, int type, List data, List potData) {
     bool ButtonFlag = true;
     if (index == 0) {
-      if (type == 1) {
-        ButtonFlag = data[0]['checkStatus'] == 'M' ? false : true;
+      if (data.length == 0) {
+        ButtonFlag = true;
       } else {
-        ButtonFlag = (materialInfo.length == 1 || data[0]['checkStatus'] == 'M')
-            ? false
-            : true;
+        if (type == 1) {
+          ButtonFlag = data[0]['checkStatus'] == 'D' ? false : true;
+        } else {
+          ButtonFlag = (materialInfo.length == 1 || data[0]['checkStatus'] == 'D')
+              ? false
+              : true;
+        }
       }
     } else {
-      if (data[0]['item'].length == 0) {
+      if (potData.length == 0) {
         ButtonFlag = true;
-      } else if (data[0]['item'][0]['checkStatus'] == 'M') {
+      } else if (potData[0]['checkStatus'] == 'D') {
         ButtonFlag = false;
       } else {
         ButtonFlag = true;
