@@ -46,9 +46,21 @@ class _ExeptionPageState extends State<ExeptionPage> {
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
         "textStage": tag,
       });
-      if (testRes['data'] != null) {
+      if (testRes['data'] != null &&
+          testRes['data']['id'] != '' &&
+          testRes['data']['id'] != null) {
         this.textList = [testRes['data']];
       }
+      setState(() {});
+    } catch (e) {}
+  }
+
+  // 异常删除
+  _delPot(index) async {
+    try {
+      await KojiMaking.steamExeptionDel([this.exceptionList[index]['id']]);
+      successToast(msg: '操作成功');
+      this.exceptionList.removeAt(index);
       setState(() {});
     } catch (e) {}
   }
@@ -57,8 +69,8 @@ class _ExeptionPageState extends State<ExeptionPage> {
   Widget build(BuildContext context) {
     return ExeptionWidget(
       title: widget.arguments['title'],
-      status: exceptionList.length > 0 ? '' : '',
-      statusName: exceptionList.length > 0 ? '已录入' : '未录入',
+      // status: exceptionList.length > 0 ? '' : '',
+      // statusName: exceptionList.length > 0 ? '已录入' : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
@@ -68,6 +80,18 @@ class _ExeptionPageState extends State<ExeptionPage> {
       textField: 'kojiText',
       addOnFn: (index) {
         if (index == 0) {
+          Navigator.pushNamed(
+            context,
+            '/exeptionAdd',
+            arguments: {
+              'api': KojiMaking.steamExeptionSave,
+              'params': {
+                "orderNo": widget.arguments['data']['orderNo'],
+                "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+                'exceptionStage': tag,
+              },
+            },
+          ).then((value) => value != null ? _initState() : null);
         } else {
           Navigator.pushNamed(
             context,
@@ -95,8 +119,19 @@ class _ExeptionPageState extends State<ExeptionPage> {
           },
         ).then((value) => value != null ? _initState() : null);
       },
-      exeOnFn: (index) {},
-      delFn: (index) {},
+      exeOnFn: (index) {
+        Navigator.pushNamed(
+          context,
+          '/exeptionAdd',
+          arguments: {
+            'data': exceptionList[index],
+            'api': KojiMaking.steamExeptionSave,
+          },
+        ).then((value) => value != null ? _initState() : null);
+      },
+      delFn: (index) {
+        _delPot(index);
+      },
     );
   }
 }

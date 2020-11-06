@@ -61,27 +61,29 @@ class _PageHeadState extends State<PageHead> {
       color: Colors.white,
       child: Stack(
         children: <Widget>[
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: getColor(),
-                    borderRadius: BorderRadius.all(Radius.circular(3.0)),
+          widget.status == '' || widget.status == 'null'
+              ? SizedBox()
+              : Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: getColor(),
+                          borderRadius: BorderRadius.all(Radius.circular(3.0)),
+                        ),
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        '${widget.statusName}',
+                        style: TextStyle(color: Color(0xFF666666)),
+                      )
+                    ],
                   ),
                 ),
-                SizedBox(width: 6),
-                Text(
-                  '${widget.statusName}',
-                  style: TextStyle(color: Color(0xFF666666)),
-                )
-              ],
-            ),
-          ),
           Row(
             children: <Widget>[
               Container(
@@ -100,9 +102,11 @@ class _PageHeadState extends State<PageHead> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(widget.title ?? '',
-                      style:
-                          TextStyle(fontSize: 18.0, color: Color(0xFF333333))),
+                  widget.title == ''
+                      ? SizedBox()
+                      : Text(widget.title ?? '',
+                          style: TextStyle(
+                              fontSize: 18.0, color: Color(0xFF333333))),
                   SizedBox(height: 6),
                   Text(widget.subTitle ?? '',
                       style:
