@@ -73,6 +73,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
               arguments: {
                 'orderNo': widget.arguments['potNum']['orderNo'],
                 'stePotNo': widget.arguments['potNum']['pot'],
+                'stePotName': widget.arguments['potName'],
                 'potOrderNo': widget.arguments['potNum']['potNo'],
                 'potOrderId': widget.arguments['potNum']['potOrderId'],
                 'data': semiList[index],
@@ -165,6 +166,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
       arguments: {
         'orderNo': widget.arguments['potNum']['orderNo'],
         'stePotNo': widget.arguments['pot'],
+        'stePotName': widget.arguments['potName'],
         'potOrderNo': widget.arguments['potNum']['potNo'],
         'potOrderId': widget.arguments['potNum']['potOrderId'],
       },
