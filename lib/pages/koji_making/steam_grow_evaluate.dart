@@ -9,15 +9,66 @@ class SteamGrowEvaluatePage extends StatefulWidget {
 }
 
 class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
+  // tag
   List wrapList = [
     {
       'label': '',
       'value': 'potNoName',
     }
   ];
-  List listData = [
-    {'potNoName': '111'}
-  ];
+  List listData = [];
+  String status = '';
+  String statusName = '';
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
+  _initState({type: false}) async {
+    try {
+      var res = await KojiMaking.steamDiscEvaluateQuery({
+        // "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      listData = res['data'];
+      if (type) successToast(msg: '操作成功');
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submit() async {
+    try {
+      await KojiMaking.steamDiscEvaluateSubmit({
+        // 'id': listData[0]['id'],
+        // 'orderNo': widget.arguments['data']['orderNo'],
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      _initState(type: true);
+    } catch (e) {}
+  }
+
+  _del(index) async {
+    try {
+      await KojiMaking.steamDiscEvaluateDelete({
+        'id': listData[index]['id'],
+        // 'orderNo': widget.arguments['data']['orderNo'],
+        // 'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      listData.removeAt(index);
+      setState(() {});
+    } catch (e) {}
+  }
 
   Widget _listWidget(index) {
     return Container(
@@ -30,7 +81,16 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
         ),
         buttons: <Widget>[
           CardRemoveBtn(
-            removeOnTab: () {},
+            removeOnTab: () {
+              if (!(listData[index]['status'] == 'N' ||
+                  listData[index]['status'] == 'R' ||
+                  listData[index]['status'] == 'S' ||
+                  listData[index]['status'] == 'T' ||
+                  listData[index]['status'] == '')) {
+                return;
+              }
+              _del(index);
+            },
           )
         ],
       ),
@@ -121,17 +181,51 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
+      status: '$status',
+      statusName: '$statusName',
       headTitle: 'A-1  曲房',
       headSubTitle: '六月香生酱',
-      headThreeTitle: '生产订单：83300023456',
+      headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
       headFourTitle: '入曲日期：2020-07-20',
       listData: listData,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamGrowEvaluateAdd',
             arguments: {});
       },
-      submitFn: () {},
+      submitFn: () {
+        _submit();
+      },
       listWidget: _listWidget,
     );
+  }
+
+  @override
+  void didUpdateWidget(SteamGrowEvaluatePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("didUpdateWidget");
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("deactive");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print("dispose");
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    print("reassemble");
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("didChangeDependencies");
   }
 }
