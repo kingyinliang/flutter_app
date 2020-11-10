@@ -10,14 +10,68 @@ class SteamOutRecordPage extends StatefulWidget {
 
 class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
   List wrapList = [
-    {
-      'label': '',
-      'value': 'potNoName',
-    }
+    // {'label': '', 'value': 'addKojiInfo'},
+    {'label': '出曲温度：', 'value': 'outKojiTemp', 'endlabel': '℃'},
+    {'label': '出曲人：', 'value': 'outKojiMans'},
+    {'label': '', 'value': 'changer'},
+    {'label': '', 'value': 'changed'},
   ];
-  List listData = [
-    {'potNoName': '111'}
-  ];
+  List listData = [];
+  String status = '';
+  String statusName = '';
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
+  _initState() async {
+    try {
+      var res = await KojiMaking.steamDiscOutQuery(
+          {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
+      if (res['data'] == null) {
+        listData = [];
+      } else {
+        listData = [res['data']];
+        status = res['data']['status'];
+        statusName = res['data']['statusName'];
+      }
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submit() async {
+    try {
+      if (listData.length > 0) {
+        await KojiMaking.steamDiscOutSubmit({
+          'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+        });
+        successToast(msg: '操作成功');
+        _initState();
+      } else {
+        EasyLoading.showError('请先添加数据');
+      }
+    } catch (e) {}
+  }
+
+  _del(index) async {
+    try {
+      await KojiMaking.steamDiscOutDelete({
+        'id': listData[index]['id']
+        // 'orderNo': widget.arguments['data']['orderNo'],
+        // 'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      listData.removeAt(index);
+      setState(() {});
+    } catch (e) {}
+  }
 
   Widget _listWidget(index) {
     return Container(
@@ -30,7 +84,16 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
         ),
         buttons: <Widget>[
           CardRemoveBtn(
-            removeOnTab: () {},
+            removeOnTab: () {
+              if (!(listData[index]['status'] == 'N' ||
+                  listData[index]['status'] == 'R' ||
+                  listData[index]['status'] == 'S' ||
+                  listData[index]['status'] == 'T' ||
+                  listData[index]['status'] == '')) {
+                return;
+              }
+              _del(index);
+            },
           )
         ],
       ),
@@ -54,14 +117,28 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              (listData[index]['status'] == 'N' ||
+                      listData[index]['status'] == 'R' ||
+                      listData[index]['status'] == 'S' ||
+                      listData[index]['status'] == 'T' ||
+                      listData[index]['status'] == '')
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/kojiMaking/steamOutRecordAdd',
+                          arguments: {
+                            'data': listData[index],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      },
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 14,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 10),
@@ -76,7 +153,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      listData[0]['outKojiStart'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -85,7 +162,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '${listData[0]['outKojiDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                 ],
@@ -99,7 +176,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      listData[0]['outKojiEnd'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -121,16 +198,24 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      headTitle: 'A-1  曲房',
-      headSubTitle: '六月香生酱',
-      headThreeTitle: '生产订单：83300023456',
-      headFourTitle: '入曲日期：2020-07-20',
+      status: '$status',
+      statusName: '$statusName',
+      headTitle: '${widget.arguments['data']['kojiHouseName']}',
+      headSubTitle:
+          '${widget.arguments['data']['materialName']} ${widget.arguments['data']['materialCode']}',
+      headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
+      headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamOutRecordAdd',
-            arguments: {});
+            arguments: {
+              'orderNo': widget.arguments['data']['orderNo'],
+              'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+            }).then((value) => value != null ? _initState() : null);
       },
-      submitFn: () {},
+      submitFn: () {
+        _submit();
+      },
       listWidget: _listWidget,
     );
   }

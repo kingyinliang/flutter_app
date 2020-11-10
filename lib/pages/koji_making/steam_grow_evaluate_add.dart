@@ -10,17 +10,84 @@ class SteamGrowEvaluateAddPage extends StatefulWidget {
 }
 
 class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
-  Map<String, dynamic> formMap = {'configDate': ''};
+  Map<String, dynamic> formMap = {
+    'exceptionInfo': '',
+    'growInfo': '',
+    'kojiOrderNo': '',
+    'kojiStage': '',
+    'orderNo': '',
+    'recordDate': '',
+    'recordMans': '',
+    'remark': ''
+  };
+
+  List kojiStageList = [];
+  List growInfoList = [];
 
   @override
   void initState() {
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
     }
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _getKojiStageList(); // 获取制曲阶段下拉
+        _getGrowInfoList(); // 获取生长情况下拉
+      }),
+    );
     super.initState();
   }
 
-  _submitForm() {}
+  _getKojiStageList() async {
+    try {
+      var res = await Common.dictDropDownQuery(
+          {'dictType': 'KOJI_GROWTH_STAGE'}); // 从数据字典里获制曲阶段
+      kojiStageList = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _getGrowInfoList() async {
+    try {
+      var res = await Common.dictDropDownQuery(
+          {'dictType': 'COMMON_SITUATION'}); // 从数据字典里获取生长情况下拉
+      growInfoList = res['data'];
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submitForm() async {
+    if (formMap['kojiStage'] == null || formMap['kojiStage'] == '') {
+      errorToast(msg: '请选择评价阶段');
+      return;
+    }
+    if (formMap['recordDate'] == null || formMap['recordDate'] == '') {
+      errorToast(msg: '请选择记录时间');
+      return;
+    }
+    if (formMap['growInfo'] == null || formMap['growInfo'] == '') {
+      errorToast(msg: '请选择生产情况');
+      return;
+    }
+    if (formMap['recordMans'] == null || formMap['recordMans'] == '') {
+      errorToast(msg: '请选择记录人');
+      return;
+    }
+    if (formMap['id'] != null) {
+      try {
+        await KojiMaking.steamDiscEvaluateSave(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await KojiMaking.steamDiscEvaluateSave(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
 
   Widget formWidget() {
     return Container(
@@ -29,48 +96,63 @@ class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(
         children: <Widget>[
-          InputWidget(
+          SelectWidget(
             label: '评价阶段',
-            keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['kojiStage'].toString(),
             requiredFlg: true,
+            options: kojiStageList,
+            optionsLabel: 'dictValue',
+            optionsval: 'dictCode',
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['kojiStage'] = val['dictCode'];
               setState(() {});
             },
           ),
           DataPickerWidget(
             label: '记录时间',
-            prop: formMap['configDate'],
+            prop: formMap['recordDate'],
             requiredFlg: true,
             onChange: (val) {
-              formMap['configDate'] = val;
+              formMap['recordDate'] = val;
               setState(() {});
             },
           ),
-          InputWidget(
+          SelectWidget(
             label: '生长情况',
+            prop: formMap['growInfo'].toString(),
             requiredFlg: true,
-            prop: formMap['consumeAmount'].toString(),
+            options: growInfoList,
+            optionsLabel: 'dictValue',
+            optionsval: 'dictCode',
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['growInfo'] = val['dictCode'];
               setState(() {});
             },
           ),
           InputWidget(
             label: '异常描述',
-            prop: formMap['consumeAmount'].toString(),
+            keyboardType: 'text',
+            prop: formMap['exceptionInfo'],
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['exceptionInfo'] = val;
+              setState(() {});
+            },
+          ),
+          OrgSelectUser(
+            label: '记录人',
+            prop: formMap['recordMans'].split(','),
+            requiredFlg: true,
+            onChange: (List val) {
+              formMap['recordMans'] = val.join(',');
               setState(() {});
             },
           ),
           InputWidget(
-            label: '记录人',
-            requiredFlg: true,
-            prop: formMap['consumeAmount'].toString(),
+            label: '备注',
+            keyboardType: 'text',
+            prop: formMap['remark'],
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['remark'] = val;
               setState(() {});
             },
           ),

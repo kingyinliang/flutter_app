@@ -1,4 +1,5 @@
 import 'package:dfmdsapp/utils/index.dart';
+import 'package:date_format/date_format.dart';
 
 class SteamTurnRecordAddPage extends StatefulWidget {
   final arguments;
@@ -9,17 +10,176 @@ class SteamTurnRecordAddPage extends StatefulWidget {
 }
 
 class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
-  Map<String, dynamic> formMap = {'configDate': ''};
+  Map<String, dynamic> formMap = {
+    'orderNo': '',
+    'kojiOrderNo': '',
+    'exceptionInfo': '',
+    'kojiDiscTurn1': {
+      'kojiOrderNo': '',
+      'orderNo': '',
+      'status': '',
+      'statusName': '',
+      'turnAddWaterAmount': 0,
+      'turnDuration': 0,
+      'turnDurationString': '0H',
+      'addSteamEnd': '',
+      'turnEnd': '',
+      'turnMans': '',
+      'turnStage': '',
+      'turnStageName': '',
+      'turnStart': '',
+      'remark': '',
+    },
+    'kojiDiscTurn2': {
+      'kojiOrderNo': '',
+      'orderNo': '',
+      'status': '',
+      'statusName': '',
+      'turnAddWaterAmount': 0,
+      'turnDuration': 0,
+      'turnDurationString': '0H',
+      'addSteamEnd': '',
+      'turnEnd': '',
+      'turnMans': '',
+      'turnStage': '',
+      'turnStageName': '',
+      'turnStart': '',
+      'remark': '',
+    }
+  };
 
   @override
   void initState() {
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
     }
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
+    if (formMap['kojiDiscTurn1']['turnStart'] == null) {
+      formMap['kojiDiscTurn1']['turnStart'] = '';
+    }
+    if (formMap['kojiDiscTurn1']['turnEnd'] == null) {
+      formMap['kojiDiscTurn1']['turnEnd'] = '';
+    }
+    if (formMap['kojiDiscTurn2']['turnStart'] == null) {
+      formMap['kojiDiscTurn2']['turnStart'] = '';
+    }
+    if (formMap['kojiDiscTurn2']['turnEnd'] == null) {
+      formMap['kojiDiscTurn2']['turnEnd'] = '';
+    }
+
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
     super.initState();
   }
 
-  _submitForm() {}
+  _initState() async {
+    Map userData = await SharedUtil.instance.getMapStorage('userData');
+
+    formMap['changed'] = formatDate(new DateTime.now(),
+        ['yyyy', '-', 'mm', '-', 'dd', ' ', 'HH', ':', 'nn']);
+    formMap['changer'] = userData['realName'];
+  }
+
+  // 获取时长
+  _getDuration(String turn) {
+    if (formMap[turn]['turnStart'] != '' && formMap[turn]['turnEnd'] != '') {
+      int nowyear =
+          int.parse(formMap[turn]['turnStart'].split(" ")[0].split('-')[0]);
+      int nowmonth =
+          int.parse(formMap[turn]['turnStart'].split(" ")[0].split('-')[1]);
+      int nowday =
+          int.parse(formMap[turn]['turnStart'].split(" ")[0].split('-')[2]);
+      int nowhour =
+          int.parse(formMap[turn]['turnStart'].split(" ")[1].split(':')[0]);
+      int nowmin =
+          int.parse(formMap[turn]['turnStart'].split(" ")[1].split(':')[1]);
+
+      int oldyear =
+          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[0]);
+      int oldmonth =
+          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[1]);
+      int oldday =
+          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[2]);
+      int oldhour =
+          int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[0]);
+      int oldmin =
+          int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[1]);
+
+      var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
+      var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
+      var difference = old.difference(now);
+
+      formMap[turn]['turnDuration'] =
+          formatNum((difference.inMinutes / 60), 2); // 时间差
+      formMap[turn]['turnDurationString'] =
+          '${formMap[turn]['turnDuration']}H'; // 时间差
+
+    }
+  }
+
+  formatNum(double num, int postion) {
+    if ((num.toString().length - num.toString().lastIndexOf(".") - 1) <
+        postion) {
+      //小数点后有几位小数
+      return num.toStringAsFixed(postion)
+          .substring(0, num.toString().lastIndexOf(".") + postion + 1)
+          .toString();
+    } else {
+      return num.toString()
+          .substring(0, num.toString().lastIndexOf(".") + postion + 1)
+          .toString();
+    }
+  }
+
+  _submitForm() async {
+    if (formMap['kojiDiscTurn1']['turnStart'] == null ||
+        formMap['kojiDiscTurn1']['turnStart'] == '') {
+      errorToast(msg: '请选择一翻翻曲开始时间');
+      return;
+    }
+    if (formMap['kojiDiscTurn1']['turnEnd'] == null ||
+        formMap['kojiDiscTurn1']['turnEnd'] == '') {
+      errorToast(msg: '请选择一翻翻曲结束时间');
+      return;
+    }
+    if (formMap['kojiDiscTurn1']['turnMans'] == null ||
+        formMap['kojiDiscTurn1']['turnMans'] == '') {
+      errorToast(msg: '请选择一翻翻曲人');
+      return;
+    }
+    if (formMap['kojiDiscTurn2']['turnStart'] == null ||
+        formMap['kojiDiscTurn2']['turnStart'] == '') {
+      errorToast(msg: '请选择一翻翻曲开始时间');
+      return;
+    }
+    if (formMap['kojiDiscTurn2']['turnEnd'] == null ||
+        formMap['kojiDiscTurn2']['turnEnd'] == '') {
+      errorToast(msg: '请选择一翻翻曲结束时间');
+      return;
+    }
+    if (formMap['kojiDiscTurn2']['turnMans'] == null ||
+        formMap['kojiDiscTurn2']['turnMans'] == '') {
+      errorToast(msg: '请选择一翻翻曲人');
+      return;
+    }
+
+    if (formMap['kojiDiscTurn1']['id'] != null) {
+      try {
+        await KojiMaking.steamDiscTurnSave(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await KojiMaking.steamDiscTurnSave(formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
 
   Widget formWidget() {
     return Container(
@@ -35,55 +195,52 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           DataPickerWidget(
             label: '翻曲开始时间',
-            prop: formMap['configDate'],
+            prop: formMap['kojiDiscTurn1']['turnStart'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['configDate'] = val;
+              formMap['kojiDiscTurn1']['turnStart'] = val;
+              this._getDuration('kojiDiscTurn1');
               setState(() {});
             },
           ),
           DataPickerWidget(
             label: '翻曲结束时间',
-            prop: formMap['configDate'],
+            prop: formMap['kojiDiscTurn1']['turnEnd'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['configDate'] = val;
+              formMap['kojiDiscTurn1']['turnEnd'] = val;
+              this._getDuration('kojiDiscTurn1');
               setState(() {});
             },
           ),
-          InputWidget(
-            label: '外下温度',
+          FormTextWidget(
+            label: '制曲时长',
             requiredFlg: true,
-            keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
-            onChange: (val) {
-              formMap['consumeAmount'] = val;
-              setState(() {});
-            },
+            prop: formMap['kojiDiscTurn1']['turnDurationString'].toString(),
           ),
           InputWidget(
             label: '翻曲加水量',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['kojiDiscTurn1']['turnAddWaterAmount'].toString(),
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['kojiDiscTurn1']['turnAddWaterAmount'] = val;
               setState(() {});
             },
           ),
-          InputWidget(
+          OrgSelectUser(
             label: '翻曲人',
+            prop: formMap['kojiDiscTurn1']['turnMans'].split(','),
             requiredFlg: true,
-            prop: formMap['consumeAmount'].toString(),
-            onChange: (val) {
-              formMap['consumeAmount'] = val;
+            onChange: (List val) {
+              formMap['kojiDiscTurn1']['turnMans'] = val.join(',');
               setState(() {});
             },
           ),
           InputWidget(
             label: '备注',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['kojiDiscTurn1']['remark'].toString(),
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['kojiDiscTurn1']['remark'] = val;
               setState(() {});
             },
           ),
@@ -98,55 +255,64 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           DataPickerWidget(
             label: '翻曲开始时间',
-            prop: formMap['configDate'],
+            prop: formMap['kojiDiscTurn2']['turnStart'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['configDate'] = val;
+              formMap['kojiDiscTurn2']['turnStart'] = val;
+              this._getDuration('kojiDiscTurn2');
               setState(() {});
             },
           ),
           DataPickerWidget(
             label: '翻曲结束时间',
-            prop: formMap['configDate'],
+            prop: formMap['kojiDiscTurn2']['turnEnd'].toString(),
             requiredFlg: true,
             onChange: (val) {
-              formMap['configDate'] = val;
+              formMap['kojiDiscTurn2']['turnEnd'] = val;
+              this._getDuration('kojiDiscTurn2');
               setState(() {});
             },
           ),
-          InputWidget(
-            label: '外下温度',
+          FormTextWidget(
+            label: '制曲时长',
             requiredFlg: true,
-            keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
-            onChange: (val) {
-              formMap['consumeAmount'] = val;
-              setState(() {});
-            },
+            prop: formMap['kojiDiscTurn2']['turnDurationString'].toString(),
           ),
           InputWidget(
             label: '翻曲加水量',
             keyboardType: 'number',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['kojiDiscTurn2']['turnAddWaterAmount'].toString(),
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['kojiDiscTurn2']['turnAddWaterAmount'] = val;
               setState(() {});
             },
           ),
-          InputWidget(
+          OrgSelectUser(
             label: '翻曲人',
+            prop: formMap['kojiDiscTurn2']['turnMans'].split(','),
             requiredFlg: true,
-            prop: formMap['consumeAmount'].toString(),
-            onChange: (val) {
-              formMap['consumeAmount'] = val;
+            onChange: (List val) {
+              formMap['kojiDiscTurn2']['turnMans'] = val.join(',');
               setState(() {});
             },
           ),
           InputWidget(
             label: '备注',
-            prop: formMap['consumeAmount'].toString(),
+            prop: formMap['kojiDiscTurn2']['remark'].toString(),
             onChange: (val) {
-              formMap['consumeAmount'] = val;
+              formMap['remark'] = val;
+              setState(() {});
+            },
+          ),
+          Container(
+            height: 10,
+            color: Color(0xFFF5F5F5),
+          ),
+          InputWidget(
+            label: '异常情况',
+            prop: formMap['exceptionInfo'].toString(),
+            onChange: (val) {
+              formMap['exceptionInfo'] = val;
               setState(() {});
             },
           ),
