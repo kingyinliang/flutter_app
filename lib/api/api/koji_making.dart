@@ -154,4 +154,143 @@ class KojiMaking {
   static steamTextSave(params) {
     return HttpManager.getInstance().post('/koji/text/save', params: params);
   }
+
+  // 入曲查询
+  static discInQuery(params) {
+    return HttpManager.getInstance().get('/koji/discIn/query', params: params);
+  }
+
+  // 入曲保存
+  static discInSaveQuery(params) {
+    return HttpManager.getInstance().post('/koji/discIn/save', params: params);
+  }
+
+  // 入曲提交
+  static discInSubmitQuery(params) {
+    return HttpManager.getInstance().get('/koji/discIn/submit', params: params);
+  }
+
+  // 看曲查询
+  static discLookQuery(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discGuard/query', params: params);
+  }
+
+  // 看曲异常查询
+  static discLookExceptQuery(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discGuard/queryException', params: params);
+  }
+
+  // 看曲保存
+  static discLookSave(params) {
+    return HttpManager.getInstance()
+        .post('/koji/discGuard/save', params: params);
+  }
+
+  // 看曲删除
+  static discLookDel(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discGuard/delete', params: params);
+  }
+
+  // 看曲异常保存
+  static discLookExceptionSave(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discGuard/saveException', params: params);
+  }
+
+  // 看曲提交
+  static discLookSubmit(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discGuard/submit', params: params);
+  }
+
+  // 制曲车间-翻曲情况-删除
+  static steamDiscTurnDelet(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discTurn/delete', params: params);
+  }
+
+  // 制曲车间-翻曲情况-删除异常情况
+  static steamDiscTurnDeletException(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discTurn/deleteException', params: params);
+  }
+
+  // 制曲车间-翻曲情况-查询
+  static steamDiscTurnQuery(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discTurn/query', params: params);
+  }
+
+  // 制曲车间-翻曲情况-查询异常情况
+  static steamDiscTurnQueryException(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discTurn/queryException', params: params);
+  }
+
+  // 制曲车间-翻曲情况-保存
+  static steamDiscTurnSave(params) {
+    return HttpManager.getInstance()
+        .post('/koji/discTurn/save', params: params);
+  }
+
+  // 制曲车间-翻曲情况-保存异常情况
+  static steamDiscTurnSaveException(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discTurn/saveException', params: params);
+  }
+
+  // 制曲车间-翻曲情况-提交
+  static steamDiscTurnSubmit(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discTurn/submit', params: params);
+  }
+
+  // 制曲车间-出曲情况-删除
+  static steamDiscOutDelete(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discOut/delete', params: params);
+  }
+
+  // 制曲车间-出曲情况-查询
+  static steamDiscOutQuery(params) {
+    return HttpManager.getInstance().get('/koji/discOut/query', params: params);
+  }
+
+  // 制曲车间-出曲情况-保存
+  static steamDiscOutSave(params) {
+    return HttpManager.getInstance().post('/koji/discOut/save', params: params);
+  }
+
+  // 制曲车间-出曲情况-提交
+  static steamDiscOutSubmit(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discOut/submit', params: params);
+  }
+
+  // 制曲车间-曲料生长评价-删除
+  static steamDiscEvaluateDelete(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discEvaluate/delete', params: params);
+  }
+
+  // 制曲车间-曲料生长评价-查询
+  static steamDiscEvaluateQuery(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discEvaluate/query', params: params);
+  }
+
+  // 制曲车间-曲料生长评价-保存
+  static steamDiscEvaluateSave(params) {
+    return HttpManager.getInstance()
+        .post('/koji/discEvaluate/save', params: params);
+  }
+
+  // 制曲车间-曲料生长评价-提交
+  static steamDiscEvaluateSubmit(params) {
+    return HttpManager.getInstance()
+        .get('/koji/discEvaluate/submit', params: params);
+  }
 }
