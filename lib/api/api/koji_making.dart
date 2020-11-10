@@ -154,4 +154,49 @@ class KojiMaking {
   static steamTextSave(params) {
     return HttpManager.getInstance().post('/koji/text/save', params: params);
   }
+
+  // 入曲查询
+  static discInQuery(params) {
+    return HttpManager.getInstance().get('/koji/discIn/query', params: params);
+  }
+
+  // 入曲保存
+  static discInSaveQuery(params) {
+    return HttpManager.getInstance().post('/koji/discIn/save', params: params);
+  }
+
+  // 入曲提交
+  static discInSubmitQuery(params) {
+    return HttpManager.getInstance().get('/koji/discIn/submit', params: params);
+  }
+
+  // 看曲查询
+  static discLookQuery(params) {
+    return HttpManager.getInstance().get('/koji/discGuard/query', params: params);
+  }
+
+  // 看曲异常查询
+  static discLookExceptQuery(params) {
+    return HttpManager.getInstance().get('/koji/discGuard/queryException', params: params);
+  }
+
+  // 看曲保存
+  static discLookSave(params) {
+    return HttpManager.getInstance().post('/koji/discGuard/save', params: params);
+  }
+
+  // 看曲删除
+  static discLookDel(params) {
+    return HttpManager.getInstance().get('/koji/discGuard/delete', params: params);
+  }
+
+  // 看曲异常保存
+  static discLookExceptionSave(params) {
+    return HttpManager.getInstance().get('/koji/discGuard/saveException', params: params);
+  }
+
+  // 看曲提交
+  static discLookSubmit(params) {
+    return HttpManager.getInstance().get('/koji/discGuard/submit', params: params);
+  }
 }
