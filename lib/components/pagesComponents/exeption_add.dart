@@ -19,7 +19,6 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
     'startDate': '',
     'endDate': '',
     'duration': '0',
-    'durationString': '0分钟',
     'durationUnit': 'MIN',
     'exceptionReason': '',
     'exceptionInfo': '',
@@ -36,11 +35,13 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
       addOrUpdate = false;
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
     } else {
+      formMap.addAll(widget.arguments['params']);
       addOrUpdate = true;
     }
     Future.delayed(
       Duration.zero,
       () => setState(() {
+        _getAbnormalReason(formMap['exceptionSituation']);
         _getClassList();
         _getAbnormalList();
       }),
@@ -89,13 +90,14 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
       var difference = old.difference(now);
 
       formMap['duration'] = difference.inMinutes; // 时间差
-      formMap['durationString'] = '${difference.inMinutes}分钟'; // 时间差
-
     }
   }
 
 // 异常原因
   _getAbnormalReason(val) async {
+    if (val == '') {
+      return;
+    }
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       if (val == 'FAULT' || val == 'SHUTDOWN') {
@@ -170,14 +172,9 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
               setState(() {});
             },
           ),
-          InputWidget(
+          FormTextWidget(
             label: '时长',
-            prop: formMap['durationString'].toString(),
-            enabled: false,
-            onChange: (val) {
-              formMap['durationString'] = val;
-              setState(() {});
-            },
+            prop: '${formMap['duration'].toString()}分钟',
           ),
           SelectWidget(
             label: '异常原因',
@@ -211,7 +208,45 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
     );
   }
 
-  _submitForm() {}
+  _submitForm() async {
+    if (formMap['classes'] == null || formMap['classes'] == '') {
+      EasyLoading.showError('请选择班次');
+      return;
+    }
+    if (formMap['exceptionSituation'] == null ||
+        formMap['exceptionSituation'] == '') {
+      EasyLoading.showError('请选择异常情况');
+      return;
+    }
+    if (formMap['startDate'] == null || formMap['startDate'] == '') {
+      EasyLoading.showError('请选择开始时间');
+      return;
+    }
+    if (formMap['endDate'] == null || formMap['endDate'] == '') {
+      EasyLoading.showError('请选择结束时间');
+      return;
+    }
+
+    if (formMap['exceptionSituation'] != 'AB_OTHERS' &&
+        formMap['exceptionReason'] == '') {
+      EasyLoading.showError('请选择异常原因');
+      return;
+    }
+
+    formMap['changed'] =
+        new DateTime.now().toString().split('.')[0].replaceAll('-', '-');
+    if (formMap['id'] != null) {
+      try {
+        await widget.arguments['api'](formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    } else {
+      try {
+        await widget.arguments['api'](formMap);
+        Navigator.pop(context, true);
+      } catch (e) {}
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

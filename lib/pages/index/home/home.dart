@@ -6,6 +6,7 @@ import 'package:dfmdsapp/utils/pxunit.dart';
 import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
 import 'package:dfmdsapp/utils/picker.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:dfmdsapp/utils/version_update.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -42,9 +43,11 @@ class _HomePageState extends State<HomePage>
     workShopName = workShopList[0]['deptName'];
     workShopId = workShopList[0]['id'];
     parentName = workShopList[0]['parentName'];
+
     try {
       var res = await Common.getMenuApi();
       menuList = res['data']['menuList'];
+      varsionUpdateInit(context);
       setMenu();
     } catch (e) {}
   }

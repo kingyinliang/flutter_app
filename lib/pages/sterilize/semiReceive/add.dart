@@ -222,6 +222,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
     formMap['potOrderNo'] = widget.arguments['potOrderNo'];
     formMap['potOrderId'] = widget.arguments['potOrderId'];
     formMap['stePotNo'] = widget.arguments['stePotNo'];
+    formMap['stePotName'] = widget.arguments['stePotName'];
     formMap['orderNo'] = widget.arguments['orderNo'];
     Future.delayed(
       Duration.zero,
