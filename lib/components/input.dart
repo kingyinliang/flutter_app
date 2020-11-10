@@ -61,13 +61,13 @@ class _InputWidgetState extends State<InputWidget> {
             text: inputVal.text,
             selection: TextSelection.fromPosition(
               TextPosition(
-                affinity: TextAffinity.downstream,
                 offset: inputVal.text.length,
               ),
             ),
           ),
         ),
         textAlign: TextAlign.end,
+        textDirection: TextDirection.ltr,
         style: TextStyle(color: Color(0xFF999999)),
         decoration: InputDecoration(
           border: InputBorder.none,

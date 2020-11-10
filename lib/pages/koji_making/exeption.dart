@@ -33,8 +33,10 @@ class _ExeptionPageState extends State<ExeptionPage> {
       } else if (widget.arguments['workingType'] == 'STEAM_FLOUR_EXCEPTION') {
         tag = 'ZM';
       }
+      var workShopId = await SharedUtil.instance.getStorage('workShopId');
       // 异常列表
       var res = await KojiMaking.steamExeptionQuery({
+        "workShop": workShopId,
         "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
         "exceptionStage": tag,

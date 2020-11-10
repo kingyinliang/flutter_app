@@ -113,6 +113,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
     try {
       await Sterilize.semiSubmitApi({
         'potOrderNo': widget.arguments['potNum']['potNo'],
+        "orderNo": widget.arguments['potNum']['orderNo'],
         'type': '',
       });
       successToast(msg: '操作成功');
