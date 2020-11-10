@@ -10,7 +10,67 @@ class SteamLookRecordPage extends StatefulWidget {
 
 class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   List pageData = [{}, {}];
-  List listData = [{}, {}];
+  List listData = [];
+  String exception = '';
+  String status = '';
+  String statusName = '';
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+          () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
+  _initState() async {
+    try {
+      // 看曲记录
+      var res = await KojiMaking.discLookQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data'][0]['status'];
+      print('status: ');
+      print(status);
+      statusName = res['data'][0]['statusName'];
+      listData = res['data'];
+      setState(() {});
+    } catch (e) {}
+    try {
+      // 看曲异常情况记录
+      var res2 = await KojiMaking.discLookExceptQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      if (res2['data'] != null) {
+        exception = res2['data'];
+      }
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _del(index) async {
+    try {
+      await KojiMaking.discLookDel({
+        'id': listData[index]['id']
+      });
+      successToast(msg: '操作成功');
+      listData.removeAt(index);
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submit() async {
+    try {
+      await KojiMaking.discLookSubmit({
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      _initState();
+    } catch (e) {}
+  }
 
   Widget _listWidget(index) {
     if (index == 0) {
@@ -22,7 +82,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: Container(
           color: Colors.white,
-          padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
+          padding: EdgeInsets.fromLTRB(12, 10, 14, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -31,23 +91,39 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                   Expanded(
                     child: Text(
                       '异常情况',
-                      style: TextStyle(color: Color(0xFF333333), fontSize: 17),
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ),
-                  InkWell(
-                    child: Icon(
-                      IconData(0xe62c, fontFamily: 'MdsIcon'),
-                      size: 15,
-                      color: Color(0xFF487BFF),
-                    ),
-                    onTap: () {},
-                  )
+                  (status == 'N' ||
+                      status == 'R' ||
+                      status == 'S' ||
+                      status == 'T' ||
+                      status == '')
+                      ? InkWell(
+                          child: Icon(
+                            IconData(0xe62c, fontFamily: 'MdsIcon'),
+                            size: 14,
+                            color: Color(0xFF487BFF),
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/kojiMaking/steamLookRecordAdd',
+                              arguments: {
+                                'data': {'remark': exception},
+                                'orderNo': widget.arguments['data']['orderNo'],
+                                'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+                                'onType': 'exception'
+                              },
+                            ).then((value) => value != null ? _initState() : null);
+                          },
+                      ) : SizedBox(),
                 ],
               ),
               SizedBox(height: 10),
               Text(
-                '1、看曲过长出现异常2、曲房异常',
-                style: TextStyle(color: Color(0xFF333333), fontSize: 15),
+                exception,
+                style: TextStyle(color: Color(0xFF333333), fontSize: 14),
               ),
             ],
           ),
@@ -60,25 +136,48 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
     List<Widget> widgetList = [
       Container(
         color: Colors.white,
-        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
         child: ColumnItem(
           addFlag: true,
           startText: '看曲记录',
+          status: status,
           endText: '',
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/kojiMaking/steamLookRecordAdd',
+              arguments: {
+                'orderNo': widget.arguments['data']['orderNo'],
+                'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+                'onType': 'record'
+              },
+            ).then((value) => value != null ? _initState() : null);
+          },
         ),
       ),
     ];
+
     listData.asMap().keys.forEach((index) {
       widgetList.add(Container(
         color: Colors.white,
-        padding: EdgeInsets.fromLTRB(24, 0, 0, 0),
+        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
         child: SlideButton(
           index: index,
           child: ColumnItem(
-            startText: '2020.08.01 08:00  张三  2020.08.01 08:00',
-            endText: '',
-            onTap: () {},
+            startText: '${listData[index]['guardDate']}',
+            centerText: '${listData[index]['changer']}',
+            status: '${listData[index]['status']}',
+            endText: '${listData[index]['changed']}',
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/kojiMaking/steamLookRecordAdd',
+                arguments: {
+                  'data': listData[index],
+                  'onType': 'record'
+                },
+              ).then((value) => value != null ? _initState() : null);
+            },
           ),
           singleButtonWidth: 60,
           buttons: <Widget>[
@@ -93,7 +192,16 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                     shape: CircleBorder(side: BorderSide(color: Colors.red)),
                     child: Icon(IconData(0xe674, fontFamily: 'MdsIcon'),
                         color: Colors.white, size: 16),
-                    onPressed: () {},
+                    onPressed: () {
+                      if (!(listData[index]['status'] == 'N' ||
+                          listData[index]['status'] == 'R' ||
+                          listData[index]['status'] == 'S' ||
+                          listData[index]['status'] == 'T' ||
+                          listData[index]['status'] == '')) {
+                        return;
+                      }
+                      _del(index);
+                    },
                   ),
                 ),
               ),
@@ -109,17 +217,21 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      headTitle: 'A-1  曲房',
-      headSubTitle: '六月香生酱',
-      headThreeTitle: '生产订单：83300023456',
-      headFourTitle: '入曲日期：2020-07-20',
+      status: '$status',
+      statusName: '$statusName',
+      headTitle: '${widget.arguments['data']['kojiHouseName']}',
+      headSubTitle: '${widget.arguments['data']['materialName']}',
+      headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
+      headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: pageData,
       addFlg: false,
       // addFn: () {
       //   Navigator.pushNamed(context, '/kojiMaking/steamLookRecordAdd',
       //       arguments: {});
       // },
-      submitFn: () {},
+      submitFn: () {
+        _submit();
+      },
       listWidget: _listWidget,
     );
   }
@@ -128,6 +240,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
 class ColumnItem extends StatefulWidget {
   final bool addFlag;
   final bool btnFlag;
+  final String status;
   final String startText;
   final String centerText;
   final String endText;
@@ -136,6 +249,7 @@ class ColumnItem extends StatefulWidget {
       {Key key,
       this.addFlag = false,
       this.btnFlag = true,
+      this.status = '',
       this.startText = '',
       this.centerText = '',
       this.endText = '',
@@ -150,54 +264,127 @@ class _ColumnItemState extends State<ColumnItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
       padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: Color(0xFF999999), width: 0.25),
         ),
       ),
-      child: Row(
-        children: <Widget>[
-          Text(
-            widget.startText,
-            style: TextStyle(color: Color(0xFF333333), fontSize: 17),
-          ),
-          SizedBox(width: 15),
-          Text(
-            widget.centerText,
-            style: TextStyle(color: Color(0xFF333333), fontSize: 17),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              widget.endText,
-              textAlign: TextAlign.right,
-              style: TextStyle(color: Color(0xFF999999), fontSize: 17),
+      child: Container(
+        padding: EdgeInsets.all(5.0),
+        child: Row(
+          children: <Widget>[
+            Column(
+                children: <Widget>[
+                  Text(
+                    widget.startText,
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                  ),
+                ]
             ),
-          ),
-          SizedBox(width: 10),
-          widget.btnFlag
-              ? widget.addFlag == true
+            SizedBox(width: 10),
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: Column(
+                    children: <Widget>[
+                      Row(
+                          children: <Widget>[
+                            Text(
+                              widget.centerText,
+                              style: TextStyle(color: Color(0xFF999999), fontSize: 12),
+                            ),
+                          ]
+                      ),
+                      Row(
+                          children: <Widget>[
+                            Text(
+                              widget.endText,
+                              style: TextStyle(color: Color(0xFF999999), fontSize: 12),
+                            ),
+                          ]
+                      )
+                    ]
+                ),
+              ),
+            ),
+            (widget.status == 'N' ||
+              widget.status == 'R' ||
+              widget.status == 'S' ||
+              widget.status == 'T' ||
+              widget.status == '')
+                ?
+                widget.btnFlag
+                  ? widget.addFlag == true
                   ? InkWell(
-                      child: Icon(
-                        IconData(0xe69e, fontFamily: 'MdsIcon'),
-                        size: 20,
-                        color: Color(0xFF487BFF),
-                      ),
-                      onTap: widget.onTap,
-                    )
-                  : InkWell(
-                      child: Icon(
-                        IconData(0xe62c, fontFamily: 'MdsIcon'),
-                        size: 15,
-                        color: Color(0xFF487BFF),
-                      ),
-                      onTap: widget.onTap,
-                    )
+                    child: Icon(
+                      IconData(0xe69e, fontFamily: 'MdsIcon'),
+                      size: 20,
+                      color: Color(0xFF487BFF),
+                    ),
+                    onTap: widget.onTap,
+                  )
+                    : InkWell(
+                        child: Icon(
+                          IconData(0xe62c, fontFamily: 'MdsIcon'),
+                          size: 12,
+                          color: Color(0xFF487BFF),
+                        ),
+                        onTap: widget.onTap,
+                      )
+                    : SizedBox()
               : SizedBox(),
-        ],
-      ),
+          ]
+        ),
+
+      )
+//      child: Row(
+//        children: <Widget>[
+//          Text(
+//            widget.startText,
+//            style: TextStyle(color: Color(0xFF333333), fontSize: 14),
+//          ),
+//          SizedBox(width: 2),
+//          Text(
+//            widget.centerText,
+//            style: TextStyle(color: Color(0xFF333333), fontSize: 12),
+//          ),
+//          Expanded(
+//            flex: 1,
+//            child: Text(
+//              widget.endText,
+//              textAlign: TextAlign.left,
+//              style: TextStyle(color: Color(0xFF999999), fontSize: 14),
+//            ),
+//          ),
+//          (widget.status == 'N' ||
+//            widget.status == 'R' ||
+//            widget.status == 'S' ||
+//            widget.status == 'T' ||
+//            widget.status == '')
+//              ?
+//              widget.btnFlag
+//                ? widget.addFlag == true
+//                ? InkWell(
+//                  child: Icon(
+//                    IconData(0xe69e, fontFamily: 'MdsIcon'),
+//                    size: 20,
+//                    color: Color(0xFF487BFF),
+//                  ),
+//                  onTap: widget.onTap,
+//                )
+//                  : InkWell(
+//                      child: Icon(
+//                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+//                        size: 12,
+//                        color: Color(0xFF487BFF),
+//                      ),
+//                      onTap: widget.onTap,
+//                    )
+//                  : SizedBox()
+//            : SizedBox(),
+//        ],
+//      ),
     );
   }
 }
