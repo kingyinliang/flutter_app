@@ -141,7 +141,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
       });
       semiList = res['data'];
       if (semiList.length != 0) {
-        status = res['data'][0]['status'];
+        status = res['data'][0]['checkStatus'];
       }
       if (type) successToast(msg: '操作成功');
       setState(() {});
