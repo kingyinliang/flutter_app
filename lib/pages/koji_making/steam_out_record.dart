@@ -129,6 +129,9 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                           '/kojiMaking/steamOutRecordAdd',
                           arguments: {
                             'data': listData[index],
+                            'orderNo': widget.arguments['data']['orderNo'],
+                            'kojiOrderNo': widget.arguments['data']
+                                ['kojiOrderNo'],
                           },
                         ).then((value) => value != null ? _initState() : null);
                       },
@@ -153,7 +156,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      listData[0]['outKojiStart'],
+                      listData[index]['outKojiStart'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -162,7 +165,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '${listData[0]['outKojiDuration']}H',
+                    '${listData[index]['outKojiDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                 ],
@@ -176,7 +179,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      listData[0]['outKojiEnd'],
+                      listData[index]['outKojiEnd'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],

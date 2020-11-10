@@ -12,7 +12,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
   // tag
   List wrapList = [
     {'label': '異常描述：', 'value': 'exceptionInfo'},
-    {'label': '生長情況', 'value': 'growInfo'},
+    {'label': '生長情況：', 'value': 'growInfo'},
     {'label': '备注：', 'value': 'remark'},
     {'label': '', 'value': 'changer'},
     {'label': '', 'value': 'changed'},
@@ -55,10 +55,10 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
 
   _submit() async {
     try {
-      var ids = [];
-      listData.forEach((element) {
-        ids.add(element['id']);
-      });
+      // var ids = [];
+      // listData.forEach((element) {
+      //   ids.add(element['id']);
+      // });
       await KojiMaking.steamDiscEvaluateSubmit({
         // 'id': listData[0]['id'],
         // 'orderNo': widget.arguments['data']['orderNo'],
@@ -119,7 +119,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  '${listData[index]['steamBallName']}',
+                  'No.${index + 1}',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
@@ -157,6 +157,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
           Row(
             children: <Widget>[
               Expanded(
+                flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -166,12 +167,13 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
                     ),
                     Text(
                       '${listData[index]['kojiStageName']}',
-                      style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 14),
                     ),
                   ],
                 ),
               ),
               Expanded(
+                flex: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -180,23 +182,24 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '${listData[index]['kojiStageName']}',
+                      '${listData[index]['recordDate']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
                 ),
               ),
               Expanded(
+                flex: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       '记录人',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '${listData[index]['recordDate']}',
-                      style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                      '${listData[index]['recordMans'].split(",")[0]}',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 14),
                     ),
                   ],
                 ),

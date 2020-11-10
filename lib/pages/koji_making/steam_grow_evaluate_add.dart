@@ -76,6 +76,8 @@ class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
       errorToast(msg: '请选择记录人');
       return;
     }
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamDiscEvaluateSave(formMap);

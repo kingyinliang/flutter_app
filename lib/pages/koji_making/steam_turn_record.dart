@@ -45,8 +45,14 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
         "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
-      listData = res['data'];
-      if (type) successToast(msg: '操作成功');
+
+      if (res['data'] == null) {
+        listData = [];
+      } else {
+        listData = res['data'];
+        print(listData);
+        if (type) successToast(msg: '操作成功');
+      }
       setState(() {});
     } catch (e) {}
   }
@@ -57,7 +63,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
       // listData.forEach((element) {
       //   ids.add(element['id']);
       // });
-      await KojiMaking.steamDiscTurnQuery({
+      await KojiMaking.steamDiscTurnSubmit({
         // 'ids': ids,
         // 'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
@@ -92,11 +98,11 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
         buttons: <Widget>[
           CardRemoveBtn(
             removeOnTab: () {
-              if (!(listData[index]['status'] == 'N' ||
-                  listData[index]['status'] == 'R' ||
-                  listData[index]['status'] == 'S' ||
-                  listData[index]['status'] == 'T' ||
-                  listData[index]['status'] == '')) {
+              if (!(listData[0]['kojiDiscTurn1']['status'] == 'N' ||
+                  listData[0]['kojiDiscTurn1']['status'] == 'R' ||
+                  listData[0]['kojiDiscTurn1']['status'] == 'S' ||
+                  listData[0]['kojiDiscTurn1']['status'] == 'T' ||
+                  listData[0]['kojiDiscTurn1']['status'] == '')) {
                 return;
               }
               _del(index);
@@ -124,14 +130,31 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              (listData[0]['kojiDiscTurn1']['status'] == 'N' ||
+                      listData[0]['kojiDiscTurn1']['status'] == 'R' ||
+                      listData[0]['kojiDiscTurn1']['status'] == 'S' ||
+                      listData[0]['kojiDiscTurn1']['status'] == 'T' ||
+                      listData[0]['kojiDiscTurn1']['status'] == '')
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/kojiMaking/steamTurnRecordAdd',
+                          arguments: {
+                            'data': listData[index],
+                            'orderNo': widget.arguments['data']['orderNo'],
+                            'kojiOrderNo': widget.arguments['data']
+                                ['kojiOrderNo'],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      },
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 14,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 10),
@@ -155,7 +178,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '${listData[index]['kojiDiscTurn1']['turnDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                 ],
@@ -194,15 +217,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                     fontSize: 15,
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              )
             ],
           ),
           SizedBox(height: 10),
@@ -226,7 +241,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '${listData[index]['kojiDiscTurn2']['turnDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                 ],
@@ -259,7 +274,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
             style: TextStyle(fontSize: 15, color: Color(0xFF333333)),
           ),
           Text(
-            '1.翻曲出现异常 2.曲房异常',
+            '${listData[index]['exceptionInfo']}',
             style: TextStyle(fontSize: 15, color: Color(0xFF333333)),
           ),
         ],
@@ -271,13 +286,14 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      status: '$status',
-      statusName: '$statusName',
+      status: listData.length > 0 ? '$status' : '',
+      statusName: listData.length > 0 ? '$statusName' : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
+      addFlg: listData.length > 0 ? false : true,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamTurnRecordAdd',
             arguments: {

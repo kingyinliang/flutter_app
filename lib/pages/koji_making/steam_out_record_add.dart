@@ -130,6 +130,9 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
       errorToast(msg: '请输入出曲温度');
       return;
     }
+
+    formMap['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamDiscOutSave(formMap);

@@ -17,32 +17,28 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     'kojiDiscTurn1': {
       'kojiOrderNo': '',
       'orderNo': '',
-      'status': '',
-      'statusName': '',
+      // 'status': '',
       'turnAddWaterAmount': 0,
       'turnDuration': 0,
       'turnDurationString': '0H',
-      'addSteamEnd': '',
       'turnEnd': '',
       'turnMans': '',
-      'turnStage': '',
-      'turnStageName': '',
+      'turnStage': '一翻',
+      'turnStageName': '一翻',
       'turnStart': '',
       'remark': '',
     },
     'kojiDiscTurn2': {
       'kojiOrderNo': '',
       'orderNo': '',
-      'status': '',
-      'statusName': '',
+      // 'status': '',
       'turnAddWaterAmount': 0,
       'turnDuration': 0,
       'turnDurationString': '0H',
-      'addSteamEnd': '',
       'turnEnd': '',
       'turnMans': '',
-      'turnStage': '',
-      'turnStageName': '',
+      'turnStage': '二翻',
+      'turnStageName': '二翻',
       'turnStart': '',
       'remark': '',
     }
@@ -55,6 +51,10 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     }
     formMap['orderNo'] = widget.arguments['orderNo'];
     formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
+    formMap['kojiDiscTurn1']['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiDiscTurn1']['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
+    formMap['kojiDiscTurn2']['orderNo'] = widget.arguments['orderNo'];
+    formMap['kojiDiscTurn2']['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     if (formMap['kojiDiscTurn1']['turnStart'] == null) {
       formMap['kojiDiscTurn1']['turnStart'] = '';
     }
@@ -67,6 +67,11 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     if (formMap['kojiDiscTurn2']['turnEnd'] == null) {
       formMap['kojiDiscTurn2']['turnEnd'] = '';
     }
+
+    formMap['kojiDiscTurn1']['turnDurationString'] =
+        '${formMap['kojiDiscTurn1']['turnDuration']}H';
+    formMap['kojiDiscTurn2']['turnDurationString'] =
+        '${formMap['kojiDiscTurn1']['turnDuration']}H';
 
     Future.delayed(
       Duration.zero,
@@ -154,17 +159,17 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     }
     if (formMap['kojiDiscTurn2']['turnStart'] == null ||
         formMap['kojiDiscTurn2']['turnStart'] == '') {
-      errorToast(msg: '请选择一翻翻曲开始时间');
+      errorToast(msg: '请选择二翻翻曲开始时间');
       return;
     }
     if (formMap['kojiDiscTurn2']['turnEnd'] == null ||
         formMap['kojiDiscTurn2']['turnEnd'] == '') {
-      errorToast(msg: '请选择一翻翻曲结束时间');
+      errorToast(msg: '请选择二翻翻曲结束时间');
       return;
     }
     if (formMap['kojiDiscTurn2']['turnMans'] == null ||
         formMap['kojiDiscTurn2']['turnMans'] == '') {
-      errorToast(msg: '请选择一翻翻曲人');
+      errorToast(msg: '请选择二翻翻曲人');
       return;
     }
 
@@ -190,7 +195,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
         children: <Widget>[
           FormTextWidget(
             label: '翻曲',
-            requiredFlg: true,
+            // requiredFlg: true,
             prop: '一翻',
           ),
           DataPickerWidget(
@@ -215,7 +220,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           FormTextWidget(
             label: '制曲时长',
-            requiredFlg: true,
+            // requiredFlg: true,
             prop: formMap['kojiDiscTurn1']['turnDurationString'].toString(),
           ),
           InputWidget(
@@ -250,7 +255,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           FormTextWidget(
             label: '翻曲',
-            requiredFlg: true,
+            // requiredFlg: true,
             prop: '二翻',
           ),
           DataPickerWidget(
@@ -275,7 +280,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           FormTextWidget(
             label: '制曲时长',
-            requiredFlg: true,
+            // requiredFlg: true,
             prop: formMap['kojiDiscTurn2']['turnDurationString'].toString(),
           ),
           InputWidget(
@@ -300,7 +305,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             label: '备注',
             prop: formMap['kojiDiscTurn2']['remark'].toString(),
             onChange: (val) {
-              formMap['remark'] = val;
+              formMap['kojiDiscTurn2']['remark'] = val;
               setState(() {});
             },
           ),
