@@ -52,7 +52,7 @@ class _CraftHomeState extends State<CraftHome> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('第${listviewList[index]['potOrder']}锅',
+                    Text('${listviewList[index]['potName']} 第${listviewList[index]['potOrder']}锅',
                         style: TextStyle(fontSize: 17.0)),
                   ],
                 ),

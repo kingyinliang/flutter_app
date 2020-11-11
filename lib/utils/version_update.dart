@@ -65,6 +65,7 @@ class VersionUpdateDialog extends StatefulWidget {
 }
 
 class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
+  bool btnTmp = true;
   var progress;
   var flutterDown;
   var taskId;
@@ -73,6 +74,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
   _download() async {
     if (await Permission.storage.request().isGranted) {
       final path = (await getExternalStorageDirectory()).path.toString();
+      btnTmp = false;
 
       //发起请求
       taskId = await FlutterDownloader.enqueue(
@@ -114,6 +116,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
       print(progress);
       setState(() => this.progress = progress);
       if (taskId == id && status == DownloadTaskStatus.complete) {
+        btnTmp = true;
         _installApk();
         Navigator.of(context, rootNavigator: true).pop();
       }
@@ -223,7 +226,7 @@ class _VersionUpdateDialogState extends State<VersionUpdateDialog> {
                                 color: Color.fromRGBO(72, 123, 255, 1),
                                 textColor: Colors.white,
                                 elevation: 10,
-                                onPressed: _download,
+                                onPressed: btnTmp ? _download : null,
                               ),
                             ),
                             // Container(

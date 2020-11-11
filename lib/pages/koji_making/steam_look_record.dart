@@ -33,8 +33,6 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
       status = res['data'][0]['status'];
-      print('status: ');
-      print(status);
       statusName = res['data'][0]['statusName'];
       listData = res['data'];
       setState(() {});

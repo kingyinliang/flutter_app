@@ -134,6 +134,7 @@ class _ExceptionAddState extends State<ExceptionAdd> {
           ),
           InputWidget(
               label: '异常描述',
+              keyboardType: 'text',
               prop: formMap['exceptionInfo'].toString(),
               onChange: (val) {
                 formMap['exceptionInfo'] = val;

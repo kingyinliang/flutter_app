@@ -135,6 +135,21 @@ class _CraftListState extends State<CraftList> {
     }
     if (_tabIndex == 1) {
       type = '2';
+      int isStage = 0;
+      if (potList.length == 0) {
+        errorToast(msg: '请填写杀菌时间&温度');
+        return;
+      } else {
+        for(int i=0; i<potList.length; i++) {
+          if (potList[i]['controlStage'] == 'HEAT_START' || potList[i]['controlStage'] == 'HEAT_END' || potList[i]['controlStage'] == 'DISCHARGE_START' || potList[i]['controlStage'] == 'DISCHARGE_END') {
+            isStage++;
+          }
+        }
+        if (isStage < 4) {
+          errorToast(msg: '请填写保温开始时间、保温结束时间、出料开始时间、出料结束时间');
+          return;
+        }
+      }
     }
     try {
       await Sterilize.sterilizeCraftMaterialTimeSubmitApi({
