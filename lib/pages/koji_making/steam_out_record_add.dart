@@ -14,7 +14,7 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
     'kojiOrderNoe': '',
     'orderNo': '',
     'outKojiDuration': 0,
-    'outKojiDurationString': '0H',
+    'outKojiDurationString': '0 H',
     'outKojiEnd': '',
     'outKojiMans': '',
     'outKojiTemp': 0,
@@ -34,7 +34,7 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
       if (formMap['outKojiStart'] == null) {
         formMap['outKojiStart'] = '';
       }
-      formMap['outKojiDurationString'] = '${formMap['outKojiDuration']}H';
+      formMap['outKojiDurationString'] = '${formMap['outKojiDuration']} H';
     } else {
       Future.delayed(
         Duration.zero,
@@ -84,7 +84,7 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
       formMap['outKojiDuration'] =
           formatNum((difference.inMinutes / 60), 2); // 时间差
       formMap['outKojiDurationString'] =
-          '${formMap['outKojiDuration']}H'; // 时间差
+          '${formMap['outKojiDuration']} H'; // 时间差
 
     }
   }

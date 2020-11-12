@@ -31,7 +31,16 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
     super.initState();
   }
 
-  _initState() async {
+  _initState({type: false}) async {
+    try {
+      var res = await KojiMaking.kojiMakingOrder({
+        "dataType": widget.arguments['workingType'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
     try {
       var res = await KojiMaking.steamDiscOutQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
@@ -39,8 +48,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
         listData = [];
       } else {
         listData = [res['data']];
-        status = res['data']['status'];
-        statusName = res['data']['statusName'];
+        if (type) successToast(msg: '操作成功');
       }
       setState(() {});
     } catch (e) {}
@@ -53,7 +61,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
           'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
         });
         successToast(msg: '操作成功');
-        _initState();
+        _initState(type: true);
       } else {
         EasyLoading.showError('请先添加数据');
       }
@@ -62,11 +70,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
 
   _del(index) async {
     try {
-      await KojiMaking.steamDiscOutDelete({
-        'id': listData[index]['id']
-        // 'orderNo': widget.arguments['data']['orderNo'],
-        // 'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
-      });
+      await KojiMaking.steamDiscOutDelete({'id': listData[index]['id']});
       successToast(msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
@@ -110,7 +114,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  'NO.1',
+                  'No.${index + 1}',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
@@ -156,7 +160,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      listData[index]['outKojiStart'],
+                      '${listData[index]['outKojiStart']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -179,7 +183,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      listData[index]['outKojiEnd'],
+                      '${listData[index]['outKojiEnd']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],

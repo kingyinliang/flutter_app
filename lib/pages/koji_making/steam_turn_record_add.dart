@@ -20,7 +20,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       // 'status': '',
       'turnAddWaterAmount': 0,
       'turnDuration': 0,
-      'turnDurationString': '0H',
+      'turnDurationString': '0 H',
       'turnEnd': '',
       'turnMans': '',
       'turnStage': '一翻',
@@ -34,7 +34,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       // 'status': '',
       'turnAddWaterAmount': 0,
       'turnDuration': 0,
-      'turnDurationString': '0H',
+      'turnDurationString': '0 H',
       'turnEnd': '',
       'turnMans': '',
       'turnStage': '二翻',
@@ -69,9 +69,9 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     }
 
     formMap['kojiDiscTurn1']['turnDurationString'] =
-        '${formMap['kojiDiscTurn1']['turnDuration']}H';
+        '${formMap['kojiDiscTurn1']['turnDuration']} H';
     formMap['kojiDiscTurn2']['turnDurationString'] =
-        '${formMap['kojiDiscTurn1']['turnDuration']}H';
+        '${formMap['kojiDiscTurn1']['turnDuration']} H';
 
     Future.delayed(
       Duration.zero,
@@ -122,7 +122,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       formMap[turn]['turnDuration'] =
           formatNum((difference.inMinutes / 60), 2); // 时间差
       formMap[turn]['turnDurationString'] =
-          '${formMap[turn]['turnDuration']}H'; // 时间差
+          '${formMap[turn]['turnDuration']} H'; // 时间差
 
     }
   }
