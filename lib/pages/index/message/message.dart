@@ -72,7 +72,6 @@ class _MessagePageState extends State<MessagePage>
     eventListen = EventBusUtil.getInstance().on<MsgEvent>().listen((data) {
       setState(() {
         messageOne.insert(0, data.msg);
-        print(messageOne);
       });
     });
     Future.delayed(

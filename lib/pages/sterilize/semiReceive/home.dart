@@ -11,7 +11,7 @@ import 'package:dfmdsapp/api/api/index.dart';
 
 import '../common/page_head.dart';
 import '../common/item_card.dart';
-import '../common/remove_btn.dart';
+import '../../../components/remove_btn.dart';
 
 class SemiReceivePage extends StatefulWidget {
   final arguments;
@@ -25,11 +25,11 @@ class _SemiReceivePageState extends State<SemiReceivePage>
     with TickerProviderStateMixin {
   AnimationController _ctrlAnimationCircle;
   List wrapList = [
-    {'label': '', 'value': 'fermentPotNo'},
+    {'label': '', 'value': 'fermentPotName'},
     {'label': '', 'value': 'materialName'},
     {'label': '', 'value': 'consumeBatch'},
     {'label': '发酵罐库存', 'value': 'fermentStorage'},
-    {'label': '', 'value': 'tankNo'},
+    {'label': '', 'value': 'tankName'},
     {'label': '', 'value': 'changer'},
     {'label': '', 'value': 'changed'},
     {'label': '备注：', 'value': 'remark'},
@@ -73,6 +73,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
               arguments: {
                 'orderNo': widget.arguments['potNum']['orderNo'],
                 'stePotNo': widget.arguments['potNum']['pot'],
+                'stePotName': widget.arguments['potName'],
                 'potOrderNo': widget.arguments['potNum']['potNo'],
                 'potOrderId': widget.arguments['potNum']['potOrderId'],
                 'data': semiList[index],
@@ -112,6 +113,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
     try {
       await Sterilize.semiSubmitApi({
         'potOrderNo': widget.arguments['potNum']['potNo'],
+        "orderNo": widget.arguments['potNum']['orderNo'],
         'type': '',
       });
       successToast(msg: '操作成功');
@@ -139,7 +141,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
       });
       semiList = res['data'];
       if (semiList.length != 0) {
-        status = res['data'][0]['status'];
+        status = res['data'][0]['checkStatus'];
       }
       if (type) successToast(msg: '操作成功');
       setState(() {});
@@ -149,6 +151,8 @@ class _SemiReceivePageState extends State<SemiReceivePage>
   _copyBtnClick() async {
     try {
       await Sterilize.semiCopyApi({
+        'stePotNo': widget.arguments['pot'],
+        'stePotName': widget.arguments['potName'],
         "orderNo": widget.arguments['potNum']['orderNo'],
         "potOrderNo": widget.arguments['potNum']['potNo']
       });
@@ -163,6 +167,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
       arguments: {
         'orderNo': widget.arguments['potNum']['orderNo'],
         'stePotNo': widget.arguments['pot'],
+        'stePotName': widget.arguments['potName'],
         'potOrderNo': widget.arguments['potNum']['potNo'],
         'potOrderId': widget.arguments['potNum']['potOrderId'],
       },

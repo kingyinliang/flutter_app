@@ -5,7 +5,7 @@ import 'package:dfmdsapp/utils/storage.dart';
 // ignore: top_level_function_literal_block
 var onGenerateRoute = (RouteSettings settings) {
   final String name = settings.name;
-  final Function pageContentBuilder = routers[name];
+  final Function pageContentBuilder = RoutersManager.instance.allRouters[name];
   if (settings.name == '/login') {
     print(true);
     SharedUtil.instance.saveBoolStorage('loginStatus', true);

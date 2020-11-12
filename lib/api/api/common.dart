@@ -19,6 +19,12 @@ class Common {
         .post('/sysUser/password/update', params: params);
   }
 
+// 版本更新
+  static getVersion() {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .get('/sysApp/getLastedVersion');
+  }
+
 // 消息查询
   static msgQueryApi(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
@@ -40,6 +46,29 @@ class Common {
   static dictDropDownQuery(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
         .get('/sysDictItem/dropDown', params: params);
+  }
+
+// 获取组织架构树
+  static orgTreeQuery(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .get('/sysDept/all/dropDown', params: params);
+  }
+
+// 根据组织架构查人
+  static getUserByOrgTree(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API)
+        .post('/sysUser/userRole/all/query', params: params);
+  }
+
+// 根据部门和工号姓名查人
+  static getUserByQuery(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API)
+        .post('/sysUser/query', params: params);
+  }
+
+  static getDictDropAll(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API)
+        .post('/sysDictItem/batchDropDown', params: params);
   }
 
 // 容器下拉
@@ -71,5 +100,4 @@ class Common {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
         .post('/sysDevice/listByType', params: params);
   }
-
 }

@@ -41,6 +41,10 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
     }
     if (formMap['id'] != null) {
       try {
+        if (formMap['temp'] == '') {
+          formMap['temp'] = 0;
+        }
+        formMap['potOrderNo'] = widget.arguments['potOrderNo'];
         await Sterilize.sterilizeCraftMaterialTimeUpdateApi(formMap);
         Navigator.pop(context, true);
       } catch (e) {}
@@ -115,6 +119,7 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
           ),
           InputWidget(
               label: '温度(℃)',
+              keyboardType: 'number',
               prop: formMap['temp'].toString(),
               onChange: (val) {
                 formMap['temp'] = val;
@@ -147,6 +152,9 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
         }
         if (formMap['recordDate'] == null) {
           formMap['recordDate'] = '';
+        }
+        if (formMap['temp'] == null) {
+          formMap['temp'] = '';
         }
       }),
     );

@@ -33,8 +33,8 @@ class _MaterialAddPageState extends State<MaterialAddPage> {
 
   _getUseMaterial() async {
     try {
-      var res = await Common.dictDropDownQuery({
-        'dictType': 'STE_SUP_MATERIAL',
+      var res = await Sterilize.acceAddMaterialQueryApi({
+        'supplyFlag': 'Y',
       });
       useMaterial = res['data'];
       setState(() {});
@@ -110,11 +110,12 @@ class _MaterialAddPageState extends State<MaterialAddPage> {
             label: '领用物料',
             prop: formMap['useMaterialCode'].toString(),
             options: useMaterial,
-            optionsLabel: 'dictValue',
-            optionsval: 'dictCode',
+            optionsLabel: 'useMaterial',
+            optionsval: 'useMaterial',
             onChange: (val) {
-              formMap['useMaterialCode'] = val['dictCode'];
-              formMap['useMaterialName'] = val['dictValue'];
+              formMap['useMaterialCode'] = val['useMaterial'];
+              formMap['useMaterialType'] = val['useMaterialType'];
+              formMap['useMaterialName'] = val['useMaterialName'];
               setState(() {});
             },
           ),

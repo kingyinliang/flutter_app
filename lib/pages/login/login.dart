@@ -66,11 +66,6 @@ class _LoginPageState extends State<LoginPage> {
           SharedUtil.instance.saveStringStorage('factory', element['deptName']);
           SharedUtil.instance.saveStringStorage('factoryId', element['id']);
         }
-        if (element['deptType'] == 'WORK_SHOP') {
-          SharedUtil.instance
-              .saveStringStorage('workShop', element['deptName']);
-          SharedUtil.instance.saveStringStorage('workShopId', element['id']);
-        }
       });
       await SharedUtil.instance
           .saveStringStorage('token', res['data']['token']);
@@ -81,10 +76,7 @@ class _LoginPageState extends State<LoginPage> {
       await HttpManager.getInstance().updateToken();
       Navigator.pop(context);
       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
-    } catch (e) {
-      print('catchError');
-      print(e);
-    }
+    } catch (e) {}
   }
 
   @override

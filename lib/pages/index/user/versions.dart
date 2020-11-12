@@ -63,7 +63,7 @@ class _VersionsPageState extends State<VersionsPage> {
             padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
             child: InkWell(
               onTap: () {
-                varsionUpdateInit(context);
+                varsionUpdateInit(context, flag: true);
               },
               child: FormItem(
                 label: '检查新版本',

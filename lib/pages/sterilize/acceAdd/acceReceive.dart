@@ -191,7 +191,9 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MdsAppBarWidget(
-          titleData: formMap['id'] == null ? '辅料领用新增' : '辅料领用修改'),
+        titleData: formMap['id'] == null ? '辅料领用新增' : '辅料领用修改',
+        refresh: true,
+      ),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[

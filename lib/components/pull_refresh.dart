@@ -80,20 +80,21 @@ class _PullRefreshState extends State<PullRefresh> {
   }
 
   Future _getMoreData() async {
-    if (loadStatus == LoadingStatus.STATUS_IDEL)
+    if (loadStatus == LoadingStatus.STATUS_IDEL) {
       setState(() {
         loadStatus = LoadingStatus.STATUS_LOADING;
       });
-    var res = await widget.pull();
-    setState(() {
-      if (res) {
-        loadStatus = LoadingStatus.STATUS_IDEL;
-        loadText = '加载中...';
-      } else {
-        loadText = '加载完毕';
-        loadStatus = LoadingStatus.STATUS_COMPLETED;
-      }
-    });
+      var res = await widget.pull();
+      setState(() {
+        if (res) {
+          loadStatus = LoadingStatus.STATUS_IDEL;
+          loadText = '加载中...';
+        } else {
+          loadText = '加载完毕';
+          loadStatus = LoadingStatus.STATUS_COMPLETED;
+        }
+      });
+    }
   }
 
   @override

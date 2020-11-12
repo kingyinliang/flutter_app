@@ -10,7 +10,7 @@ import 'package:dfmdsapp/utils/toast.dart';
 
 import '../common/page_head.dart';
 import '../common/item_card.dart';
-import '../common/remove_btn.dart';
+import '../../../components/remove_btn.dart';
 
 class AcceAddHomePage extends StatefulWidget {
   final arguments;
@@ -492,9 +492,14 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                       child: ColumnItem(
                         btnFlag: childSubmitButtonFlag,
                         startText: widget.data[index]['child'][childIndex]
-                                    ['useAmount']
-                                .toString() +
-                            widget.data[index]['child'][childIndex]['useUnit'],
+                                    ['useAmount'] ==
+                                null
+                            ? ''
+                            : widget.data[index]['child'][childIndex]
+                                        ['useAmount']
+                                    .toString() +
+                                widget.data[index]['child'][childIndex]
+                                    ['useUnit'],
                         centerText: widget.data[index]['child'][childIndex]
                             ['useBatch'],
                         onTap: () {

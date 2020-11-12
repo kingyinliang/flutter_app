@@ -20,12 +20,14 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
   Map<String, dynamic> formMap = {
     'consumeType': '1',
     'fermentPotNo': '',
+    'fermentPotName': '',
     'materialCode': '',
     'consumeUnit': '',
     'consumeAmount': '',
     'consumeBatch': '',
     'fermentStorage': '',
     'tankNo': '',
+    'tankName': '',
     'remark': '',
   };
 
@@ -136,7 +138,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
             optionsval: 'holderNo',
             onChange: (val) {
               formMap['fermentPotNo'] = val['holderNo'];
-              formMap['fermentStorage'] = val['holderVolume'];
+              formMap['fermentPotName'] = val['holderName'];
               setState(() {});
             },
           ),
@@ -179,9 +181,13 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
               setState(() {});
             },
           ),
-          FormTextWidget(
+          InputWidget(
             label: '发酵罐库存',
             prop: formMap['fermentStorage'].toString(),
+            onChange: (val) {
+              formMap['fermentStorage'] = val;
+              setState(() {});
+            },
           ),
           SelectWidget(
             label: '转运罐号',
@@ -191,6 +197,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
             optionsval: 'holderNo',
             onChange: (val) {
               formMap['tankNo'] = val['holderNo'];
+              formMap['tankName'] = val['holderName'];
               setState(() {});
             },
           ),
@@ -215,6 +222,7 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
     formMap['potOrderNo'] = widget.arguments['potOrderNo'];
     formMap['potOrderId'] = widget.arguments['potOrderId'];
     formMap['stePotNo'] = widget.arguments['stePotNo'];
+    formMap['stePotName'] = widget.arguments['stePotName'];
     formMap['orderNo'] = widget.arguments['orderNo'];
     Future.delayed(
       Duration.zero,
