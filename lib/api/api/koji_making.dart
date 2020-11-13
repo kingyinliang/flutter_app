@@ -212,34 +212,16 @@ class KojiMaking {
         .get('/koji/discTurn/delete', params: params);
   }
 
-  // 制曲车间-翻曲情况-删除异常情况
-  static steamDiscTurnDeletException(params) {
-    return HttpManager.getInstance()
-        .get('/koji/discTurn/deleteException', params: params);
-  }
-
   // 制曲车间-翻曲情况-查询
   static steamDiscTurnQuery(params) {
     return HttpManager.getInstance()
         .get('/koji/discTurn/query', params: params);
   }
 
-  // 制曲车间-翻曲情况-查询异常情况
-  static steamDiscTurnQueryException(params) {
-    return HttpManager.getInstance()
-        .get('/koji/discTurn/queryException', params: params);
-  }
-
   // 制曲车间-翻曲情况-保存
   static steamDiscTurnSave(params) {
     return HttpManager.getInstance()
         .post('/koji/discTurn/save', params: params);
-  }
-
-  // 制曲车间-翻曲情况-保存异常情况
-  static steamDiscTurnSaveException(params) {
-    return HttpManager.getInstance()
-        .get('/koji/discTurn/saveException', params: params);
   }
 
   // 制曲车间-翻曲情况-提交
