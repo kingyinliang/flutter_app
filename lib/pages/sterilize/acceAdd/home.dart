@@ -111,6 +111,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         listData.add({
           'useMaterialCode': data[index]['useMaterialCode'],
           'useMaterialName': data[index]['useMaterialName'],
+          'useMaterialType': data[index]['useMaterialType'],
           'useUnit': data[index]['useUnit'],
           'child': [data[index]],
         });
@@ -462,6 +463,8 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                               ['useMaterialCode'],
                           'useMaterialName': widget.data[index]
                               ['useMaterialName'],
+                          'useMaterialType': widget.data[index]
+                              ['useMaterialType'],
                           'useUnit': widget.data[index]['useUnit'],
                         },
                       ).then(
@@ -530,6 +533,8 @@ class _AcceReceiveTabState extends State<AcceReceiveTab>
                                   ['useMaterialCode'],
                               'useMaterialName': widget.data[index]
                                   ['useMaterialName'],
+                              'useMaterialType': widget.data[index]
+                                  ['useMaterialType'],
                               'useUnit': widget.data[index]['useUnit'],
                               'data': widget.data[index]['child'][childIndex],
                             },

@@ -77,6 +77,12 @@ class Common {
         .post('/sysHolder/dropDown', params: params);
   }
 
+// id获取容器信息
+  static holderDetailById(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .get('/sysHolder/queryById', params: params);
+  }
+
 // orderBom
   static orderBoom(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.PC_API)

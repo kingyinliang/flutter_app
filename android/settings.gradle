@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 include ':app'
+include ':honeywell'
 
 def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
 def properties = new Properties()

@@ -11,10 +11,11 @@ class SteamGrowEvaluatePage extends StatefulWidget {
 class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
   // tag
   List wrapList = [
-    {
-      'label': '',
-      'value': 'potNoName',
-    }
+    {'label': '異常描述：', 'value': 'exceptionInfo'},
+    {'label': '生長情況：', 'value': 'growInfo'},
+    {'label': '备注：', 'value': 'remark'},
+    {'label': '', 'value': 'changer'},
+    {'label': '', 'value': 'changed'},
   ];
   List listData = [];
   String status = '';
@@ -33,12 +34,19 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.steamDiscEvaluateQuery({
-        // "orderNo": widget.arguments['data']['orderNo'],
+      var res = await KojiMaking.kojiMakingOrder({
+        "dataType": widget.arguments['workingType'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
       status = res['data']['status'];
       statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
+    try {
+      var res = await KojiMaking.steamDiscEvaluateQuery({
+        // "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
       listData = res['data'];
       if (type) successToast(msg: '操作成功');
       setState(() {});
@@ -47,6 +55,10 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
 
   _submit() async {
     try {
+      // var ids = [];
+      // listData.forEach((element) {
+      //   ids.add(element['id']);
+      // });
       await KojiMaking.steamDiscEvaluateSubmit({
         // 'id': listData[0]['id'],
         // 'orderNo': widget.arguments['data']['orderNo'],
@@ -107,60 +119,87 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  'NO.1',
+                  'No.${index + 1}',
                   style: TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 15,
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              (listData[index]['status'] == 'N' ||
+                      listData[index]['status'] == 'R' ||
+                      listData[index]['status'] == 'S' ||
+                      listData[index]['status'] == 'T' ||
+                      listData[index]['status'] == '')
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/kojiMaking/steamGrowEvaluateAdd',
+                          arguments: {
+                            'data': listData[index],
+                            'orderNo': widget.arguments['data']['orderNo'],
+                            'kojiOrderNo': widget.arguments['data']
+                                ['kojiOrderNo'],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      },
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 14,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 10),
           Row(
             children: <Widget>[
               Expanded(
+                flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '开始时间',
+                      '评估阶段',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['kojiStageName']}',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      '记录时间',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 12),
+                    ),
+                    Text(
+                      '${listData[index]['recordDate']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
                 ),
               ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    '10min',
-                    style: TextStyle(color: Color(0xFF333333), fontSize: 12),
-                  ),
-                ],
-              ),
               Expanded(
+                flex: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '结束时间',
+                      '记录人',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
-                      style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+                      '${listData[index]['recordMans'].split(",")[0]}',
+                      style: TextStyle(color: Color(0xFF333333), fontSize: 14),
                     ),
                   ],
                 ),
@@ -183,49 +222,22 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
       title: widget.arguments['title'],
       status: '$status',
       statusName: '$statusName',
-      headTitle: 'A-1  曲房',
-      headSubTitle: '六月香生酱',
+      headTitle: '${widget.arguments['data']['kojiHouseName']}',
+      headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
-      headFourTitle: '入曲日期：2020-07-20',
+      headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamGrowEvaluateAdd',
-            arguments: {});
+            arguments: {
+              'orderNo': widget.arguments['data']['orderNo'],
+              'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+            }).then((value) => value != null ? _initState() : null);
       },
       submitFn: () {
         _submit();
       },
       listWidget: _listWidget,
     );
-  }
-
-  @override
-  void didUpdateWidget(SteamGrowEvaluatePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print("didUpdateWidget");
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    print("deactive");
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    print("dispose");
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    print("reassemble");
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    print("didChangeDependencies");
   }
 }
