@@ -10,14 +10,81 @@ class SteamTurnRecordPage extends StatefulWidget {
 
 class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
   List wrapList = [
-    {
-      'label': '',
-      'value': 'potNoName',
-    }
+    {'label': '备注：', 'value': 'remark'},
+    {'label': '', 'value': 'changer'},
+    {'label': '', 'value': 'changed'}
   ];
-  List listData = [
-    {'potNoName': '111'}
-  ];
+  List listData = [];
+
+  String status = '';
+  String statusName = '';
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        _initState();
+      }),
+    );
+    super.initState();
+  }
+
+  _initState({type: false}) async {
+    try {
+      var res = await KojiMaking.kojiMakingOrder({
+        "dataType": widget.arguments['workingType'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
+    try {
+      var res = await KojiMaking.steamDiscTurnQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+
+      if (res['data'] == null) {
+        listData = [];
+      } else {
+        listData = res['data'];
+        print(listData);
+        if (type) successToast(msg: '操作成功');
+      }
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submit() async {
+    try {
+      // var ids = [];
+      // listData.forEach((element) {
+      //   ids.add(element['id']);
+      // });
+      await KojiMaking.steamDiscTurnSubmit({
+        // 'ids': ids,
+        // 'orderNo': widget.arguments['data']['orderNo'],
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      _initState(type: true);
+    } catch (e) {}
+  }
+
+  _del(index) async {
+    try {
+      await KojiMaking.steamDiscTurnDelet({
+        // 'id': listData[index]['id'],
+        // 'orderNo': widget.arguments['data']['orderNo'],
+        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+      });
+      successToast(msg: '操作成功');
+      listData.removeAt(index);
+      setState(() {});
+    } catch (e) {}
+  }
 
   Widget _listWidget(index) {
     return Container(
@@ -30,7 +97,16 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
         ),
         buttons: <Widget>[
           CardRemoveBtn(
-            removeOnTab: () {},
+            removeOnTab: () {
+              if (!(listData[0]['kojiDiscTurn1']['status'] == 'N' ||
+                  listData[0]['kojiDiscTurn1']['status'] == 'R' ||
+                  listData[0]['kojiDiscTurn1']['status'] == 'S' ||
+                  listData[0]['kojiDiscTurn1']['status'] == 'T' ||
+                  listData[0]['kojiDiscTurn1']['status'] == '')) {
+                return;
+              }
+              _del(index);
+            },
           )
         ],
       ),
@@ -54,14 +130,31 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              (listData[0]['kojiDiscTurn1']['status'] == 'N' ||
+                      listData[0]['kojiDiscTurn1']['status'] == 'R' ||
+                      listData[0]['kojiDiscTurn1']['status'] == 'S' ||
+                      listData[0]['kojiDiscTurn1']['status'] == 'T' ||
+                      listData[0]['kojiDiscTurn1']['status'] == '')
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/kojiMaking/steamTurnRecordAdd',
+                          arguments: {
+                            'data': listData[index],
+                            'orderNo': widget.arguments['data']['orderNo'],
+                            'kojiOrderNo': widget.arguments['data']
+                                ['kojiOrderNo'],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      },
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 14,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 10),
@@ -76,7 +169,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['kojiDiscTurn1']['turnStart']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -85,7 +178,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '${listData[index]['kojiDiscTurn1']['turnDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                 ],
@@ -99,7 +192,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['kojiDiscTurn1']['turnEnd']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -109,7 +202,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
           ),
           SizedBox(height: 10),
           WrapWidget(
-            cardMap: listData[index],
+            cardMap: listData[index]['kojiDiscTurn1'],
             wrapList: wrapList,
           ),
           SizedBox(height: 10),
@@ -124,15 +217,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                     fontSize: 15,
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Icon(
-                  IconData(0xe62c, fontFamily: 'MdsIcon'),
-                  size: 14,
-                  color: Color(0xFF487BFF),
-                ),
-              ),
+              )
             ],
           ),
           SizedBox(height: 10),
@@ -147,7 +232,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['kojiDiscTurn2']['turnStart']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -156,7 +241,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '${listData[index]['kojiDiscTurn2']['turnDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                 ],
@@ -170,7 +255,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      '2020.05.21 10:23',
+                      '${listData[index]['kojiDiscTurn2']['turnEnd']}',
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -180,7 +265,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
           ),
           SizedBox(height: 10),
           WrapWidget(
-            cardMap: listData[index],
+            cardMap: listData[index]['kojiDiscTurn2'],
             wrapList: wrapList,
           ),
           SizedBox(height: 10),
@@ -189,7 +274,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
             style: TextStyle(fontSize: 15, color: Color(0xFF333333)),
           ),
           Text(
-            '1.翻曲出现异常 2.曲房异常',
+            '${listData[index]['exceptionInfo']}',
             style: TextStyle(fontSize: 15, color: Color(0xFF333333)),
           ),
         ],
@@ -201,16 +286,24 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
   Widget build(BuildContext context) {
     return HomePageWidget(
       title: widget.arguments['title'],
-      headTitle: 'A-1  曲房',
-      headSubTitle: '六月香生酱',
-      headThreeTitle: '生产订单：83300023456',
-      headFourTitle: '入曲日期：2020-07-20',
+      status: listData.length > 0 ? '$status' : '',
+      statusName: listData.length > 0 ? '$statusName' : '未录入',
+      headTitle: '${widget.arguments['data']['kojiHouseName']}',
+      headSubTitle: '${widget.arguments['data']['materialName']}',
+      headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
+      headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
+      addFlg: listData.length > 0 ? false : true,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamTurnRecordAdd',
-            arguments: {});
+            arguments: {
+              'orderNo': widget.arguments['data']['orderNo'],
+              'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+            }).then((value) => value != null ? _initState() : null);
       },
-      submitFn: () {},
+      submitFn: () {
+        _submit();
+      },
       listWidget: _listWidget,
     );
   }

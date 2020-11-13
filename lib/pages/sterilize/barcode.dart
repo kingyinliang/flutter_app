@@ -3,8 +3,9 @@ import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/utils/picker.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter_dong_scan/scan.dart';
+import 'package:honeywell_scanner/honeywell_scanner.dart';
+// import 'package:barcode_scan/barcode_scan.dart';
+// import 'package:flutter_dong_scan/scan.dart';
 
 class BarCodePage extends StatefulWidget {
   final arguments;
@@ -14,39 +15,12 @@ class BarCodePage extends StatefulWidget {
   _BarCodePageState createState() => _BarCodePageState();
 }
 
-class _BarCodePageState extends State<BarCodePage> {
+class _BarCodePageState extends State<BarCodePage>
+    with WidgetsBindingObserver
+    implements ScannerCallBack {
+  HoneywellScanner honeywellScanner = HoneywellScanner();
+  String scannedCode = '';
   List potList = [];
-  var string1;
-  var string2;
-
-  _barcode() async {
-    print(1);
-    var result = await BarcodeScanner.scan(
-      options: ScanOptions(
-        strings: {
-          'cancel': '取消',
-          'flash_on': '打开闪光灯',
-          'flash_off': '关闭闪光灯',
-        },
-      ),
-    );
-    string1 = result;
-    setState(() {});
-    print(result.type);
-    print(result.rawContent);
-    print(result.format);
-    print(result.formatNote);
-  }
-
-  _dongscan() {
-    ScanConfig scanConfig = ScanConfig();
-    SDScan scan = SDScan().setScanEventListener((dynamic codeString) {
-      print("扫描结果:" + codeString);
-      string2 = codeString;
-      setState(() {});
-    });
-    scan.startScan(config: scanConfig);
-  }
 
   _getPotList() async {
     var workShop = await SharedUtil.instance.getStorage('workShopId');
@@ -95,52 +69,12 @@ class _BarCodePageState extends State<BarCodePage> {
     );
   }
 
-  Widget body() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Text(string1 ?? ''),
-        Text(string2 ?? ''),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 70,
-              height: 70,
-              child: RawMaterialButton(
-                shape: CircleBorder(),
-                splashColor: Colors.amber[100],
-                fillColor: Color(0xFF1677FF),
-                child: Icon(
-                  IconData(0xe6ca, fontFamily: 'MdsIcon'),
-                  color: Colors.white,
-                  size: 30,
-                ),
-                onPressed: _dongscan,
-              ),
-            ),
-            SizedBox(width: 50),
-            Container(
-              width: 70,
-              height: 70,
-              child: RawMaterialButton(
-                shape: CircleBorder(),
-                splashColor: Colors.amber[100],
-                fillColor: Color(0xFF1677FF),
-                child: Icon(
-                  IconData(0xe632, fontFamily: 'MdsIcon'),
-                  color: Colors.white,
-                  size: 30,
-                ),
-                onPressed: _selectPot,
-              ),
-            ),
-          ],
-        )
-      ],
-    );
+  _scanSuccess(id) async {
+    try {
+      var res = await Common.holderDetailById({'id': id});
+      _goList(res['data']);
+      setState(() {});
+    } catch (e) {}
   }
 
   @override
@@ -149,9 +83,27 @@ class _BarCodePageState extends State<BarCodePage> {
       Duration.zero,
       () => setState(() {
         _getPotList();
+        _initState();
       }),
     );
     super.initState();
+  }
+
+  _initState() {
+    WidgetsBinding.instance.addObserver(this);
+    honeywellScanner.setScannerCallBack(this);
+    List<CodeFormat> codeFormats = [];
+    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
+    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
+    honeywellScanner
+        .setProperties(CodeFormatUtils.getAsPropertiesComplement(codeFormats));
+    honeywellScanner.startScanner();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    honeywellScanner.resumeScanner();
   }
 
   @override
@@ -159,7 +111,65 @@ class _BarCodePageState extends State<BarCodePage> {
     return Scaffold(
       appBar: MdsAppBarWidget(titleData: '二维码'),
       backgroundColor: Color(0xFFF5F5F5),
-      body: body(),
+      body: Stack(
+        children: <Widget>[
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: Container(
+              width: 70,
+              height: 70,
+              child: RawMaterialButton(
+                shape: CircleBorder(),
+                splashColor: Colors.amber[100],
+                fillColor: Color(0xFF1677FF),
+                child: Icon(
+                  IconData(0xe642, fontFamily: 'MdsIcon'),
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: _selectPot,
+              ),
+            ),
+          ),
+          ListView(
+            children: <Widget>[
+              Container(
+                height: 200,
+                alignment: Alignment.center,
+                child: Text(
+                  '请使用pad两侧扫码按钮扫码或手动录入',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF1677FF)),
+                ),
+              ),
+            ],
+          ),
+          // Container(
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     children: <Widget>[
+          //       Text('请使用pad两侧扫码按钮扫码或手动录入'),
+          //     ],
+          //   ),
+          // )
+        ],
+      ),
     );
+  }
+
+  @override
+  void onDecoded(String result) {
+    setState(() {
+      scannedCode = result;
+      _scanSuccess(scannedCode);
+    });
+  }
+
+  @override
+  void onError(Exception error) {
+    setState(() {
+      scannedCode = error.toString();
+    });
   }
 }

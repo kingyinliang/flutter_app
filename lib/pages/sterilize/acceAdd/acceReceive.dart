@@ -174,6 +174,7 @@ class _AcceReceivePageState extends State<AcceReceivePage> {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
     }
     formMap['useMaterialName'] = widget.arguments['useMaterialName'];
+    formMap['useMaterialType'] = widget.arguments['useMaterialType'];
     formMap['useMaterialCode'] = widget.arguments['useMaterialCode'];
     formMap['useUnit'] = widget.arguments['useUnit'];
     formMap['potOrderNo'] = widget.arguments['potOrderNo'];
