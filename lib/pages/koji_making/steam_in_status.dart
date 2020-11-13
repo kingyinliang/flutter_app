@@ -24,7 +24,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   void initState() {
     Future.delayed(
       Duration.zero,
-          () => setState(() {
+      () => setState(() {
         _initState();
       }),
     );
@@ -33,10 +33,9 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
 
   _initState() async {
     try {
-      var res = await KojiMaking.discInQuery({
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
-      if (res['data'] == null){
+      var res = await KojiMaking.discInQuery(
+          {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
+      if (res['data'] == null) {
         listData = [];
       } else {
         listData = [res['data']];
@@ -49,7 +48,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
 
   _submit() async {
     try {
-      if (listData.length >0) {
+      if (listData.length > 0) {
         await KojiMaking.discInSubmitQuery({
           'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
         });
@@ -97,26 +96,27 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                 ),
               ),
               (listData[index]['status'] == 'N' ||
-                  listData[index]['status'] == 'R' ||
-                  listData[index]['status'] == 'S' ||
-                  listData[index]['status'] == 'T' ||
-                  listData[index]['status'] == '')
+                      listData[index]['status'] == 'R' ||
+                      listData[index]['status'] == 'S' ||
+                      listData[index]['status'] == 'T' ||
+                      listData[index]['status'] == '')
                   ? InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/kojiMaking/steamInStatusAdd',
-                        arguments: {
-                          'data': listData[index],
-                        },
-                      ).then((value) => value != null ? _initState() : null);
-                    },
-                    child: Icon(
-                      IconData(0xe62c, fontFamily: 'MdsIcon'),
-                      size: 14,
-                      color: Color(0xFF487BFF),
-                    ),
-                  ) :  SizedBox(),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/kojiMaking/steamInStatusAdd',
+                          arguments: {
+                            'data': listData[index],
+                          },
+                        ).then((value) => value != null ? _initState() : null);
+                      },
+                      child: Icon(
+                        IconData(0xe62c, fontFamily: 'MdsIcon'),
+                        size: 14,
+                        color: Color(0xFF487BFF),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 10),
@@ -143,6 +143,10 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                     '${listData[0]['addKojiDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Image.asset('lib/assets/images/arrows-to-right.png'),
+                  )
                 ],
               ),
               Expanded(
@@ -179,17 +183,18 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
       status: '$status',
       statusName: '$statusName',
       headTitle: widget.arguments['data']['kojiHouseName'],
-      headSubTitle: '${widget.arguments['data']['materialName']} ${widget.arguments['data']['materialCode']}',
+      headSubTitle:
+          '${widget.arguments['data']['materialName']} ${widget.arguments['data']['materialCode']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFlg: listData.length > 0 ? false : true,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamInStatusAdd',
-          arguments: {
-            'orderNo': widget.arguments['data']['orderNo'],
-            'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
-          }).then((value) => value != null ? _initState() : null);
+            arguments: {
+              'orderNo': widget.arguments['data']['orderNo'],
+              'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+            }).then((value) => value != null ? _initState() : null);
       },
       submitFn: () {
         _submit();

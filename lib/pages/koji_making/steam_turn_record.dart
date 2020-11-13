@@ -181,6 +181,10 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
                     '${listData[index]['kojiDiscTurn1']['turnDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Image.asset('lib/assets/images/arrows-to-right.png'),
+                  )
                 ],
               ),
               Expanded(
