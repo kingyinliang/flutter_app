@@ -213,6 +213,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
+      addFlg: listData.length > 0 ? false : true,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamOutRecordAdd',
             arguments: {

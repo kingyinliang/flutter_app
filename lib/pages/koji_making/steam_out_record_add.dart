@@ -19,7 +19,7 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
     'outKojiMans': '',
     'outKojiTemp': 0,
     'outKojiStart': '',
-    'status': '',
+    // 'status': '',
     'changed': '',
     'changer': '',
   };
@@ -35,6 +35,8 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
         formMap['outKojiStart'] = '';
       }
       formMap['outKojiDurationString'] = '${formMap['outKojiDuration']} H';
+      formMap['orderNo'] = widget.arguments['orderNo'];
+      formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     } else {
       Future.delayed(
         Duration.zero,
