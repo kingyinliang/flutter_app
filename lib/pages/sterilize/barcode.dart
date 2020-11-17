@@ -113,6 +113,18 @@ class _BarCodePageState extends State<BarCodePage>
       backgroundColor: Color(0xFFF5F5F5),
       body: Stack(
         children: <Widget>[
+          ListView(
+            children: <Widget>[
+              Container(
+                height: 200,
+                alignment: Alignment.center,
+                child: Text(
+                  '请使用pad两侧扫码按钮扫码或手动录入',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF1677FF)),
+                ),
+              ),
+            ],
+          ),
           Positioned(
             right: 20,
             bottom: 20,
@@ -128,21 +140,11 @@ class _BarCodePageState extends State<BarCodePage>
                   color: Colors.white,
                   size: 30,
                 ),
-                onPressed: _selectPot,
+                onPressed: () {
+                  _selectPot();
+                },
               ),
             ),
-          ),
-          ListView(
-            children: <Widget>[
-              Container(
-                height: 200,
-                alignment: Alignment.center,
-                child: Text(
-                  '请使用pad两侧扫码按钮扫码或手动录入',
-                  style: TextStyle(fontSize: 16, color: Color(0xFF1677FF)),
-                ),
-              ),
-            ],
           ),
           // Container(
           //   child: Column(
