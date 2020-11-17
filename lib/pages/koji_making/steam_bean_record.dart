@@ -176,7 +176,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                 ],
