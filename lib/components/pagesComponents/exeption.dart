@@ -282,7 +282,10 @@ class _ExceptionItemCardState extends State<ExceptionItemCard> {
                   Expanded(
                     child: Text(''),
                   ),
-                  Text('------------->'),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Image.asset('lib/assets/images/arrows-to-right.png'),
+                  ),
                   Expanded(
                     child: Text(''),
                   ),
