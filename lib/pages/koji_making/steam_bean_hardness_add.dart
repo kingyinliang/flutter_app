@@ -46,8 +46,10 @@ class _SteamBeanHardnessAddPageState extends State<SteamBeanHardnessAddPage> {
   _getSteamBallNo() async {
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
-      var res = await Common.holderDropDownQuery(
-          {'deptId': workShop, 'holderType': '026'});
+      var res = await Common.holderDropDownQuery({
+        'deptId': workShop,
+        'holderType': ['026']
+      });
       steamBallNo = res['data'];
       setState(() {});
     } catch (e) {}
