@@ -102,8 +102,10 @@ class _PotAddPageState extends State<PotAddPage> {
   _getPotList() async {
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
-      var res = await Common.holderDropDownQuery(
-          {'deptId': workShop, 'holderType': '020'});
+      var res = await Common.holderDropDownQuery({
+        'deptId': workShop,
+        'holderType': ['020']
+      });
       potList = res['data'];
       setState(() {});
     } catch (e) {}
@@ -112,8 +114,10 @@ class _PotAddPageState extends State<PotAddPage> {
   _getTransferTank() async {
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
-      var res = await Common.holderDropDownQuery(
-          {'deptId': workShop, 'holderType': '022'});
+      var res = await Common.holderDropDownQuery({
+        'deptId': workShop,
+        'holderType': ['022']
+      });
       transferTank = res['data'];
       setState(() {});
     } catch (e) {}
