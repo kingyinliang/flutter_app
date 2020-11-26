@@ -82,8 +82,10 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
   _getPotList() async {
     var factoryId = await SharedUtil.instance.getStorage('factoryId');
     try {
-      var res = await Common.holderDropDownQuery(
-          {'factory': factoryId, 'holderType': '001'});
+      var res = await Common.holderDropDownQuery({
+        'factory': factoryId,
+        'holderType': ['001']
+      });
       potList = res['data'];
       setState(() {});
     } catch (e) {}
@@ -103,8 +105,10 @@ class _AddSemiReceivePageState extends State<AddSemiReceivePage> {
   _getTransferTank() async {
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
-      var res = await Common.holderDropDownQuery(
-          {'deptId': workShop, 'holderType': '022'});
+      var res = await Common.holderDropDownQuery({
+        'deptId': workShop,
+        'holderType': ['022']
+      });
       transferTank = res['data'];
       setState(() {});
     } catch (e) {}

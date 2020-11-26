@@ -25,8 +25,10 @@ class _BarCodePageState extends State<BarCodePage>
   _getPotList() async {
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
-      var res = await Common.holderDropDownQuery(
-          {'deptId': workShop, 'holderType': '014'});
+      var res = await Common.holderDropDownQuery({
+        'deptId': workShop,
+        'holderType': ['014']
+      });
       potList = res['data'];
       setState(() {});
     } catch (e) {}
