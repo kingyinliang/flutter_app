@@ -505,28 +505,28 @@ class _OrgSelectUserBottomState extends State<OrgSelectUserBottom> {
           widget.delUser(index);
         },
         child: Container(
-          width: pxUnit(171.5),
+          width: pxUnit(181.5),
           height: 28,
           child: Row(
             children: <Widget>[
               Icon(
                 IconData(0xe60e, fontFamily: 'MdsIcon'),
                 color: Color(0xFF1677FF),
-                size: 16,
+                size: 14,
               ),
               SizedBox(width: 5),
               Text(
                 '${widget.selectUserList[index]['realName']}',
                 style: TextStyle(
                   color: Color(0xFF333333),
-                  fontSize: 17,
+                  fontSize: 15,
                 ),
               ),
               Text(
                 '(${widget.selectUserList[index]['workNum'] != null && widget.selectUserList[index]['workNum'] != '' ? widget.selectUserList[index]['workNum'] : widget.selectUserList[index]['workNumTemp']})',
                 style: TextStyle(
                   color: Color(0xFF999999),
-                  fontSize: 17,
+                  fontSize: 15,
                 ),
               ),
             ],
@@ -553,9 +553,9 @@ class _OrgSelectUserBottomState extends State<OrgSelectUserBottom> {
           widget.selectUserList.length != 0
               ? Container(
                   color: Colors.white,
-                  width: pxUnit(375),
+                  width: pxUnit(395),
                   height: pxUnit(140),
-                  padding: EdgeInsets.fromLTRB(pxUnit(16), 10, pxUnit(16), 0),
+                  padding: EdgeInsets.fromLTRB(pxUnit(6), 10, pxUnit(6), 0),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Wrap(
