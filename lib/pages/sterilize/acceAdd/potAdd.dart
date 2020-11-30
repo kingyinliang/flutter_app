@@ -72,10 +72,8 @@ class _PotAddPageState extends State<PotAddPage> {
   }
 
   _getCookingNum() async {
-    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Sterilize.cookingNoApi({
-        'workShop': workShop,
         'configStartDate': formMap['configDate'],
         'potNo': formMap['potNo']
       });
@@ -100,10 +98,10 @@ class _PotAddPageState extends State<PotAddPage> {
   }
 
   _getPotList() async {
-    var workShop = await SharedUtil.instance.getStorage('workShopId');
+    var factoryId = await SharedUtil.instance.getStorage('factoryId');
     try {
       var res = await Common.holderDropDownQuery({
-        'deptId': workShop,
+        'deptId': factoryId,
         'holderType': ['020']
       });
       potList = res['data'];
