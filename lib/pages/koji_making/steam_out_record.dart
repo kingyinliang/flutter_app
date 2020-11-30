@@ -208,6 +208,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
   @override
   Widget build(BuildContext context) {
     return HomePageWidget(
+      type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
       statusName: '$statusName',

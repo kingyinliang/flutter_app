@@ -153,7 +153,10 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      (listData[index]['addKojiStart'] == null || listData[index]['addKojiStart'] == '') ? '' : listData[index]['addKojiStart'],
+                      (listData[index]['addKojiStart'] == null ||
+                              listData[index]['addKojiStart'] == '')
+                          ? ''
+                          : listData[index]['addKojiStart'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -180,7 +183,10 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      (listData[index]['addKojiEnd'] == null || listData[index]['addKojiEnd'] == '') ? '' : listData[index]['addKojiEnd'],
+                      (listData[index]['addKojiEnd'] == null ||
+                              listData[index]['addKojiEnd'] == '')
+                          ? ''
+                          : listData[index]['addKojiEnd'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -201,6 +207,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   @override
   Widget build(BuildContext context) {
     return HomePageWidget(
+      type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
       statusName: '$statusName',

@@ -134,6 +134,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
     try {
       await Sterilize.acceAddSubmitApi({
         'potOrderNo': widget.arguments['potNum']['potNo'],
+        'steCookingConsumeFlag': steCookingConsumeFlag,
         'type': type,
       });
       _initState(type: true);
