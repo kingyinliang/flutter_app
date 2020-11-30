@@ -41,9 +41,9 @@ class _OrgSelectUserPageState extends State<OrgSelectUserPage> {
   void _setSelectUser() {
     if (widget.arguments != null && widget.arguments['selectUser'] != null) {
       widget.arguments['selectUser'].forEach((element) {
-        var realName = element.substring(0, element.indexOf('('));
+        var realName = element.substring(0, element.indexOf('（'));
         var workNum =
-            element.substring(element.indexOf('(') + 1, element.indexOf(')'));
+            element.substring(element.indexOf('（') + 1, element.indexOf('）'));
         selectUserList.add({
           'realName': realName,
           'workNum': workNum,

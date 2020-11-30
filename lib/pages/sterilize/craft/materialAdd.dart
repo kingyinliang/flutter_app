@@ -15,13 +15,16 @@ class CraftMaterialAdd extends StatefulWidget {
 }
 
 class _CraftMaterialAddState extends State<CraftMaterialAdd> {
-  Map<String, dynamic> formMap = {
+  Map formMap = {
     'feedStartDate': '',
     'feeEndDate': '',
     'riseStartDate': '',
     'riseEndDate': '',
     'keepZkFlag': '',
     'coolZkFlag': '',
+    'dischargeMan': [],
+    'confirmMan': [],
+    'wantMan': [],
     'remark': '',
   };
 
@@ -132,6 +135,30 @@ class _CraftMaterialAddState extends State<CraftMaterialAdd> {
             optionsval: 'val',
             onChange: (val) {
               formMap['coolZkFlag'] = val['val'];
+              setState(() {});
+            },
+          ),
+          OrgSelectUser(
+            label: '出料人',
+            prop: formMap['dischargeMan'],
+            onChange: (List val) {
+              formMap['dischargeMan'] = val;
+              setState(() {});
+            },
+          ),
+          OrgSelectUser(
+            label: '确认人',
+            prop: formMap['confirmMan'],
+            onChange: (List val) {
+              formMap['confirmMan'] = val;
+              setState(() {});
+            },
+          ),
+          OrgSelectUser(
+            label: '要料人',
+            prop: formMap['wantMan'],
+            onChange: (List val) {
+              formMap['wantMan'] = val;
               setState(() {});
             },
           ),
