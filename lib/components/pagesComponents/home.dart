@@ -7,6 +7,7 @@ import 'package:dfmdsapp/utils/pxunit.dart' show pxUnit;
 
 class HomePageWidget extends StatefulWidget {
   final bool addFlg;
+  final String type;
   final String title;
   final String status;
   final String statusName;
@@ -21,6 +22,7 @@ class HomePageWidget extends StatefulWidget {
   HomePageWidget(
       {Key key,
       this.addFlg = true,
+      @required this.type,
       this.title,
       this.status,
       this.statusName,
@@ -69,6 +71,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             children: <Widget>[
               SizedBox(height: 5),
               PageHead(
+                type: widget.type,
                 title: '${widget.headTitle}',
                 subTitle: '${widget.headSubTitle}',
                 threeTitle: '${widget.headThreeTitle}',

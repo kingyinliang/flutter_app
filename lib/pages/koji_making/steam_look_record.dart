@@ -19,7 +19,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   void initState() {
     Future.delayed(
       Duration.zero,
-          () => setState(() {
+      () => setState(() {
         _initState();
       }),
     );
@@ -29,9 +29,8 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   _initState() async {
     try {
       // 看曲记录
-      var res = await KojiMaking.discLookQuery({
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
+      var res = await KojiMaking.discLookQuery(
+          {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       status = res['data'][0]['status'];
       statusName = res['data'][0]['statusName'];
       listData = res['data'];
@@ -39,9 +38,8 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
     } catch (e) {}
     try {
       // 看曲异常情况记录
-      var res2 = await KojiMaking.discLookExceptQuery({
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
+      var res2 = await KojiMaking.discLookExceptQuery(
+          {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       if (res2['data'] != null) {
         exception = res2['data'];
       }
@@ -51,9 +49,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
 
   _del(index) async {
     try {
-      await KojiMaking.discLookDel({
-        'id': listData[index]['id']
-      });
+      await KojiMaking.discLookDel({'id': listData[index]['id']});
       successToast(msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
@@ -148,10 +144,10 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                     ),
                   ),
                   (status == 'N' ||
-                      status == 'R' ||
-                      status == 'S' ||
-                      status == 'T' ||
-                      status == '')
+                          status == 'R' ||
+                          status == 'S' ||
+                          status == 'T' ||
+                          status == '')
                       ? InkWell(
                           child: Icon(
                             IconData(0xe62c, fontFamily: 'MdsIcon'),
@@ -165,12 +161,15 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                               arguments: {
                                 'data': {'remark': exception},
                                 'orderNo': widget.arguments['data']['orderNo'],
-                                'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+                                'kojiOrderNo': widget.arguments['data']
+                                    ['kojiOrderNo'],
                                 'onType': 'exception'
                               },
-                            ).then((value) => value != null ? _initState() : null);
+                            ).then(
+                                (value) => value != null ? _initState() : null);
                           },
-                      ) : SizedBox(),
+                        )
+                      : SizedBox(),
                 ],
               ),
               SizedBox(height: 10),
@@ -225,10 +224,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
               Navigator.pushNamed(
                 context,
                 '/kojiMaking/steamLookRecordAdd',
-                arguments: {
-                  'data': listData[index],
-                  'onType': 'record'
-                },
+                arguments: {'data': listData[index], 'onType': 'record'},
               ).then((value) => value != null ? _initState() : null);
             },
           ),
@@ -269,6 +265,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   @override
   Widget build(BuildContext context) {
     return HomePageWidget(
+      type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
       statusName: '$statusName',
@@ -317,80 +314,68 @@ class _ColumnItemState extends State<ColumnItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color(0xFF999999), width: 0.25),
+        padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Color(0xFF999999), width: 0.25),
+          ),
         ),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(5.0),
-        child: Row(
-          children: <Widget>[
-            Column(
-                children: <Widget>[
-                  Text(
-                    widget.startText,
-                    style: TextStyle(color: Color(0xFF333333), fontSize: 16),
-                  ),
-                ]
-            ),
+        child: Container(
+          padding: EdgeInsets.all(5.0),
+          child: Row(children: <Widget>[
+            Column(children: <Widget>[
+              Text(
+                widget.startText,
+                style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+              ),
+            ]),
             SizedBox(width: 10),
             Expanded(
               flex: 1,
               child: Container(
-                child: Column(
-                    children: <Widget>[
-                      Row(
-                          children: <Widget>[
-                            Text(
-                              widget.centerText,
-                              style: TextStyle(color: Color(0xFF999999), fontSize: 12),
-                            ),
-                          ]
-                      ),
-                      Row(
-                          children: <Widget>[
-                            Text(
-                              widget.endText,
-                              style: TextStyle(color: Color(0xFF999999), fontSize: 12),
-                            ),
-                          ]
-                      )
-                    ]
-                ),
+                child: Column(children: <Widget>[
+                  Row(children: <Widget>[
+                    Text(
+                      widget.centerText,
+                      style: TextStyle(color: Color(0xFF999999), fontSize: 12),
+                    ),
+                  ]),
+                  Row(children: <Widget>[
+                    Text(
+                      widget.endText,
+                      style: TextStyle(color: Color(0xFF999999), fontSize: 12),
+                    ),
+                  ])
+                ]),
               ),
             ),
             (widget.status == 'N' ||
-              widget.status == 'R' ||
-              widget.status == 'S' ||
-              widget.status == 'T' ||
-              widget.status == '')
-                ?
-                widget.btnFlag
-                  ? widget.addFlag == true
-                  ? InkWell(
-                    child: Icon(
-                      IconData(0xe69e, fontFamily: 'MdsIcon'),
-                      size: 20,
-                      color: Color(0xFF487BFF),
-                    ),
-                    onTap: widget.onTap,
-                  )
-                    : InkWell(
-                        child: Icon(
-                          IconData(0xe62c, fontFamily: 'MdsIcon'),
-                          size: 12,
-                          color: Color(0xFF487BFF),
-                        ),
-                        onTap: widget.onTap,
-                      )
+                    widget.status == 'R' ||
+                    widget.status == 'S' ||
+                    widget.status == 'T' ||
+                    widget.status == '')
+                ? widget.btnFlag
+                    ? widget.addFlag == true
+                        ? InkWell(
+                            child: Icon(
+                              IconData(0xe69e, fontFamily: 'MdsIcon'),
+                              size: 20,
+                              color: Color(0xFF487BFF),
+                            ),
+                            onTap: widget.onTap,
+                          )
+                        : InkWell(
+                            child: Icon(
+                              IconData(0xe62c, fontFamily: 'MdsIcon'),
+                              size: 12,
+                              color: Color(0xFF487BFF),
+                            ),
+                            onTap: widget.onTap,
+                          )
                     : SizedBox()
-              : SizedBox(),
-          ]
-        ),
-
-      )
+                : SizedBox(),
+          ]),
+        )
 //      child: Row(
 //        children: <Widget>[
 //          Text(
@@ -438,6 +423,6 @@ class _ColumnItemState extends State<ColumnItem> {
 //            : SizedBox(),
 //        ],
 //      ),
-    );
+        );
   }
 }

@@ -70,7 +70,7 @@ class _KojiMakingListPageState extends State<KojiMakingListPage> {
                 height: 60,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('lib/assets/images/potDetail.jpg'),
+                    image: AssetImage('lib/assets/images/qufang.png'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(4.0)),
