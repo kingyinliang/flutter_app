@@ -61,13 +61,68 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   }
 
   _submit() async {
-    try {
-      await KojiMaking.discLookSubmit({
-        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
-      });
-      successToast(msg: '操作成功');
-      _initState();
-    } catch (e) {}
+    if (listData.length > 0) {
+      for (Map planet in listData) {
+        print(planet);
+        if (planet['windTemp'] == null || planet['windTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 实际风温');
+          return;
+        }
+        if (planet['roomTemp'] == null || planet['roomTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 下室温度');
+          return;
+        }
+        if (planet['prodTemp'] == null || planet['prodTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 品温');
+          return;
+        }
+        if (planet['outUpTemp'] == null || planet['outUpTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 外上温度');
+          return;
+        }
+        if (planet['outMidTemp'] == null || planet['outMidTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 外中温度');
+          return;
+        }
+        if (planet['outDownTemp'] == null || planet['outDownTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 外下温度');
+          return;
+        }
+        if (planet['windDoor'] == null || planet['windDoor'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 风门开度');
+          return;
+        }
+        if (planet['forceDrain'] == null || planet['forceDrain'] == '') {
+          EasyLoading.showError('请选择 `${planet['guardDate']}` 强排设备');
+          return;
+        }
+        if (planet['changeHot'] == null || planet['changeHot'] == '') {
+          EasyLoading.showError('请选择 `${planet['guardDate']}` 换热设备');
+          return;
+        }
+        if (planet['windSpeed'] == null || planet['windSpeed'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 风速');
+          return;
+        }
+        if (planet['testTempOne'] == null || planet['testTempOne'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 测量温度1');
+          return;
+        }
+        if (planet['testTempTwo'] == null || planet['testTempTwo'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 测量温度2');
+          return;
+        }
+      }
+      try {
+        await KojiMaking.discLookSubmit({
+          'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+        });
+        successToast(msg: '操作成功');
+        _initState();
+      } catch (e) {}
+    } else {
+      EasyLoading.showError('请先添加看曲数据');
+    }
   }
 
   Widget _listWidget(index) {

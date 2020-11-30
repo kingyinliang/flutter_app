@@ -39,6 +39,12 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
   void initState() {
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
+      formMap.forEach((key, value) => {
+        // print('key: $key, value:$value')
+        if (value == null) {
+          formMap['$key'] = ''
+        }
+      });
     }
     Future.delayed(
       Duration.zero,
@@ -82,54 +88,54 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
         EasyLoading.showError('请选择看曲时间');
         return;
       }
-      if (formMap['windTemp'] == null || formMap['windTemp'] == '') {
-        EasyLoading.showError('请填写实际风温');
-        return;
-      }
-      if (formMap['roomTemp'] == null || formMap['roomTemp'] == '') {
-        EasyLoading.showError('请填写下室温度');
-        return;
-      }
-      if (formMap['prodTemp'] == null || formMap['prodTemp'] == '') {
-        EasyLoading.showError('请填写品温');
-        return;
-      }
-      if (formMap['outUpTemp'] == null || formMap['outUpTemp'] == '') {
-        EasyLoading.showError('请填写外上温度');
-        return;
-      }
-      if (formMap['outMidTemp'] == null || formMap['outMidTemp'] == '') {
-        EasyLoading.showError('请填写外中温度');
-        return;
-      }
-      if (formMap['outDownTemp'] == null || formMap['outDownTemp'] == '') {
-        EasyLoading.showError('请填写外下温度');
-        return;
-      }
-      if (formMap['windDoor'] == null || formMap['windDoor'] == '') {
-        EasyLoading.showError('请填写风门开度');
-        return;
-      }
-      if (formMap['forceDrain'] == null || formMap['forceDrain'] == '') {
-        EasyLoading.showError('请选择强排设备');
-        return;
-      }
-      if (formMap['changeHot'] == null || formMap['changeHot'] == '') {
-        EasyLoading.showError('请选择换热设备');
-        return;
-      }
-      if (formMap['windSpeed'] == null || formMap['windSpeed'] == '') {
-        EasyLoading.showError('请填写风速');
-        return;
-      }
-      if (formMap['testTempOne'] == null || formMap['testTempOne'] == '') {
-        EasyLoading.showError('请填写测量温度1');
-        return;
-      }
-      if (formMap['testTempTwo'] == null || formMap['testTempTwo'] == '') {
-        EasyLoading.showError('请填写测量温度2');
-        return;
-      }
+//      if (formMap['windTemp'] == null || formMap['windTemp'] == '') {
+//        EasyLoading.showError('请填写实际风温');
+//        return;
+//      }
+//      if (formMap['roomTemp'] == null || formMap['roomTemp'] == '') {
+//        EasyLoading.showError('请填写下室温度');
+//        return;
+//      }
+//      if (formMap['prodTemp'] == null || formMap['prodTemp'] == '') {
+//        EasyLoading.showError('请填写品温');
+//        return;
+//      }
+//      if (formMap['outUpTemp'] == null || formMap['outUpTemp'] == '') {
+//        EasyLoading.showError('请填写外上温度');
+//        return;
+//      }
+//      if (formMap['outMidTemp'] == null || formMap['outMidTemp'] == '') {
+//        EasyLoading.showError('请填写外中温度');
+//        return;
+//      }
+//      if (formMap['outDownTemp'] == null || formMap['outDownTemp'] == '') {
+//        EasyLoading.showError('请填写外下温度');
+//        return;
+//      }
+//      if (formMap['windDoor'] == null || formMap['windDoor'] == '') {
+//        EasyLoading.showError('请填写风门开度');
+//        return;
+//      }
+//      if (formMap['forceDrain'] == null || formMap['forceDrain'] == '') {
+//        EasyLoading.showError('请选择强排设备');
+//        return;
+//      }
+//      if (formMap['changeHot'] == null || formMap['changeHot'] == '') {
+//        EasyLoading.showError('请选择换热设备');
+//        return;
+//      }
+//      if (formMap['windSpeed'] == null || formMap['windSpeed'] == '') {
+//        EasyLoading.showError('请填写风速');
+//        return;
+//      }
+//      if (formMap['testTempOne'] == null || formMap['testTempOne'] == '') {
+//        EasyLoading.showError('请填写测量温度1');
+//        return;
+//      }
+//      if (formMap['testTempTwo'] == null || formMap['testTempTwo'] == '') {
+//        EasyLoading.showError('请填写测量温度2');
+//        return;
+//      }
       if (formMap['id'] != null) {
         try {
           await KojiMaking.discLookSave(formMap);
@@ -210,8 +216,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             },
           ),
           Container(
-            height: 20,
-            color: Color(0xFFF5F5F5),
+            padding: EdgeInsets.only(top: 5),
             child: Text(
               '温度控制',
               style: TextStyle(color: Color(0xFF333333), fontSize: 17),
@@ -271,8 +276,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             },
           ),
           Container(
-            height: 20,
-            color: Color(0xFFF5F5F5),
+            padding: EdgeInsets.only(top: 5),
             child: Text(
               '探头温度',
               style: TextStyle(color: Color(0xFF333333), fontSize: 17),
@@ -342,8 +346,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             },
           ),
           Container(
-            height: 20,
-            color: Color(0xFFF5F5F5),
+            padding: EdgeInsets.only(top: 5),
             child: Text(
               '设备控制',
               style: TextStyle(color: Color(0xFF333333), fontSize: 17),
@@ -395,8 +398,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             },
           ),
           Container(
-            height: 20,
-            color: Color(0xFFF5F5F5),
+            padding: EdgeInsets.only(top: 5),
             child: Text(
               '测量温度',
               style: TextStyle(color: Color(0xFF333333), fontSize: 17),
@@ -426,6 +428,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
           ),
           InputWidget(
             label: '备注',
+            keyboardType: 'text',
             prop: formMap['remark'].toString(),
             onChange: (val) {
               formMap['remark'] = val;

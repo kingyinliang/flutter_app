@@ -36,7 +36,7 @@ class _OrgSelectUserState extends State<OrgSelectUser> {
         List userList = [];
         value.forEach((element) {
           var item =
-              '${element['realName']}(${element['workNum'] != null && element['workNum'] != '' ? element['workNum'] : element['workNumTemp']})';
+              '${element['realName']}（${element['workNum'] != null && element['workNum'] != '' ? element['workNum'] : element['workNumTemp']}）';
           userList.add(item);
         });
         widget.onChange(userList);

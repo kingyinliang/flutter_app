@@ -26,7 +26,9 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
   void initState() {
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
-      print(formMap);
+      if (formMap['addKojiTemp'] == null) {
+        formMap['addKojiTemp'] = '';
+      }
       if (formMap['addKojiStart'] == null) {
         formMap['addKojiStart'] = '';
       }
@@ -99,22 +101,22 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['addKojiInfo'] == null || formMap['addKojiInfo'] == '') {
-      EasyLoading.showError('请填写入曲情况');
-      return;
-    }
-    if (formMap['addKojiTemp'] == null || formMap['addKojiTemp'] == '') {
-      EasyLoading.showError('请填写入曲温度');
-      return;
-    }
-    if (formMap['addKojiStart'] == null || formMap['addKojiStart'] == '') {
-      EasyLoading.showError('请选择入曲开始时间');
-      return;
-    }
-    if (formMap['addKojiEnd'] == null || formMap['addKojiEnd'] == '') {
-      EasyLoading.showError('请选择入曲结束时间');
-      return;
-    }
+//    if (formMap['addKojiInfo'] == null || formMap['addKojiInfo'] == '') {
+//      EasyLoading.showError('请填写入曲情况');
+//      return;
+//    }
+//    if (formMap['addKojiTemp'] == null || formMap['addKojiTemp'] == '') {
+//      EasyLoading.showError('请填写入曲温度');
+//      return;
+//    }
+//    if (formMap['addKojiStart'] == null || formMap['addKojiStart'] == '') {
+//      EasyLoading.showError('请选择入曲开始时间');
+//      return;
+//    }
+//    if (formMap['addKojiEnd'] == null || formMap['addKojiEnd'] == '') {
+//      EasyLoading.showError('请选择入曲结束时间');
+//      return;
+//    }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.discInSaveQuery(formMap);
@@ -138,6 +140,7 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
       child: Column(children: <Widget>[
         InputWidget(
           label: '入曲情况',
+          keyboardType: 'text',
           prop: formMap['addKojiInfo'].toString(),
           requiredFlg: true,
           onChange: (val) {
