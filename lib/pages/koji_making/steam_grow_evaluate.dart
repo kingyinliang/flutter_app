@@ -11,8 +11,8 @@ class SteamGrowEvaluatePage extends StatefulWidget {
 class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
   // tag
   List wrapList = [
-    {'label': '異常描述：', 'value': 'exceptionInfo'},
-    {'label': '生長情況：', 'value': 'growInfo'},
+    {'label': '异常描述：', 'value': 'exceptionInfo'},
+    {'label': '生长情况：', 'value': 'growInfo'},
     {'label': '备注：', 'value': 'remark'},
     {'label': '', 'value': 'changer'},
     {'label': '', 'value': 'changed'},

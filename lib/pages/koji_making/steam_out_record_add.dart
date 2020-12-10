@@ -17,7 +17,7 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
     'outKojiDurationString': '0 H',
     'outKojiEnd': '',
     'outKojiMans': '',
-    'outKojiTemp': 0,
+    'outKojiTemp': '',
     'outKojiStart': '',
     // 'status': '',
     'changed': '',
