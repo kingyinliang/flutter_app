@@ -191,6 +191,7 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
           ),
           InputWidget(
               label: '异常描述',
+              keyboardType: 'text',
               prop: formMap['exceptionInfo'].toString(),
               onChange: (val) {
                 formMap['exceptionInfo'] = val;

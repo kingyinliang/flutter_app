@@ -72,6 +72,10 @@ class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
       errorToast(msg: '请选择生产情况');
       return;
     }
+    if (formMap['growInfo'] != 'GOOD' && formMap['exceptionInfo'] == '') {
+      errorToast(msg: '请填写异常描述');
+      return;
+    }
     if (formMap['recordMans'] == null || formMap['recordMans'] == '') {
       errorToast(msg: '请选择记录人');
       return;
