@@ -18,7 +18,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       'kojiOrderNo': '',
       'orderNo': '',
       // 'status': '',
-      'turnAddWaterAmount': 0,
+      'turnAddWaterAmount': '',
       'turnDuration': 0,
       'turnDurationString': '0 H',
       'turnEnd': '',
@@ -32,7 +32,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       'kojiOrderNo': '',
       'orderNo': '',
       // 'status': '',
-      'turnAddWaterAmount': 0,
+      'turnAddWaterAmount': '',
       'turnDuration': 0,
       'turnDurationString': '0 H',
       'turnEnd': '',
@@ -303,6 +303,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           InputWidget(
             label: '备注',
+            keyboardType: 'text',
             prop: formMap['kojiDiscTurn2']['remark'].toString(),
             onChange: (val) {
               formMap['kojiDiscTurn2']['remark'] = val;
@@ -315,6 +316,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           InputWidget(
             label: '异常情况',
+            keyboardType: 'text',
             prop: formMap['exceptionInfo'].toString(),
             onChange: (val) {
               formMap['exceptionInfo'] = val;
