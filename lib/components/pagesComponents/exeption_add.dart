@@ -102,6 +102,7 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
     try {
       if (val == 'FAULT' || val == 'SHUTDOWN') {
         var reasonRes = await Common.deviceListQuery({'deptId': workShop});
+        this.reasonResList = [];
         reasonRes['data'].forEach((item) => {
               this.reasonResList.add({
                 'dictValue': item['deviceName'],

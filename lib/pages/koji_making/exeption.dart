@@ -27,9 +27,9 @@ class _ExeptionPageState extends State<ExeptionPage> {
   _initState() async {
     try {
       if (widget.arguments['workingType'] == 'STEAM_BEAN_EXCEPTION') {
-        tag = 'YP';
-      } else if (widget.arguments['workingType'] == 'DISC_EXCEPTION') {
         tag = 'ZD';
+      } else if (widget.arguments['workingType'] == 'DISC_EXCEPTION') {
+        tag = 'YP';
       } else if (widget.arguments['workingType'] == 'STEAM_FLOUR_EXCEPTION') {
         tag = 'ZM';
       }
