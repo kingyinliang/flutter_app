@@ -12,7 +12,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
   // tag
   List wrapList = [
     {'label': '异常描述：', 'value': 'exceptionInfo'},
-    {'label': '生长情况：', 'value': 'growInfo'},
+    {'label': '生长情况：', 'value': 'growInfoName'},
     {'label': '备注：', 'value': 'remark'},
     {'label': '', 'value': 'changer'},
     {'label': '', 'value': 'changed'},
