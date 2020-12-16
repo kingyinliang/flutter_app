@@ -98,10 +98,8 @@ class _PotAddPageState extends State<PotAddPage> {
   }
 
   _getPotList() async {
-    var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
       var res = await Common.holderDropDownQuery({
-        'deptId': workShop,
         'holderType': ['020']
       });
       potList = res['data'];
