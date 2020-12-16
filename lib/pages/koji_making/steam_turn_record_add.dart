@@ -44,6 +44,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     }
   };
 
+  var minGuardTime = DateTime.now();
+
   @override
   void initState() {
     if (widget.arguments['data'] != null) {
@@ -71,12 +73,13 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     formMap['kojiDiscTurn1']['turnDurationString'] =
         '${formMap['kojiDiscTurn1']['turnDuration']} H';
     formMap['kojiDiscTurn2']['turnDurationString'] =
-        '${formMap['kojiDiscTurn1']['turnDuration']} H';
+        '${formMap['kojiDiscTurn2']['turnDuration']} H';
 
     Future.delayed(
       Duration.zero,
       () => setState(() {
         _initState();
+        _getKojiGuardData();
       }),
     );
     super.initState();
@@ -92,7 +95,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
 
   // 获取时长
   _getDuration(String turn) {
-    if (formMap[turn]['turnStart'] != '' && formMap[turn]['turnEnd'] != '') {
+    if (formMap[turn]['turnStart'] != '') {
       int nowyear =
           int.parse(formMap[turn]['turnStart'].split(" ")[0].split('-')[0]);
       int nowmonth =
@@ -104,20 +107,20 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       int nowmin =
           int.parse(formMap[turn]['turnStart'].split(" ")[1].split(':')[1]);
 
-      int oldyear =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[0]);
-      int oldmonth =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[1]);
-      int oldday =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[2]);
-      int oldhour =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[0]);
-      int oldmin =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[1]);
+      // int oldyear =
+      //     int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[0]);
+      // int oldmonth =
+      //     int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[1]);
+      // int oldday =
+      //     int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[2]);
+      // int oldhour =
+      //     int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[0]);
+      // int oldmin =
+      //     int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[1]);
 
       var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
-      var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
-      var difference = old.difference(now);
+      // var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
+      var difference = minGuardTime.difference(now);
 
       formMap[turn]['turnDuration'] =
           formatNum((difference.inMinutes / 60), 2); // 时间差
@@ -139,6 +142,24 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           .substring(0, num.toString().lastIndexOf(".") + postion + 1)
           .toString();
     }
+  }
+
+  _getKojiGuardData() async {
+    // var workShop = await SharedUtil.instance.getStorage('workShopId');
+    try {
+      var res = await KojiMaking.kojiQueryDiscGuard(
+          {'kojiOrderNo': formMap['kojiOrderNo']});
+      // guardList = res['data'];
+      res['data'].forEach((item) {
+        var d = DateTime.parse(item.guardDate);
+
+        if (d.isBefore(minGuardTime)) {
+          minGuardTime = d;
+        }
+      });
+
+      setState(() {});
+    } catch (e) {}
   }
 
   _submitForm() async {
@@ -221,7 +242,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           FormTextWidget(
             label: '制曲时长',
             // requiredFlg: true,
-            prop: formMap['kojiDiscTurn1']['turnDurationString'].toString(),
+            prop: (formMap['kojiDiscTurn1']['turnDurationString']).toString(),
           ),
           InputWidget(
             label: '翻曲加水量',
