@@ -31,7 +31,14 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
       // 看曲记录
       var res = await KojiMaking.discLookQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
-      status = res['data'][0]['status'];
+      status = widget.arguments['data']['status'];
+//      status = 'N';
+      for (Map sole in res['data']) {
+        if (sole['status'] == 'S' || sole['status'] == 'R') {
+          status = 'S';
+          break;
+        }
+      }
       statusName = res['data'][0]['statusName'];
       listData = res['data'];
       setState(() {});
@@ -59,7 +66,6 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   _submit() async {
     if (listData.length > 0) {
       for (Map planet in listData) {
-        print(planet);
         if (planet['windTemp'] == null || planet['windTemp'] == '') {
           EasyLoading.showError('请填写 `${planet['guardDate']}` 实际风温');
           return;
@@ -268,7 +274,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
       type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
-      statusName: '$statusName',
+      statusName: '${widget.arguments['data']['statusName']}',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
