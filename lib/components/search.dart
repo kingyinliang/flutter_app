@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:dfmdsapp/utils/index.dart';
 
 Future showSearchFn(BuildContext context) async {
   showDialog(
@@ -19,6 +19,7 @@ class SearchWidget extends StatefulWidget {
 
 class _SearchWidgetState extends State<SearchWidget> {
   var _search = new TextEditingController();
+  List searchHistory = [];
 
   @override
   void initState() {
@@ -34,6 +35,60 @@ class _SearchWidgetState extends State<SearchWidget> {
   _initState() async {
     _search.text =
         widget.arguments['text'] == '' ? '' : widget.arguments['text'];
+    searchHistory = await SharedUtil.instance.getStorage('searchHistory');
+    setState(() {});
+  }
+
+  goSearch() async {
+    searchHistory.insert(0, _search.text);
+    if (searchHistory.length > 12) {
+      searchHistory = searchHistory.sublist(0, 12);
+    }
+    await SharedUtil.instance
+        .saveStringListStorage('searchHistory', searchHistory);
+    searchHistory = await SharedUtil.instance.getStorage('searchHistory');
+    setState(() {});
+    Navigator.pop(context, _search.text);
+  }
+
+  getHistory() {
+    List<Widget> searchList = [];
+    searchList = searchHistory.asMap().keys.map((index) {
+      return InkWell(
+        onTap: () {
+          _search.text = searchHistory[index];
+          goSearch();
+        },
+        child: Container(
+          padding: EdgeInsets.fromLTRB(12, 3, 12, 3),
+          decoration: BoxDecoration(
+            color: Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.all(Radius.circular(17)),
+          ),
+          child: Text(searchHistory[index]),
+        ),
+      );
+    }).toList();
+    if (searchList.length > 0) {
+      return [
+        Container(
+          padding: EdgeInsets.fromLTRB(15, 20, 10, 10),
+          color: Colors.white,
+          child: Text('历史记录'),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 30),
+          color: Colors.white,
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 8,
+            children: searchList,
+          ),
+        ),
+      ];
+    } else {
+      return [];
+    }
   }
 
   @override
@@ -53,6 +108,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         title: Container(
           height: 30,
           child: TextField(
+            keyboardType: TextInputType.number,
             style: TextStyle(color: Color(0xFF999999), fontSize: 13),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0),
@@ -77,8 +133,8 @@ class _SearchWidgetState extends State<SearchWidget> {
         ),
         actions: <Widget>[
           InkWell(
-            onTap: () {
-              Navigator.pop(context, _search.text);
+            onTap: () async {
+              goSearch();
             },
             child: Container(
               alignment: Alignment.center,
@@ -91,7 +147,9 @@ class _SearchWidgetState extends State<SearchWidget> {
           )
         ],
       ),
-      body: Container(),
+      body: ListView(
+        children: getHistory(),
+      ),
     );
   }
 }

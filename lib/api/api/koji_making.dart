@@ -19,6 +19,12 @@ class KojiMaking {
         .get('/kojiOrder/queryScOrder', params: params);
   }
 
+// 获取看曲记录
+  static kojiQueryDiscGuard(params) {
+    return HttpManager.getInstance()
+        .get('/kojiDisc/queryDiscGuard', params: params);
+  }
+
 // 蒸面记录首页查询
   static steamSideHome(params) {
     return HttpManager.getInstance()
