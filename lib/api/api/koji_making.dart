@@ -1,4 +1,5 @@
 import '../http/dio.dart';
+import '../http/env.dart';
 
 class KojiMaking {
 // 制曲列表查询
@@ -21,7 +22,7 @@ class KojiMaking {
 
 // 获取看曲记录
   static kojiQueryDiscGuard(params) {
-    return HttpManager.getInstance()
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
         .get('/kojiDisc/queryDiscGuard', params: params);
   }
 
