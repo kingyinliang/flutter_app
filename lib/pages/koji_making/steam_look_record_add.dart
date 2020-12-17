@@ -74,6 +74,13 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
 
   }
 
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
+
   _submitForm() async {
     if (widget.arguments['onType'] == 'exception') {
       try {
@@ -88,54 +95,14 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
         EasyLoading.showError('请选择看曲时间');
         return;
       }
-//      if (formMap['windTemp'] == null || formMap['windTemp'] == '') {
-//        EasyLoading.showError('请填写实际风温');
-//        return;
-//      }
-//      if (formMap['roomTemp'] == null || formMap['roomTemp'] == '') {
-//        EasyLoading.showError('请填写下室温度');
-//        return;
-//      }
-//      if (formMap['prodTemp'] == null || formMap['prodTemp'] == '') {
-//        EasyLoading.showError('请填写品温');
-//        return;
-//      }
-//      if (formMap['outUpTemp'] == null || formMap['outUpTemp'] == '') {
-//        EasyLoading.showError('请填写外上温度');
-//        return;
-//      }
-//      if (formMap['outMidTemp'] == null || formMap['outMidTemp'] == '') {
-//        EasyLoading.showError('请填写外中温度');
-//        return;
-//      }
-//      if (formMap['outDownTemp'] == null || formMap['outDownTemp'] == '') {
-//        EasyLoading.showError('请填写外下温度');
-//        return;
-//      }
-//      if (formMap['windDoor'] == null || formMap['windDoor'] == '') {
-//        EasyLoading.showError('请填写风门开度');
-//        return;
-//      }
-//      if (formMap['forceDrain'] == null || formMap['forceDrain'] == '') {
-//        EasyLoading.showError('请选择强排设备');
-//        return;
-//      }
-//      if (formMap['changeHot'] == null || formMap['changeHot'] == '') {
-//        EasyLoading.showError('请选择换热设备');
-//        return;
-//      }
-//      if (formMap['windSpeed'] == null || formMap['windSpeed'] == '') {
-//        EasyLoading.showError('请填写风速');
-//        return;
-//      }
-//      if (formMap['testTempOne'] == null || formMap['testTempOne'] == '') {
-//        EasyLoading.showError('请填写测量温度1');
-//        return;
-//      }
-//      if (formMap['testTempTwo'] == null || formMap['testTempTwo'] == '') {
-//        EasyLoading.showError('请填写测量温度2');
-//        return;
-//      }
+//      List<String> l1 = ["forceDrain", "changeHot", "changed", "changer", "status", "statusName", "guardDate", "id", "orderNo", "kojiOrderNo"];
+//      formMap.forEach((key, value) => {
+//        if (value != '' && l1.contains(key) == false) {
+//          if (isNumeric('$value')) {
+//            EasyLoading.showError('请填写数字: $key $value')
+//          }
+//        }
+//      });
       if (formMap['id'] != null) {
         try {
           await KojiMaking.discLookSave(formMap);
@@ -227,6 +194,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['windTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             requiredFlg: true,
             onChange: (val) {
               formMap['windTemp'] = val;
@@ -238,6 +206,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['settingWindTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['settingWindTemp'] = val;
               setState(() {});
@@ -249,6 +218,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['roomTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['roomTemp'] = val;
               setState(() {});
@@ -260,6 +230,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['prodTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['prodTemp'] = val;
               setState(() {});
@@ -270,6 +241,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['settingProdTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['settingProdTemp'] = val;
               setState(() {});
@@ -288,6 +260,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['outUpTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['outUpTemp'] = val;
               setState(() {});
@@ -299,6 +272,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['outMidTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['outMidTemp'] = val;
               setState(() {});
@@ -310,6 +284,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['outDownTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['outDownTemp'] = val;
               setState(() {});
@@ -320,6 +295,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['innerUpTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['innerUpTemp'] = val;
               setState(() {});
@@ -330,6 +306,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['innerMidTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['innerMidTemp'] = val;
               setState(() {});
@@ -340,6 +317,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['innerDownTemp'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['innerDownTemp'] = val;
               setState(() {});
@@ -357,6 +335,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             requiredFlg: true,
             prop: formMap['windDoor'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['windDoor'] = val;
               setState(() {});
@@ -392,6 +371,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: 'm/s',
             requiredFlg: true,
             prop: formMap['windSpeed'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['windSpeed'] = val;
               setState(() {});
@@ -410,6 +390,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['testTempOne'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['testTempOne'] = val;
               setState(() {});
@@ -421,6 +402,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['testTempTwo'].toString(),
+            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
             onChange: (val) {
               formMap['testTempTwo'] = val;
               setState(() {});

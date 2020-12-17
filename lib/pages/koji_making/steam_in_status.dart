@@ -169,7 +169,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
                     child: Image.asset('lib/assets/images/arrows-to-right.png'),
                   )
                 ],
@@ -210,7 +210,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
       type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
-      statusName: '$statusName',
+      statusName: '${widget.arguments['data']['statusName']}',
       headTitle: widget.arguments['data']['kojiHouseName'],
       headSubTitle:
           '${widget.arguments['data']['materialName']} ${widget.arguments['data']['materialCode']}',
