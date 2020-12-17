@@ -352,7 +352,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: formMap['id'] == null ? '新增' : '修改'),
+      appBar: MdsAppBarWidget(
+          titleData: formMap['kojiDiscTurn1']['id'] == null ? '新增' : '修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[
