@@ -100,7 +100,9 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
     }
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
-      if (val == 'FAULT' || val == 'SHUTDOWN') {
+      if (val == 'AB_OTHERS') {
+        this.reasonResList = [];
+      } else if (val == 'FAULT' || val == 'SHUTDOWN') {
         var reasonRes = await Common.deviceListQuery({'deptId': workShop});
         this.reasonResList = [];
         reasonRes['data'].forEach((item) => {
@@ -180,7 +182,9 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
           SelectWidget(
             label: '异常原因',
             prop: formMap['exceptionReason'].toString(),
-            requiredFlg: true,
+            requiredFlg: formMap['exceptionSituation'].toString() == 'AB_OTHERS'
+                ? false
+                : true,
             options: reasonResList,
             optionsLabel: 'dictValue',
             optionsval: 'dictCode',
