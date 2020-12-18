@@ -94,8 +94,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
   }
 
   // 获取时长
-  _getDuration(String turn) async {
-    await _getKojiGuardData();
+  _getDuration(String turn) {
     if (formMap[turn]['turnStart'] != '' && minGuardTime != null) {
       print('minGuardTime:' + minGuardTime.toString());
       int nowyear =
@@ -226,7 +225,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn1']['turnStart'] = val;
-              this._getDuration('kojiDiscTurn1');
+              this._getKojiGuardData();
+              // this._getDuration('kojiDiscTurn1');
               setState(() {});
             },
           ),
@@ -236,7 +236,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn1']['turnEnd'] = val;
-              this._getDuration('kojiDiscTurn1');
+              // this._getDuration('kojiDiscTurn1');
               setState(() {});
             },
           ),
@@ -265,6 +265,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           InputWidget(
             label: '备注',
+            keyboardType: 'text',
             prop: formMap['kojiDiscTurn1']['remark'].toString(),
             onChange: (val) {
               formMap['kojiDiscTurn1']['remark'] = val;
@@ -286,7 +287,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn2']['turnStart'] = val;
-              this._getDuration('kojiDiscTurn2');
+              this._getKojiGuardData();
+              // this._getDuration('kojiDiscTurn2');
               setState(() {});
             },
           ),
@@ -296,7 +298,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn2']['turnEnd'] = val;
-              this._getDuration('kojiDiscTurn2');
+              // this._getDuration('kojiDiscTurn2');
               setState(() {});
             },
           ),
