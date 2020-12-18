@@ -29,14 +29,14 @@ class PullRefresh extends StatefulWidget {
 
 class _PullRefreshState extends State<PullRefresh> {
   String loadText = '加载中...';
-  static var loadStatus = LoadingStatus.STATUS_IDEL;
+  var loadStatus = LoadingStatus.STATUS_IDEL;
   ScrollController _scrollController = new ScrollController();
 
   Future<void> _onRefresh() async {
     await widget.refresh();
     setState(() {
       loadText = '加载中...';
-      loadStatus = LoadingStatus.STATUS_LOADING;
+      loadStatus = LoadingStatus.STATUS_IDEL;
     });
   }
 
@@ -113,7 +113,9 @@ class _PullRefreshState extends State<PullRefresh> {
             if (widget.data.length > 9) {
               return _loadingView();
             } else {
-              return SizedBox();
+              loadText = '加载完毕';
+              loadStatus = LoadingStatus.STATUS_COMPLETED;
+              return _loadingView();
             }
           } else {
             return widget.itemBuilder(context, index);

@@ -44,6 +44,10 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   goSearch() async {
+    int index = searchHistory.indexOf(_search.text);
+    if (index != -1) {
+      searchHistory.removeAt(index);
+    }
     searchHistory.insert(0, _search.text);
     if (searchHistory.length > 12) {
       searchHistory = searchHistory.sublist(0, 12);
@@ -52,7 +56,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         .saveStringListStorage('searchHistory', searchHistory);
     searchHistory = await SharedUtil.instance.getStorage('searchHistory');
     setState(() {});
-    Navigator.pop(context, _search.text);
+    // Navigator.pop(context, _search.text);
   }
 
   getHistory() {
