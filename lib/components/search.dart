@@ -19,7 +19,7 @@ class SearchWidget extends StatefulWidget {
 
 class _SearchWidgetState extends State<SearchWidget> {
   var _search = new TextEditingController();
-  List searchHistory = [];
+  List<String> searchHistory = [];
 
   @override
   void initState() {
@@ -35,7 +35,11 @@ class _SearchWidgetState extends State<SearchWidget> {
   _initState() async {
     _search.text =
         widget.arguments['text'] == '' ? '' : widget.arguments['text'];
-    searchHistory = await SharedUtil.instance.getStorage('searchHistory');
+    var tmp = await SharedUtil.instance.getStorage('searchHistory');
+    if (tmp != null) {
+      searchHistory = await SharedUtil.instance.getStorage('searchHistory');
+    }
+    print(tmp);
     setState(() {});
   }
 
@@ -87,7 +91,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         ),
       ];
     } else {
-      return [];
+      return [Container()];
     }
   }
 
