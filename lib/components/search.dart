@@ -56,7 +56,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         .saveStringListStorage('searchHistory', searchHistory);
     searchHistory = await SharedUtil.instance.getStorage('searchHistory');
     setState(() {});
-    // Navigator.pop(context, _search.text);
+    Navigator.pop(context, _search.text);
   }
 
   getHistory() {
@@ -82,7 +82,25 @@ class _SearchWidgetState extends State<SearchWidget> {
         Container(
           padding: EdgeInsets.fromLTRB(15, 20, 10, 10),
           color: Colors.white,
-          child: Text('历史记录'),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  '历史记录',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              InkWell(
+                onTap: () async {
+                  await SharedUtil.instance
+                      .saveStringListStorage('searchHistory', null);
+                  searchHistory = [];
+                  setState(() {});
+                },
+                child: Icon(IconData(0xe674, fontFamily: 'MdsIcon'), size: 16),
+              )
+            ],
+          ),
         ),
         Container(
           padding: EdgeInsets.fromLTRB(15, 0, 15, 30),
