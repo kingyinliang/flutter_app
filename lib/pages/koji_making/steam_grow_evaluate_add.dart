@@ -61,26 +61,26 @@ class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['kojiStage'] == null || formMap['kojiStage'] == '') {
-      errorToast(msg: '请选择评价阶段');
-      return;
-    }
-    if (formMap['recordDate'] == null || formMap['recordDate'] == '') {
-      errorToast(msg: '请选择记录时间');
-      return;
-    }
-    if (formMap['growInfo'] == null || formMap['growInfo'] == '') {
-      errorToast(msg: '请选择生产情况');
-      return;
-    }
-    if (formMap['growInfo'] != 'GOOD' && formMap['exceptionInfo'] == '') {
-      errorToast(msg: '请填写异常描述');
-      return;
-    }
-    if (formMap['recordMans'] == null || formMap['recordMans'] == '') {
-      errorToast(msg: '请选择记录人');
-      return;
-    }
+    // if (formMap['kojiStage'] == null || formMap['kojiStage'] == '') {
+    //   errorToast(msg: '请选择评价阶段');
+    //   return;
+    // }
+    // if (formMap['recordDate'] == null || formMap['recordDate'] == '') {
+    //   errorToast(msg: '请选择记录时间');
+    //   return;
+    // }
+    // if (formMap['growInfo'] == null || formMap['growInfo'] == '') {
+    //   errorToast(msg: '请选择生产情况');
+    //   return;
+    // }
+    // if (formMap['growInfo'] != 'GOOD' && formMap['exceptionInfo'] == '') {
+    //   errorToast(msg: '请填写异常描述');
+    //   return;
+    // }
+    // if (formMap['recordMans'] == null || formMap['recordMans'] == '') {
+    //   errorToast(msg: '请选择记录人');
+    //   return;
+    // }
     formMap['orderNo'] = widget.arguments['orderNo'];
     formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     if (formMap['id'] != null) {

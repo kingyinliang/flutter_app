@@ -112,8 +112,7 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
               })
             });
       } else if (val == 'POOR_PROCESS' || val == 'WAIT') {
-        var reasonRes =
-            await Common.dictDropDownQuery({'dictType': 'POOR_PROCESS_WAIT'});
+        var reasonRes = await Common.dictDropDownQuery({'dictType': 'WAIT'});
         this.reasonResList = reasonRes['data'];
       } else if (val == 'ENERGY') {
         var reasonRes = await Common.dictDropDownQuery({'dictType': 'ENERGY'});

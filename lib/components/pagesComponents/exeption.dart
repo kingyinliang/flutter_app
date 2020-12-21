@@ -72,7 +72,7 @@ class _ExeptionWidgetState extends State<ExeptionWidget> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: MdsAppBarWidget(titleData: widget.title),
+        appBar: MdsAppBarWidget(titleData: widget.title, refresh: true),
         backgroundColor: Color(0xFFF5F5F5),
         body: SliverTabBarWidget(
           tabChange: setFloatingActionButtonFlag,

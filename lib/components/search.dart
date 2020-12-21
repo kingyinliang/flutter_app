@@ -139,6 +139,20 @@ class _SearchWidgetState extends State<SearchWidget> {
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0),
               prefixIcon: Icon(Icons.search, color: Color(0xFF999999)),
+              suffixIcon: _search.text != '' && _search.text != null
+                  ? InkWell(
+                      child: Icon(
+                        Icons.close,
+                        color: Color(0xFF999999),
+                        size: 14,
+                      ),
+                      onTap: () => {
+                        setState(() {
+                          _search.text = '';
+                        })
+                      },
+                    )
+                  : null,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
@@ -155,6 +169,9 @@ class _SearchWidgetState extends State<SearchWidget> {
               fillColor: Color(0xFF999999),
             ),
             controller: _search,
+            onChanged: (value) {
+              setState(() {});
+            },
           ),
         ),
         actions: <Widget>[
