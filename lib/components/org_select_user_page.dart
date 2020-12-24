@@ -210,10 +210,8 @@ class _OrgSelectUserPageState extends State<OrgSelectUserPage> {
       var res = await Common.getUserByQuery({
         'workNum': text,
         'deptId': selectOrg[selectOrg.length - 1]['id'],
-        'current': '1',
-        'size': '99999',
       });
-      userList = res['data']['records'] == null ? [] : res['data']['records'];
+      userList = res['data'] == null ? [] : res['data'];
       setState(() {});
     } catch (e) {}
   }

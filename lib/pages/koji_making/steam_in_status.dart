@@ -210,7 +210,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
       type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
-      statusName: '${widget.arguments['data']['statusName']}',
+      statusName: '$statusName',
       headTitle: widget.arguments['data']['kojiHouseName'],
       headSubTitle:
           '${widget.arguments['data']['materialName']} ${widget.arguments['data']['materialCode']}',
