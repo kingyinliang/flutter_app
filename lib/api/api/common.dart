@@ -63,7 +63,7 @@ class Common {
 // 根据部门和工号姓名查人
   static getUserByQuery(params) {
     return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API)
-        .post('/sysUser/query', params: params);
+        .post('/sysUser/userRole/all/query', params: params);
   }
 
   static getDictDropAll(params) {
