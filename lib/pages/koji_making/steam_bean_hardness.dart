@@ -310,8 +310,10 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      status: '$status',
-      statusName: '$statusName',
+      // status: '$status',
+      // statusName: '$statusName',
+      status: listData.length > 0 ? '$status' : '',
+      statusName: listData.length > 0 ? '$statusName' : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
