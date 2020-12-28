@@ -169,6 +169,9 @@ class _SearchWidgetState extends State<SearchWidget> {
               fillColor: Color(0xFF999999),
             ),
             controller: _search,
+            onSubmitted: (value) {
+              goSearch();
+            },
             onChanged: (value) {
               setState(() {});
             },
