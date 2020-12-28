@@ -50,6 +50,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
         listData = [];
       } else {
         listData = res['data'];
+        listData = MapUtil.listNullToEmpty(listData);
         print(listData);
         if (type) successToast(msg: '操作成功');
       }

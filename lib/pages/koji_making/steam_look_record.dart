@@ -41,6 +41,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
       }
       statusName = res['data'][0]['statusName'];
       listData = res['data'];
+      listData = MapUtil.listNullToEmpty(listData);
       setState(() {});
     } catch (e) {}
     try {

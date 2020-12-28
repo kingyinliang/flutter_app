@@ -35,21 +35,24 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   }
 
   _initState({type: false}) async {
-    try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
-      status = res['data']['status'];
-      statusName = res['data']['statusName'];
-      setState(() {});
-    } catch (e) {}
+    status = widget.arguments['data']['status'];
+    statusName = widget.arguments['data']['statusName'];
+    // try {
+    // var res = await KojiMaking.kojiMakingOrder({
+    //   "dataType": widget.arguments['workingType'],
+    //   "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+    // });
+    //   status = widget.arguments['status'];
+    //   statusName = widget.arguments['statusName'];
+    //   setState(() {});
+    // } catch (e) {}
     try {
       var res = await KojiMaking.steamBeanRecordHome({
         "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
       listData = res['data'];
+      listData = MapUtil.listNullToEmpty(listData);
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}
@@ -217,8 +220,10 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      status: '$status',
-      statusName: '$statusName',
+      // status: '$status',
+      // statusName: '$statusName',
+      status: listData.length > 0 ? '$status' : '',
+      statusName: listData.length > 0 ? '$statusName' : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',

@@ -154,7 +154,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       if (formMap['kojiDiscTurn1']['turnStart'] != '') {
         _getDuration('kojiDiscTurn1');
       }
-      if (formMap['kojiDiscTurn1']['turnStart'] != '') {
+      if (formMap['kojiDiscTurn2']['turnStart'] != '') {
         _getDuration('kojiDiscTurn2');
       }
 

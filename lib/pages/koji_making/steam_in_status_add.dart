@@ -15,6 +15,7 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
     'addKojiInfo': '',
     'addKojiStart': '',
     'addKojiEnd': '',
+    'kojiDurationStandard': '',
     'addKojiTemp': '',
     'addKojiDuration': '',
     'addKojiDurationString': '0H',
@@ -35,6 +36,7 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
       if (formMap['addKojiEnd'] == null) {
         formMap['addKojiEnd'] = '';
       }
+
       formMap['addKojiDurationString'] = '${formMap['addKojiDuration']}H';
     } else {
       Future.delayed(
@@ -58,35 +60,49 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
   // 获取时长
   _getDuration() {
     if (formMap['addKojiStart'] != '' && formMap['addKojiEnd'] != '') {
-      int nowyear = int.parse(formMap['addKojiStart'].split(" ")[0].split('-')[0]);
+      int nowyear =
+          int.parse(formMap['addKojiStart'].split(" ")[0].split('-')[0]);
       int nowmonth =
-      int.parse(formMap['addKojiStart'].split(" ")[0].split('-')[1]);
-      int nowday = int.parse(formMap['addKojiStart'].split(" ")[0].split('-')[2]);
-      int nowhour = int.parse(formMap['addKojiStart'].split(" ")[1].split(':')[0]);
-      int nowmin = int.parse(formMap['addKojiStart'].split(" ")[1].split(':')[1]);
+          int.parse(formMap['addKojiStart'].split(" ")[0].split('-')[1]);
+      int nowday =
+          int.parse(formMap['addKojiStart'].split(" ")[0].split('-')[2]);
+      int nowhour =
+          int.parse(formMap['addKojiStart'].split(" ")[1].split(':')[0]);
+      int nowmin =
+          int.parse(formMap['addKojiStart'].split(" ")[1].split(':')[1]);
 
-      int oldyear = int.parse(formMap['addKojiEnd'].split(" ")[0].split('-')[0]);
-      int oldmonth = int.parse(formMap['addKojiEnd'].split(" ")[0].split('-')[1]);
+      int oldyear =
+          int.parse(formMap['addKojiEnd'].split(" ")[0].split('-')[0]);
+      int oldmonth =
+          int.parse(formMap['addKojiEnd'].split(" ")[0].split('-')[1]);
       int oldday = int.parse(formMap['addKojiEnd'].split(" ")[0].split('-')[2]);
-      int oldhour = int.parse(formMap['addKojiEnd'].split(" ")[1].split(':')[0]);
+      int oldhour =
+          int.parse(formMap['addKojiEnd'].split(" ")[1].split(':')[0]);
       int oldmin = int.parse(formMap['addKojiEnd'].split(" ")[1].split(':')[1]);
 
       var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
       var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
       var difference = old.difference(now);
 
-      formMap['addKojiDuration'] = formatNum((difference.inMinutes/60), 2); // 时间差
-      formMap['addKojiDurationString'] = '${formMap['addKojiDuration']}H'; // 时间差
+      formMap['addKojiDuration'] =
+          formatNum((difference.inMinutes / 60), 2); // 时间差
+      formMap['addKojiDurationString'] =
+          '${formMap['addKojiDuration']}H'; // 时间差
 
     }
   }
 
   formatNum(double num, int postion) {
-    if((num.toString().length-num.toString().lastIndexOf(".")-1)<postion){
+    if ((num.toString().length - num.toString().lastIndexOf(".") - 1) <
+        postion) {
       //小数点后有几位小数
-      return num.toStringAsFixed(postion).substring(0,num.toString().lastIndexOf(".")+postion+1).toString();
-    }else{
-      return num.toString().substring(0,num.toString().lastIndexOf(".")+postion+1).toString();
+      return num.toStringAsFixed(postion)
+          .substring(0, num.toString().lastIndexOf(".") + postion + 1)
+          .toString();
+    } else {
+      return num.toString()
+          .substring(0, num.toString().lastIndexOf(".") + postion + 1)
+          .toString();
     }
   }
 
@@ -96,7 +112,7 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
     }
     String result;
     list.forEach((string) =>
-    {if (result == null) result = string else result = '$result，$string'});
+        {if (result == null) result = string else result = '$result，$string'});
     return result.toString();
   }
 
@@ -167,6 +183,10 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
             formMap['addKojiTemp'] = val;
             setState(() {});
           },
+        ),
+        FormTextWidget(
+          label: '入曲标准',
+          prop: formMap['kojiDurationStandard'].toString(),
         ),
         DataPickerWidget(
           label: '入曲开始时间',

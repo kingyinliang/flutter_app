@@ -39,6 +39,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
         listData = [];
       } else {
         listData = [res['data']];
+        listData = MapUtil.listNullToEmpty(listData);
         status = res['data']['status'];
         statusName = res['data']['statusName'];
       }

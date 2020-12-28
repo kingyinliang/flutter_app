@@ -48,6 +48,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
         listData = [];
       } else {
         listData = [res['data']];
+        listData = MapUtil.listNullToEmpty(listData);
         if (type) successToast(msg: '操作成功');
       }
       setState(() {});
