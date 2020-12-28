@@ -35,15 +35,17 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   }
 
   _initState({type: false}) async {
-    try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
-      status = res['data']['status'];
-      statusName = res['data']['statusName'];
-      setState(() {});
-    } catch (e) {}
+    status = widget.arguments['data']['status'];
+    statusName = widget.arguments['data']['statusName'];
+    // try {
+    // var res = await KojiMaking.kojiMakingOrder({
+    //   "dataType": widget.arguments['workingType'],
+    //   "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+    // });
+    //   status = widget.arguments['status'];
+    //   statusName = widget.arguments['statusName'];
+    //   setState(() {});
+    // } catch (e) {}
     try {
       var res = await KojiMaking.steamBeanRecordHome({
         "orderNo": widget.arguments['data']['orderNo'],
