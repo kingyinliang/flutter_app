@@ -41,6 +41,7 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
         "orderNo": widget.arguments['data']['orderNo'],
       });
       listData = res['data'];
+      listData = MapUtil.listNullToEmpty(listData);
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}

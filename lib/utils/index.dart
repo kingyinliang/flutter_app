@@ -32,3 +32,21 @@ int getColorFromHex(String hexColor) {
   }
   return int.parse(hexColor, radix: 16);
 }
+
+class MapUtil {
+  static mapNullToEmpty(Map map) {
+    map.forEach((key, value) {
+      if (value == null) {
+        map[key] = '';
+      }
+    });
+    return map;
+  }
+
+  static listNullToEmpty(List list) {
+    list.forEach((element) {
+      element = mapNullToEmpty(element);
+    });
+    return list;
+  }
+}

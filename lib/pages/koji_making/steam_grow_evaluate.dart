@@ -48,6 +48,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
       listData = res['data'];
+      listData = MapUtil.listNullToEmpty(listData);
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}
