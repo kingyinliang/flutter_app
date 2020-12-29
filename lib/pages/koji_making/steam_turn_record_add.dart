@@ -163,36 +163,36 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['kojiDiscTurn1']['turnStart'] == null ||
-        formMap['kojiDiscTurn1']['turnStart'] == '') {
-      errorToast(msg: '请选择一翻翻曲开始时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn1']['turnEnd'] == null ||
-        formMap['kojiDiscTurn1']['turnEnd'] == '') {
-      errorToast(msg: '请选择一翻翻曲结束时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn1']['turnMans'] == null ||
-        formMap['kojiDiscTurn1']['turnMans'] == '') {
-      errorToast(msg: '请选择一翻翻曲人');
-      return;
-    }
-    if (formMap['kojiDiscTurn2']['turnStart'] == null ||
-        formMap['kojiDiscTurn2']['turnStart'] == '') {
-      errorToast(msg: '请选择二翻翻曲开始时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn2']['turnEnd'] == null ||
-        formMap['kojiDiscTurn2']['turnEnd'] == '') {
-      errorToast(msg: '请选择二翻翻曲结束时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn2']['turnMans'] == null ||
-        formMap['kojiDiscTurn2']['turnMans'] == '') {
-      errorToast(msg: '请选择二翻翻曲人');
-      return;
-    }
+    // if (formMap['kojiDiscTurn1']['turnStart'] == null ||
+    //     formMap['kojiDiscTurn1']['turnStart'] == '') {
+    //   errorToast(msg: '请选择一翻翻曲开始时间');
+    //   return;
+    // }
+    // if (formMap['kojiDiscTurn1']['turnEnd'] == null ||
+    //     formMap['kojiDiscTurn1']['turnEnd'] == '') {
+    //   errorToast(msg: '请选择一翻翻曲结束时间');
+    //   return;
+    // }
+    // if (formMap['kojiDiscTurn1']['turnMans'] == null ||
+    //     formMap['kojiDiscTurn1']['turnMans'] == '') {
+    //   errorToast(msg: '请选择一翻翻曲人');
+    //   return;
+    // }
+    // if (formMap['kojiDiscTurn2']['turnStart'] == null ||
+    //     formMap['kojiDiscTurn2']['turnStart'] == '') {
+    //   errorToast(msg: '请选择二翻翻曲开始时间');
+    //   return;
+    // }
+    // if (formMap['kojiDiscTurn2']['turnEnd'] == null ||
+    //     formMap['kojiDiscTurn2']['turnEnd'] == '') {
+    //   errorToast(msg: '请选择二翻翻曲结束时间');
+    //   return;
+    // }
+    // if (formMap['kojiDiscTurn2']['turnMans'] == null ||
+    //     formMap['kojiDiscTurn2']['turnMans'] == '') {
+    //   errorToast(msg: '请选择二翻翻曲人');
+    //   return;
+    // }
 
     if (formMap['kojiDiscTurn1']['id'] != null) {
       try {

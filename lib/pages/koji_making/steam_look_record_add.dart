@@ -40,11 +40,10 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
       formMap.forEach((key, value) => {
-        // print('key: $key, value:$value')
-        if (value == null) {
-          formMap['$key'] = ''
-        }
-      });
+            // print('key: $key, value:$value')
+            if (value == null)
+              {formMap['$key'] = ''}
+          });
     }
     Future.delayed(
       Duration.zero,
@@ -60,22 +59,23 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
   _initState() async {
     // 强排下拉
     try {
-      var res = await Common.dictDropDownQuery({'dictType': 'COMMON_OPEN_CLOSE'});
+      var res =
+          await Common.dictDropDownQuery({'dictType': 'COMMON_OPEN_CLOSE'});
       typeList = res['data'];
       setState(() {});
     } catch (e) {}
 
     // 换热
     try {
-      var res = await Common.dictDropDownQuery({'dictType': 'KOJI_HEAT_TRANSFER'});
+      var res =
+          await Common.dictDropDownQuery({'dictType': 'KOJI_HEAT_TRANSFER'});
       hotList = res['data'];
       setState(() {});
     } catch (e) {}
-
   }
 
   bool isNumeric(String s) {
-    if(s == null) {
+    if (s == null) {
       return false;
     }
     return double.parse(s, (e) => null) != null;
@@ -91,10 +91,10 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
         Navigator.pop(context, true);
       } catch (e) {}
     } else {
-      if (formMap['guardDate'] == null || formMap['guardDate'] == '') {
-        EasyLoading.showError('请选择看曲时间');
-        return;
-      }
+      // if (formMap['guardDate'] == null || formMap['guardDate'] == '') {
+      //   EasyLoading.showError('请选择看曲时间');
+      //   return;
+      // }
 //      List<String> l1 = ["forceDrain", "changeHot", "changed", "changer", "status", "statusName", "guardDate", "id", "orderNo", "kojiOrderNo"];
 //      formMap.forEach((key, value) => {
 //        if (value != '' && l1.contains(key) == false) {
@@ -125,47 +125,36 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
         color: Colors.white,
         margin: EdgeInsets.fromLTRB(0, 5, 10, 0),
         padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 5),
-            Row(
-              children: <Widget>[
-                Text('异常情况',
+        child: Column(children: <Widget>[
+          SizedBox(height: 5),
+          Row(
+            children: <Widget>[
+              Text('异常情况',
                   style: TextStyle(color: Color(0xFF999999), fontSize: 15),
-                  textAlign: TextAlign.left
-                ),
-                Expanded(
-                  child: SizedBox(),
-                ),
-              ],
-            ),
-            SizedBox(height: 5),
-            TextField(
-              controller: TextEditingController.fromValue(
-                  TextEditingValue(
-                      text: formMap['remark'],
-                      // 保持光标在最后
-                      selection: TextSelection.fromPosition(
-                          TextPosition(
-                              affinity: TextAffinity.downstream,
-                              offset: formMap['remark'].length
-                          )
-                      )
-                  )
+                  textAlign: TextAlign.left),
+              Expanded(
+                child: SizedBox(),
               ),
-              maxLines: 4,
-              textAlign: TextAlign.left,
-              decoration: InputDecoration(
-                border: OutlineInputBorder()
-              ),
-              onChanged: (val) {
-                this.setState(() {
-                  formMap['remark'] = val;
-                });
-              },
-            ),
-          ]
-        ),
+            ],
+          ),
+          SizedBox(height: 5),
+          TextField(
+            controller: TextEditingController.fromValue(TextEditingValue(
+                text: formMap['remark'],
+                // 保持光标在最后
+                selection: TextSelection.fromPosition(TextPosition(
+                    affinity: TextAffinity.downstream,
+                    offset: formMap['remark'].length)))),
+            maxLines: 4,
+            textAlign: TextAlign.left,
+            decoration: InputDecoration(border: OutlineInputBorder()),
+            onChanged: (val) {
+              this.setState(() {
+                formMap['remark'] = val;
+              });
+            },
+          ),
+        ]),
       );
     } else {
       return Container(
@@ -194,7 +183,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['windTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             requiredFlg: true,
             onChange: (val) {
               formMap['windTemp'] = val;
@@ -206,7 +197,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['settingWindTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['settingWindTemp'] = val;
               setState(() {});
@@ -218,7 +211,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['roomTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['roomTemp'] = val;
               setState(() {});
@@ -230,7 +225,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['prodTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['prodTemp'] = val;
               setState(() {});
@@ -241,7 +238,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['settingProdTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['settingProdTemp'] = val;
               setState(() {});
@@ -260,7 +259,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['outUpTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['outUpTemp'] = val;
               setState(() {});
@@ -272,7 +273,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['outMidTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['outMidTemp'] = val;
               setState(() {});
@@ -284,7 +287,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['outDownTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['outDownTemp'] = val;
               setState(() {});
@@ -295,7 +300,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['innerUpTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['innerUpTemp'] = val;
               setState(() {});
@@ -306,7 +313,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['innerMidTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['innerMidTemp'] = val;
               setState(() {});
@@ -317,7 +326,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             suffix: '℃',
             prop: formMap['innerDownTemp'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['innerDownTemp'] = val;
               setState(() {});
@@ -335,7 +346,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             keyboardType: 'number',
             requiredFlg: true,
             prop: formMap['windDoor'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['windDoor'] = val;
               setState(() {});
@@ -371,7 +384,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: 'm/s',
             requiredFlg: true,
             prop: formMap['windSpeed'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['windSpeed'] = val;
               setState(() {});
@@ -390,7 +405,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['testTempOne'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['testTempOne'] = val;
               setState(() {});
@@ -402,7 +419,9 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
             suffix: '℃',
             requiredFlg: true,
             prop: formMap['testTempTwo'].toString(),
-            inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))],
+            inputFormatters: [
+              WhitelistingTextInputFormatter(RegExp("[0-9.]|[0-9]"))
+            ],
             onChange: (val) {
               formMap['testTempTwo'] = val;
               setState(() {});
