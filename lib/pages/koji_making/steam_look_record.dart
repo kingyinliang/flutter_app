@@ -28,20 +28,17 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
 
   _initState() async {
     try {
+      // 页签状态
+      var res = await KojiMaking.houseTagQuery({"orderNo": widget.arguments['data']['orderNo'], "kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
+      status = res['data']['discStatus'];
+      statusName = res['data']['discStatusName'];
+    } catch (e) {}
+    try {
       // 看曲记录
       var res = await KojiMaking.discLookQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
-      status = widget.arguments['data']['status'];
-//      status = 'N';
-      for (Map sole in res['data']) {
-        if (sole['status'] == 'S' || sole['status'] == 'R') {
-          status = 'S';
-          break;
-        }
-      }
-      statusName = res['data'][0]['statusName'];
       listData = res['data'];
-      listData = MapUtil.listNullToEmpty(listData);
+//      listData = MapUtil.listNullToEmpty(listData);
       setState(() {});
     } catch (e) {}
     try {
@@ -173,7 +170,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                                 'onType': 'exception'
                               },
                             ).then(
-                                (value) => value != null ? _initState() : null);
+                                (value) => value != null ? _initState() : _initState());
                           },
                         )
                       : SizedBox(),
@@ -210,7 +207,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                 'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
                 'onType': 'record'
               },
-            ).then((value) => value != null ? _initState() : null);
+            ).then((value) => value != null ? _initState() : _initState());
           },
         ),
       ),
@@ -232,7 +229,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                 context,
                 '/kojiMaking/steamLookRecordAdd',
                 arguments: {'data': listData[index], 'onType': 'record'},
-              ).then((value) => value != null ? _initState() : null);
+              ).then((value) => value != null ? _initState() : _initState());
             },
           ),
           singleButtonWidth: 60,
@@ -275,7 +272,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
       type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
-      statusName: '${widget.arguments['data']['statusName']}',
+      statusName: '$statusName',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
