@@ -282,4 +282,10 @@ class KojiMaking {
     return HttpManager.getInstance()
         .get('/koji/discEvaluate/submit', params: params);
   }
+
+  // 查询页签状态
+  static houseTagQuery(params) {
+    return HttpManager.getInstance()
+        .post('/koji/houseTag/query', params: params);
+  }
 }
