@@ -24,7 +24,7 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
     'remark': '',
   };
   List steamBallNo = [];
-
+  bool _steamBallPressureVisible = false;
   @override
   void initState() {
     if (widget.arguments['data'] != null) {
@@ -32,6 +32,10 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
     }
     formMap['orderNo'] = widget.arguments['orderNo'];
     formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
+
+    if (widget.arguments['kojiOrderNo'] == '') {
+      _steamBallPressureVisible = true;
+    }
     Future.delayed(
       Duration.zero,
       () => setState(() {
@@ -91,17 +95,18 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(
         children: <Widget>[
-          InputWidget(
-            label: '蒸球压力',
-            suffix: 'Mpa',
-            keyboardType: 'number',
-            prop: formMap['steamBallPressure'].toString(),
-            requiredFlg: true,
-            onChange: (val) {
-              formMap['steamBallPressure'] = val;
-              setState(() {});
-            },
-          ),
+          _steamBallPressureVisible
+              ? InputWidget(
+                  label: '蒸球压力',
+                  suffix: 'Mpa',
+                  keyboardType: 'number',
+                  prop: formMap['steamBallPressure'].toString(),
+                  requiredFlg: true,
+                  onChange: (val) {
+                    formMap['steamBallPressure'] = val;
+                    setState(() {});
+                  })
+              : Container(),
           SelectWidget(
             label: '蒸球号',
             prop: formMap['steamBallNo'].toString(),
