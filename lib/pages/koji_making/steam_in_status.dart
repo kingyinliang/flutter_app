@@ -18,7 +18,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   ];
   List listData = [];
   String status = '';
-  String statusName = '';
+  String statusName = '未录入';
 
   @override
   void initState() {

@@ -91,10 +91,10 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
         Navigator.pop(context, true);
       } catch (e) {}
     } else {
-      // if (formMap['guardDate'] == null || formMap['guardDate'] == '') {
-      //   EasyLoading.showError('请选择看曲时间');
-      //   return;
-      // }
+       if (formMap['guardDate'] == null || formMap['guardDate'] == '') {
+         EasyLoading.showError('请选择看曲时间');
+         return;
+       }
 //      List<String> l1 = ["forceDrain", "changeHot", "changed", "changer", "status", "statusName", "guardDate", "id", "orderNo", "kojiOrderNo"];
 //      formMap.forEach((key, value) => {
 //        if (value != '' && l1.contains(key) == false) {
