@@ -25,8 +25,16 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
   }
 
   _initState({type: false}) async {
-    status = widget.arguments['data']['status'];
-    statusName = widget.arguments['data']['statusName'];
+    try {
+      // 页签状态
+      var res = await KojiMaking.houseTagQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data']['steamBeanStatus'];
+      statusName = res['data']['steamBeanStatusName'];
+      setState(() {});
+    } catch (e) {}
     //try {
     // var res = await KojiMaking.kojiMakingOrderSc({
     //   "dataType": widget.arguments['workingType'],
@@ -313,10 +321,10 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      // status: '$status',
-      // statusName: '$statusName',
-      status: listData.length > 0 ? '$status' : '',
-      statusName: listData.length > 0 ? '$statusName' : '未录入',
+      status: '$status',
+      statusName: '$statusName',
+      // status: listData.length > 0 ? '$status' : '',
+      // statusName: listData.length > 0 ? '$statusName' : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',

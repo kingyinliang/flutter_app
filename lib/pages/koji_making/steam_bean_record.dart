@@ -41,8 +41,8 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
         "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
-      status = res['data']['steamBeanStatus'];
-      statusName = res['data']['steamBeanStatusName'];
+      status = res['data']['steamBeanCraft'];
+      statusName = res['data']['steamBeanCraftName'];
       setState(() {});
     } catch (e) {}
     // try {

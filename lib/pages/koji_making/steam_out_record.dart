@@ -33,14 +33,25 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
+      // 页签状态
+      var res = await KojiMaking.houseTagQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
-      status = res['data']['status'];
-      statusName = res['data']['statusName'];
+      status = res['data']['discCraft'];
+      statusName = res['data']['discCraftName'];
       setState(() {});
     } catch (e) {}
+
+    // try {
+    //   var res = await KojiMaking.kojiMakingOrder({
+    //     "dataType": widget.arguments['workingType'],
+    //     "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+    //   });
+    //   status = res['data']['status'];
+    //   statusName = res['data']['statusName'];
+    //   setState(() {});
+    // } catch (e) {}
     try {
       var res = await KojiMaking.steamDiscOutQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});

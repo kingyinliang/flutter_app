@@ -10,6 +10,8 @@ class SteamHybridControlPage extends StatefulWidget {
 
 class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   List listData = [];
+  String status = '';
+  String statusName = '';
 
   @override
   void initState() {
@@ -23,6 +25,16 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   }
 
   _initState({type: false}) async {
+    try {
+      // 页签状态
+      var res = await KojiMaking.houseTagQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data']['steamFlourCraft'];
+      statusName = res['data']['steamFlourCraftName'];
+      setState(() {});
+    } catch (e) {}
     try {
       var res = await KojiMaking.steamHybridControlHome({
         "orderNo": widget.arguments['data']['orderNo'],
@@ -236,8 +248,10 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      status: listData.length > 0 ? listData[0]['status'] : '',
-      statusName: listData.length > 0 ? listData[0]['statusName'] : '未录入',
+      // status: listData.length > 0 ? listData[0]['status'] : '',
+      // statusName: listData.length > 0 ? listData[0]['statusName'] : '未录入',
+      status: '$status',
+      statusName: '$statusName',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',

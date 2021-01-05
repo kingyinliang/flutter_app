@@ -33,6 +33,17 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
 
   _initState() async {
     try {
+      // 页签状态
+      var res = await KojiMaking.houseTagQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      });
+      status = res['data']['discCraft'];
+      statusName = res['data']['discCraftName'];
+      setState(() {});
+    } catch (e) {}
+
+    try {
       var res = await KojiMaking.discInQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       if (res['data'] == null) {
@@ -40,8 +51,6 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
       } else {
         listData = [res['data']];
         listData = MapUtil.listNullToEmpty(listData);
-        status = res['data']['status'];
-        statusName = res['data']['statusName'];
       }
       setState(() {});
     } catch (e) {}

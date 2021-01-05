@@ -15,7 +15,6 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
     {'label': '', 'value': 'changed'}
   ];
   List listData = [];
-
   String status = '';
   String statusName = '';
 
@@ -32,14 +31,25 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
+      // 页签状态
+      var res = await KojiMaking.houseTagQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
-      status = res['data']['status'];
-      statusName = res['data']['statusName'];
+      status = res['data']['discCraft'];
+      statusName = res['data']['discCraftName'];
       setState(() {});
     } catch (e) {}
+
+    // try {
+    //   var res = await KojiMaking.kojiMakingOrder({
+    //     "dataType": widget.arguments['workingType'],
+    //     "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+    //   });
+    //   status = res['data']['status'];
+    //   statusName = res['data']['statusName'];
+    //   setState(() {});
+    // } catch (e) {}
     try {
       var res = await KojiMaking.steamDiscTurnQuery({
         "orderNo": widget.arguments['data']['orderNo'],
@@ -296,8 +306,10 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      status: listData.length > 0 ? '$status' : '',
-      statusName: listData.length > 0 ? '$statusName' : '未录入',
+      // status: listData.length > 0 ? '$status' : '',
+      // statusName: listData.length > 0 ? '$statusName' : '未录入',
+      status: '$status',
+      statusName: '$statusName',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
