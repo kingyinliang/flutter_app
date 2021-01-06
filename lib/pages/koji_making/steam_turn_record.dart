@@ -32,24 +32,15 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
   _initState({type: false}) async {
     try {
       // 页签状态
-      var res = await KojiMaking.houseTagQuery({
-        "orderNo": widget.arguments['data']['orderNo'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_TURN"
       });
-      status = res['data']['discCraft'];
-      statusName = res['data']['discCraftName'];
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
 
-    // try {
-    //   var res = await KojiMaking.kojiMakingOrder({
-    //     "dataType": widget.arguments['workingType'],
-    //     "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-    //   });
-    //   status = res['data']['status'];
-    //   statusName = res['data']['statusName'];
-    //   setState(() {});
-    // } catch (e) {}
     try {
       var res = await KojiMaking.steamDiscTurnQuery({
         "orderNo": widget.arguments['data']['orderNo'],

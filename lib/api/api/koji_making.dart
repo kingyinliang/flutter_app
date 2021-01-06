@@ -288,4 +288,16 @@ class KojiMaking {
     return HttpManager.getInstance()
         .post('/koji/houseTag/query', params: params);
   }
+
+  // 制曲车间-订单列表-查询曲房订单数据信息
+  static kojiOrderStatusQuery(params) {
+    return HttpManager.getInstance()
+        .get('/kojiOrder/queryKojiOrder', params: params);
+  }
+
+  // 制曲车间-订单列表-查询SC订单数据信息
+  static kojiSCOrderStatusQuery(params) {
+    return HttpManager.getInstance()
+        .get('/kojiOrder/queryScOrder', params: params);
+  }
 }

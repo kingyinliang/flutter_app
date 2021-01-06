@@ -27,23 +27,15 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
   _initState({type: false}) async {
     try {
       // 页签状态
-      var res = await KojiMaking.houseTagQuery({
+      var res = await KojiMaking.kojiSCOrderStatusQuery({
         "orderNo": widget.arguments['data']['orderNo'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+        "dataType": "STEAM_BEAN_HARDNESS"
       });
-      status = res['data']['steamBeanCraft'];
-      statusName = res['data']['steamBeanCraftName'];
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
-    //try {
-    // var res = await KojiMaking.kojiMakingOrderSc({
-    //   "dataType": widget.arguments['workingType'],
-    //   "orderNo": widget.arguments['data']['orderNo']
-    // });
-    //   status = widget.arguments['status'];
-    //   statusName = widget.arguments['statusName'];
-    //   setState(() {});
-    // } catch (e) {}
+
     try {
       var res = await KojiMaking.steamBeanHardnessHome({
         "orderNo": widget.arguments['data']['orderNo'],

@@ -27,14 +27,15 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   _initState({type: false}) async {
     try {
       // 页签状态
-      var res = await KojiMaking.houseTagQuery({
-        "orderNo": widget.arguments['data']['orderNo'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "STEAM_CONTROL"
       });
-      status = res['data']['steamFlourCraft'];
-      statusName = res['data']['steamFlourCraftName'];
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
+
     try {
       var res = await KojiMaking.steamHybridControlHome({
         "orderNo": widget.arguments['data']['orderNo'],
