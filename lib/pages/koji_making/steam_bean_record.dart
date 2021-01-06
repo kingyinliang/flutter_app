@@ -35,14 +35,23 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   }
 
   _initState({type: false}) async {
+    print('widget.arguments');
+    print(widget.arguments);
     try {
       // 页签状态
       var res = await KojiMaking.houseTagQuery({
         "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
-      status = res['data']['steamBeanCraft'];
-      statusName = res['data']['steamBeanCraftName'];
+      // 判断来自蒸豆还是争面
+      if (widget.arguments['data']['kojiOrderNo'] != '') {
+        status = res['data']['steamFlourCraft'];
+        statusName = res['data']['steamFlourCraftName'];
+      } else {
+        status = res['data']['steamBeanCraft'];
+        statusName = res['data']['steamBeanCraftName'];
+      }
+
       setState(() {});
     } catch (e) {}
     // try {
@@ -70,15 +79,21 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
     try {
       var ids = [];
       listData.forEach((element) {
-        ids.add(element['id']);
+        if (element['status'] == 'S') {
+          ids.add(element['id']);
+        }
       });
-      await KojiMaking.steamBeanRecordSubmit({
-        'ids': ids,
-        'orderNo': widget.arguments['data']['orderNo'],
-        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
-      });
-      successToast(msg: '操作成功');
-      _initState(type: true);
+      if (ids.length != 0) {
+        await KojiMaking.steamBeanRecordSubmit({
+          'ids': ids,
+          'orderNo': widget.arguments['data']['orderNo'],
+          'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+        });
+        successToast(msg: '操作成功');
+        _initState(type: true);
+      } else {
+        infoToast(msg: "无数据可提交");
+      }
     } catch (e) {}
   }
 
