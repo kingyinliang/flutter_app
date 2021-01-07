@@ -29,7 +29,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   _initState() async {
     try {
       // 页签状态
-      var res = await KojiMaking.kojiOrderStatusQuery({
+      var res = await KojiMaking.kojiMakingOrder({
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
         "dataType": "DISC_GUARD"
       });

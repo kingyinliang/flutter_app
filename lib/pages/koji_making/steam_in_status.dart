@@ -34,7 +34,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   _initState() async {
     try {
       // 页签状态
-      var res = await KojiMaking.kojiOrderStatusQuery({
+      var res = await KojiMaking.kojiMakingOrder({
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
         "dataType": "DISC_IN"
       });
@@ -55,6 +55,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
         }
         listData = MapUtil.listNullToEmpty(listData);
       }
+      print(listData);
       setState(() {});
     } catch (e) {}
   }
