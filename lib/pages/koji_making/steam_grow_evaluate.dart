@@ -34,14 +34,16 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      // 页签状态
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_EVALUATE"
       });
       status = res['data']['status'];
       statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
+
     try {
       var res = await KojiMaking.steamDiscEvaluateQuery({
         // "orderNo": widget.arguments['data']['orderNo'],

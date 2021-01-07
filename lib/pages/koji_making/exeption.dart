@@ -71,8 +71,8 @@ class _ExeptionPageState extends State<ExeptionPage> {
   Widget build(BuildContext context) {
     return ExeptionWidget(
       title: widget.arguments['title'],
-      status: exceptionList.length > 0 ? '' : '',
-      statusName: exceptionList.length > 0 ? '已保存' : '未录入',
+      // status: exceptionList.length > 0 ? '' : '',
+      // statusName: exceptionList.length > 0 ? '已保存' : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',

@@ -33,14 +33,16 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      // 页签状态
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_OUT"
       });
       status = res['data']['status'];
       statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
+
     try {
       var res = await KojiMaking.steamDiscOutQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});

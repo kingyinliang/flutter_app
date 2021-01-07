@@ -33,16 +33,29 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
 
   _initState() async {
     try {
+      // 页签状态
+      var res = await KojiMaking.kojiMakingOrder({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_IN"
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
+
+    try {
       var res = await KojiMaking.discInQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       if (res['data'] == null) {
         listData = [];
       } else {
-        listData = [res['data']];
+        // 因为入库会自动带数据，加入判断滤掉
+        if (res['data']['id'] != '') {
+          listData = [res['data']];
+        }
         listData = MapUtil.listNullToEmpty(listData);
-        status = res['data']['status'];
-        statusName = res['data']['statusName'];
       }
+      print(listData);
       setState(() {});
     } catch (e) {}
   }

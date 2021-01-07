@@ -29,10 +29,15 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   _initState() async {
     try {
       // 页签状态
-      var res = await KojiMaking.houseTagQuery({"orderNo": widget.arguments['data']['orderNo'], "kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
-      status = res['data']['discStatus'];
-      statusName = res['data']['discStatusName'];
+      var res = await KojiMaking.kojiMakingOrder({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_GUARD"
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
     } catch (e) {}
+
     try {
       // 看曲记录
       var res = await KojiMaking.discLookQuery(
@@ -169,8 +174,8 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                                     ['kojiOrderNo'],
                                 'onType': 'exception'
                               },
-                            ).then(
-                                (value) => value != null ? _initState() : _initState());
+                            ).then((value) =>
+                                value != null ? _initState() : _initState());
                           },
                         )
                       : SizedBox(),
