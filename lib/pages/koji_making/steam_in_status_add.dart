@@ -52,6 +52,14 @@ class _SteamInStatusAddPageState extends State<SteamInStatusAddPage> {
   _initState() async {
     Map userData = await SharedUtil.instance.getMapStorage('userData');
 
+    // 新增 data 时要带出时长标准
+    try {
+      var res = await KojiMaking.discInQuery(
+          {"kojiOrderNo": widget.arguments['kojiOrderNo']});
+      formMap['kojiDurationStandard'] = res['data']['kojiDurationStandard'];
+      setState(() {});
+    } catch (e) {}
+
     formMap['changed'] = formatDate(new DateTime.now(),
         ['yyyy', '-', 'mm', '-', 'dd', ' ', 'HH', ':', 'nn']);
     formMap['changer'] = userData['realName'];
