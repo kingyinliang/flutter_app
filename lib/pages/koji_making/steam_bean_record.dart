@@ -59,12 +59,20 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
     } catch (e) {}
 
     try {
-      var res = await KojiMaking.steamBeanRecordHome({
-        "orderNo": widget.arguments['data']['orderNo'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
-      listData = res['data'];
-      listData = MapUtil.listNullToEmpty(listData);
+      if (widget.arguments['data']['kojiOrderNo'] == '') {
+        var res = await KojiMaking.steamBeanRecordHome(
+            {"orderNo": widget.arguments['data']['orderNo']});
+        listData = res['data'];
+        listData = MapUtil.listNullToEmpty(listData);
+      } else {
+        var res = await KojiMaking.steamBeanRecordHome({
+          "orderNo": widget.arguments['data']['orderNo'],
+          "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+        });
+        listData = res['data'];
+        listData = MapUtil.listNullToEmpty(listData);
+      }
+
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}
