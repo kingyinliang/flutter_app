@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 // 表头
 class PageHead extends StatefulWidget {
+  final String type;
   final String title;
   final String subTitle;
   final String threeTitle;
@@ -10,6 +11,7 @@ class PageHead extends StatefulWidget {
   final String statusName;
   PageHead({
     Key key,
+    this.type,
     this.title,
     this.status,
     this.statusName,
@@ -91,7 +93,9 @@ class _PageHeadState extends State<PageHead> {
                 height: 100,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('lib/assets/images/potDetail.jpg'),
+                    image: widget.type == '制曲'
+                        ? AssetImage('lib/assets/images/qufang.png')
+                        : AssetImage('lib/assets/images/potDetail.jpg'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(4.0)),

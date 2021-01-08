@@ -49,6 +49,28 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   _submit() async {
     try {
       if (listData.length > 0) {
+        for (Map planet in listData) {
+          if (planet['addKojiInfo'] == null || planet['addKojiInfo'] == '') {
+            EasyLoading.showError('请填写入曲情况');
+            return;
+          }
+          if (planet['addKojiMans'] == null || planet['addKojiMans'] == '') {
+            EasyLoading.showError('请填写入曲人');
+            return;
+          }
+          if (planet['addKojiTemp'] == null || planet['addKojiTemp'] == '') {
+            EasyLoading.showError('请填写入曲温度');
+            return;
+          }
+          if (planet['addKojiStart'] == null || planet['addKojiStart'] == '') {
+            EasyLoading.showError('请选择入曲开始时间');
+            return;
+          }
+          if (planet['addKojiEnd'] == null || planet['addKojiEnd'] == '') {
+            EasyLoading.showError('请选择入曲结束时间');
+            return;
+          }
+        }
         await KojiMaking.discInSubmitQuery({
           'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
         });
@@ -131,7 +153,10 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      listData[0]['addKojiStart'],
+                      (listData[index]['addKojiStart'] == null ||
+                              listData[index]['addKojiStart'] == '')
+                          ? ''
+                          : listData[index]['addKojiStart'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -140,7 +165,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '${listData[0]['addKojiDuration']}H',
+                    '${listData[index]['addKojiDuration']}H',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                   Container(
@@ -158,7 +183,10 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                       style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                     ),
                     Text(
-                      listData[0]['addKojiEnd'],
+                      (listData[index]['addKojiEnd'] == null ||
+                              listData[index]['addKojiEnd'] == '')
+                          ? ''
+                          : listData[index]['addKojiEnd'],
                       style: TextStyle(color: Color(0xFF333333), fontSize: 16),
                     ),
                   ],
@@ -179,6 +207,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   @override
   Widget build(BuildContext context) {
     return HomePageWidget(
+      type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
       statusName: '$statusName',

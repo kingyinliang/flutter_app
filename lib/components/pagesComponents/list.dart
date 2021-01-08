@@ -45,6 +45,7 @@ class _ListPageWidgetState extends State<ListPageWidget>
   List<GlobalKey> keyList = [];
   TabController _tabController;
   var index = 0;
+  String text;
   bool tmp = true;
 
   @override
@@ -71,6 +72,7 @@ class _ListPageWidgetState extends State<ListPageWidget>
         return ListPageTabItemWidget(
           key: keyList[index],
           type: widget.tabs[index]['type'],
+          refresh: refresh,
           api: widget.api,
           paging: widget.paging,
           params: widget.params,
@@ -84,6 +86,7 @@ class _ListPageWidgetState extends State<ListPageWidget>
         return ListPageTabItemWidget(
           key: keyList[index],
           type: widget.tabs[index]['type'],
+          refresh: refresh,
           api: widget.api,
           paging: widget.paging,
           tabsStatus: widget.tabsStatus,
@@ -101,6 +104,11 @@ class _ListPageWidgetState extends State<ListPageWidget>
     }).toList();
   }
 
+  refresh() {
+    widget.searchFn(this.text);
+    tmp = true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -116,8 +124,8 @@ class _ListPageWidgetState extends State<ListPageWidget>
               title: HeadSearchWidget(
                 hintText: widget.hintText ?? '订单号',
                 searchFn: (String text) {
-                  widget.searchFn(text);
-                  tmp = true;
+                  this.text = text;
+                  refresh();
                 },
               ),
               elevation: 1.5,
@@ -156,6 +164,7 @@ class ListPageTabItemWidget extends StatefulWidget {
   final bool paging;
   final Map params;
   final Function api;
+  final Function refresh;
   final Function itemOnTap;
   final Function itemBuilder;
   ListPageTabItemWidget(
@@ -163,6 +172,7 @@ class ListPageTabItemWidget extends StatefulWidget {
       this.type,
       this.paging = true,
       this.tabsStatus = 'type',
+      this.refresh,
       this.itemOnTap,
       this.itemBuilder,
       this.params,
@@ -248,7 +258,7 @@ class _ListPageTabItemWidgetState extends State<ListPageTabItemWidget>
           onTap: () {
             widget
                 .itemOnTap(context, index, data)
-                .then((value) => value != null ? _initState() : null);
+                .then((value) => value != null ? widget.refresh() : null);
           },
         );
       },

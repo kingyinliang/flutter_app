@@ -19,7 +19,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   void initState() {
     Future.delayed(
       Duration.zero,
-          () => setState(() {
+      () => setState(() {
         _initState();
       }),
     );
@@ -29,9 +29,8 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   _initState() async {
     try {
       // 看曲记录
-      var res = await KojiMaking.discLookQuery({
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
+      var res = await KojiMaking.discLookQuery(
+          {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       status = res['data'][0]['status'];
       statusName = res['data'][0]['statusName'];
       listData = res['data'];
@@ -39,9 +38,8 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
     } catch (e) {}
     try {
       // 看曲异常情况记录
-      var res2 = await KojiMaking.discLookExceptQuery({
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
+      var res2 = await KojiMaking.discLookExceptQuery(
+          {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       if (res2['data'] != null) {
         exception = res2['data'];
       }
@@ -51,9 +49,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
 
   _del(index) async {
     try {
-      await KojiMaking.discLookDel({
-        'id': listData[index]['id']
-      });
+      await KojiMaking.discLookDel({'id': listData[index]['id']});
       successToast(msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
@@ -61,13 +57,68 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   }
 
   _submit() async {
-    try {
-      await KojiMaking.discLookSubmit({
-        'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
-      });
-      successToast(msg: '操作成功');
-      _initState();
-    } catch (e) {}
+    if (listData.length > 0) {
+      for (Map planet in listData) {
+        print(planet);
+        if (planet['windTemp'] == null || planet['windTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 实际风温');
+          return;
+        }
+        if (planet['roomTemp'] == null || planet['roomTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 下室温度');
+          return;
+        }
+        if (planet['prodTemp'] == null || planet['prodTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 品温');
+          return;
+        }
+        if (planet['outUpTemp'] == null || planet['outUpTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 外上温度');
+          return;
+        }
+        if (planet['outMidTemp'] == null || planet['outMidTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 外中温度');
+          return;
+        }
+        if (planet['outDownTemp'] == null || planet['outDownTemp'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 外下温度');
+          return;
+        }
+        if (planet['windDoor'] == null || planet['windDoor'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 风门开度');
+          return;
+        }
+        if (planet['forceDrain'] == null || planet['forceDrain'] == '') {
+          EasyLoading.showError('请选择 `${planet['guardDate']}` 强排设备');
+          return;
+        }
+        if (planet['changeHot'] == null || planet['changeHot'] == '') {
+          EasyLoading.showError('请选择 `${planet['guardDate']}` 换热设备');
+          return;
+        }
+        if (planet['windSpeed'] == null || planet['windSpeed'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 风速');
+          return;
+        }
+        if (planet['testTempOne'] == null || planet['testTempOne'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 测量温度1');
+          return;
+        }
+        if (planet['testTempTwo'] == null || planet['testTempTwo'] == '') {
+          EasyLoading.showError('请填写 `${planet['guardDate']}` 测量温度2');
+          return;
+        }
+      }
+      try {
+        await KojiMaking.discLookSubmit({
+          'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+        });
+        successToast(msg: '操作成功');
+        _initState();
+      } catch (e) {}
+    } else {
+      EasyLoading.showError('请先添加看曲数据');
+    }
   }
 
   Widget _listWidget(index) {
@@ -93,10 +144,10 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                     ),
                   ),
                   (status == 'N' ||
-                      status == 'R' ||
-                      status == 'S' ||
-                      status == 'T' ||
-                      status == '')
+                          status == 'R' ||
+                          status == 'S' ||
+                          status == 'T' ||
+                          status == '')
                       ? InkWell(
                           child: Icon(
                             IconData(0xe62c, fontFamily: 'MdsIcon'),
@@ -110,12 +161,15 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                               arguments: {
                                 'data': {'remark': exception},
                                 'orderNo': widget.arguments['data']['orderNo'],
-                                'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
+                                'kojiOrderNo': widget.arguments['data']
+                                    ['kojiOrderNo'],
                                 'onType': 'exception'
                               },
-                            ).then((value) => value != null ? _initState() : null);
+                            ).then(
+                                (value) => value != null ? _initState() : null);
                           },
-                      ) : SizedBox(),
+                        )
+                      : SizedBox(),
                 ],
               ),
               SizedBox(height: 10),
@@ -170,10 +224,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
               Navigator.pushNamed(
                 context,
                 '/kojiMaking/steamLookRecordAdd',
-                arguments: {
-                  'data': listData[index],
-                  'onType': 'record'
-                },
+                arguments: {'data': listData[index], 'onType': 'record'},
               ).then((value) => value != null ? _initState() : null);
             },
           ),
@@ -214,6 +265,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   @override
   Widget build(BuildContext context) {
     return HomePageWidget(
+      type: '制曲',
       title: widget.arguments['title'],
       status: '$status',
       statusName: '$statusName',
@@ -262,80 +314,68 @@ class _ColumnItemState extends State<ColumnItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color(0xFF999999), width: 0.25),
+        padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Color(0xFF999999), width: 0.25),
+          ),
         ),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(5.0),
-        child: Row(
-          children: <Widget>[
-            Column(
-                children: <Widget>[
-                  Text(
-                    widget.startText,
-                    style: TextStyle(color: Color(0xFF333333), fontSize: 16),
-                  ),
-                ]
-            ),
+        child: Container(
+          padding: EdgeInsets.all(5.0),
+          child: Row(children: <Widget>[
+            Column(children: <Widget>[
+              Text(
+                widget.startText,
+                style: TextStyle(color: Color(0xFF333333), fontSize: 16),
+              ),
+            ]),
             SizedBox(width: 10),
             Expanded(
               flex: 1,
               child: Container(
-                child: Column(
-                    children: <Widget>[
-                      Row(
-                          children: <Widget>[
-                            Text(
-                              widget.centerText,
-                              style: TextStyle(color: Color(0xFF999999), fontSize: 12),
-                            ),
-                          ]
-                      ),
-                      Row(
-                          children: <Widget>[
-                            Text(
-                              widget.endText,
-                              style: TextStyle(color: Color(0xFF999999), fontSize: 12),
-                            ),
-                          ]
-                      )
-                    ]
-                ),
+                child: Column(children: <Widget>[
+                  Row(children: <Widget>[
+                    Text(
+                      widget.centerText,
+                      style: TextStyle(color: Color(0xFF999999), fontSize: 12),
+                    ),
+                  ]),
+                  Row(children: <Widget>[
+                    Text(
+                      widget.endText,
+                      style: TextStyle(color: Color(0xFF999999), fontSize: 12),
+                    ),
+                  ])
+                ]),
               ),
             ),
             (widget.status == 'N' ||
-              widget.status == 'R' ||
-              widget.status == 'S' ||
-              widget.status == 'T' ||
-              widget.status == '')
-                ?
-                widget.btnFlag
-                  ? widget.addFlag == true
-                  ? InkWell(
-                    child: Icon(
-                      IconData(0xe69e, fontFamily: 'MdsIcon'),
-                      size: 20,
-                      color: Color(0xFF487BFF),
-                    ),
-                    onTap: widget.onTap,
-                  )
-                    : InkWell(
-                        child: Icon(
-                          IconData(0xe62c, fontFamily: 'MdsIcon'),
-                          size: 12,
-                          color: Color(0xFF487BFF),
-                        ),
-                        onTap: widget.onTap,
-                      )
+                    widget.status == 'R' ||
+                    widget.status == 'S' ||
+                    widget.status == 'T' ||
+                    widget.status == '')
+                ? widget.btnFlag
+                    ? widget.addFlag == true
+                        ? InkWell(
+                            child: Icon(
+                              IconData(0xe69e, fontFamily: 'MdsIcon'),
+                              size: 20,
+                              color: Color(0xFF487BFF),
+                            ),
+                            onTap: widget.onTap,
+                          )
+                        : InkWell(
+                            child: Icon(
+                              IconData(0xe62c, fontFamily: 'MdsIcon'),
+                              size: 12,
+                              color: Color(0xFF487BFF),
+                            ),
+                            onTap: widget.onTap,
+                          )
                     : SizedBox()
-              : SizedBox(),
-          ]
-        ),
-
-      )
+                : SizedBox(),
+          ]),
+        )
 //      child: Row(
 //        children: <Widget>[
 //          Text(
@@ -383,6 +423,6 @@ class _ColumnItemState extends State<ColumnItem> {
 //            : SizedBox(),
 //        ],
 //      ),
-    );
+        );
   }
 }

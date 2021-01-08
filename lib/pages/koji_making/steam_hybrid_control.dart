@@ -233,6 +233,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   @override
   Widget build(BuildContext context) {
     return HomePageWidget(
+      type: '制曲',
       title: widget.arguments['title'],
       status: listData.length > 0 ? listData[0]['status'] : '',
       statusName: listData.length > 0 ? listData[0]['statusName'] : '未录入',
