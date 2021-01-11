@@ -7,6 +7,7 @@ import 'package:dfmdsapp/utils/pxunit.dart' show pxUnit;
 
 class HomePageWidget extends StatefulWidget {
   final bool addFlg;
+  final bool submited; // 用以判断单 form 型数据下， submit 按钮是否出现
   final String type;
   final String title;
   final String status;
@@ -25,6 +26,7 @@ class HomePageWidget extends StatefulWidget {
       @required this.type,
       this.title,
       this.status,
+      this.submited = false,
       this.statusName,
       this.headTitle,
       this.headSubTitle,
@@ -114,11 +116,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   ),
                 )
               : SizedBox(),
-          (widget.status == 'N' ||
-                  widget.status == 'R' ||
-                  widget.status == 'S' ||
-                  widget.status == 'T' ||
-                  widget.status == '')
+          !widget.submited &&
+                  (widget.status == 'N' ||
+                      widget.status == 'R' ||
+                      widget.status == 'S' ||
+                      widget.status == 'T' ||
+                      widget.status == '')
               ? Positioned(
                   bottom: 10,
                   width: pxUnit(375),
