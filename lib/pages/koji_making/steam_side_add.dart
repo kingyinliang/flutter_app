@@ -21,6 +21,7 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
   Map<String, dynamic> formMap = {
     'steamPacketPressure': '',
     'steamFlourSpeed': '',
+    'steamFlow': '',
     'steamFlourMans': '',
     'changed': '',
     'changer': '',
@@ -86,7 +87,7 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(children: <Widget>[
         InputWidget(
-          label: '气泡压力',
+          label: '气包压力',
           suffix: 'Mpa',
           keyboardType: 'number',
           prop: formMap['steamPacketPressure'].toString(),
@@ -104,6 +105,16 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
           requiredFlg: true,
           onChange: (val) {
             formMap['steamFlourSpeed'] = val;
+            setState(() {});
+          },
+        ),
+        InputWidget(
+          label: '蒸汽流量',
+          suffix: 'KG/H',
+          keyboardType: 'number',
+          prop: formMap['steamFlow'].toString(),
+          onChange: (val) {
+            formMap['steamFlow'] = val;
             setState(() {});
           },
         ),
