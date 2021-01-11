@@ -18,7 +18,8 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   ];
   List listData = [];
   String status = '';
-  String statusName = '未录入';
+  String statusName = '';
+  bool isSubmited = false; // form style if submitid ?
 
   @override
   void initState() {
@@ -53,6 +54,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
         if (res['data']['id'] != '') {
           listData = [res['data']];
         }
+        isSubmited = res['data']['status'] == "D" ? true : false;
         listData = MapUtil.listNullToEmpty(listData);
       }
       print(listData);
@@ -232,6 +234,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFlg: listData.length > 0 ? false : true,
+      submited: isSubmited,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamInStatusAdd',
             arguments: {

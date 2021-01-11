@@ -12,6 +12,7 @@ class _SteamSidePageState extends State<SteamSidePage> {
   List listData = [];
   String status = '';
   String statusName = '';
+  bool isSubmited = false;
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _SteamSidePageState extends State<SteamSidePage> {
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
       listData = res['data'];
+      isSubmited = res['data'][0]['status'] == "D" ? true : false;
       listData = MapUtil.listNullToEmpty(listData);
       if (type) successToast(msg: '操作成功');
       setState(() {});
@@ -292,6 +294,7 @@ class _SteamSidePageState extends State<SteamSidePage> {
       headFourTitle: '生产日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFlg: listData.length > 0 ? false : true,
+      submited: isSubmited,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamSideAdd', arguments: {
           'orderNo': widget.arguments['data']['orderNo'],
