@@ -40,9 +40,7 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
     if (widget.arguments['data'] != null) {
       formMap = jsonDecode(jsonEncode(widget.arguments['data']));
       formMap.forEach((key, value) => {
-            // print('key: $key, value:$value')
-            if (value == null)
-              {formMap['$key'] = ''}
+            if (value == null) {formMap['$key'] = ''}
           });
     }
     Future.delayed(
@@ -91,18 +89,11 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
         Navigator.pop(context, true);
       } catch (e) {}
     } else {
-       if (formMap['guardDate'] == null || formMap['guardDate'] == '') {
-         EasyLoading.showError('请选择看曲时间');
-         return;
-       }
-//      List<String> l1 = ["forceDrain", "changeHot", "changed", "changer", "status", "statusName", "guardDate", "id", "orderNo", "kojiOrderNo"];
-//      formMap.forEach((key, value) => {
-//        if (value != '' && l1.contains(key) == false) {
-//          if (isNumeric('$value')) {
-//            EasyLoading.showError('请填写数字: $key $value')
-//          }
-//        }
-//      });
+      if (formMap['guardDate'] == null || formMap['guardDate'] == '') {
+        EasyLoading.showError('请选择看曲时间');
+        return;
+      }
+
       if (formMap['id'] != null) {
         try {
           await KojiMaking.discLookSave(formMap);

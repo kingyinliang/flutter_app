@@ -53,20 +53,6 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
   }
 
   _submitForm() async {
-    // if (formMap['steamPacketPressure'] == null ||
-    //     formMap['steamPacketPressure'] == '') {
-    //   errorToast(msg: '请填写气泡压力');
-    //   return;
-    // }
-    // if (formMap['steamFlourSpeed'] == null ||
-    //     formMap['steamFlourSpeed'] == '') {
-    //   errorToast(msg: '请填写蒸面加水加压');
-    //   return;
-    // }
-    // if (formMap['steamFlourMans'] == null || formMap['steamFlourMans'] == '') {
-    //   errorToast(msg: '请选择蒸面操作人');
-    //   return;
-    // }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamSideUpdate(formMap);

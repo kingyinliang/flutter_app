@@ -52,7 +52,6 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
       } else {
         listData = res['data'];
         listData = MapUtil.listNullToEmpty(listData);
-        print(listData);
         if (type) successToast(msg: '操作成功');
       }
       setState(() {});
@@ -61,13 +60,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
 
   _submit() async {
     try {
-      // var ids = [];
-      // listData.forEach((element) {
-      //   ids.add(element['id']);
-      // });
       await KojiMaking.steamDiscTurnSubmit({
-        // 'ids': ids,
-        // 'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
       successToast(msg: '操作成功');
@@ -78,8 +71,6 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
   _del(index) async {
     try {
       await KojiMaking.steamDiscTurnDelet({
-        // 'id': listData[index]['id'],
-        // 'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
       successToast(msg: '操作成功');

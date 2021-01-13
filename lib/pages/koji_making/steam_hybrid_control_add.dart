@@ -48,20 +48,6 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
   }
 
   _submitForm() async {
-    // if (formMap['beanWindTempOne'] == null ||
-    //     formMap['beanWindTempOne'] == '') {
-    //   errorToast(msg: '请填写大豆风冷温度1');
-    //   return;
-    // }
-    // if (formMap['mixtureTempOne'] == null || formMap['mixtureTempOne'] == '') {
-    //   errorToast(msg: '请填写混合料温度1');
-    //   return;
-    // }
-    // if (formMap['beanWindFrequency'] == null ||
-    //     formMap['beanWindFrequency'] == '') {
-    //   errorToast(msg: '请填写大豆风冷变频');
-    //   return;
-    // }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamHybridControlUpdate(formMap);

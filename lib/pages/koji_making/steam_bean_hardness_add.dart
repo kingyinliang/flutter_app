@@ -56,33 +56,6 @@ class _SteamBeanHardnessAddPageState extends State<SteamBeanHardnessAddPage> {
   }
 
   _submitForm() async {
-    // if (formMap['steamBallNo'] == null || formMap['steamBallNo'] == '') {
-    //   errorToast(msg: '请选择蒸球号');
-    //   return;
-    // }
-    // if (formMap['hardnessOne'] == null ||
-    //     formMap['hardnessOne'] == '' ||
-    //     formMap['hardnessTwo'] == null ||
-    //     formMap['hardnessTwo'] == '' ||
-    //     formMap['hardnessThree'] == null ||
-    //     formMap['hardnessThree'] == '' ||
-    //     formMap['hardnessFour'] == null ||
-    //     formMap['hardnessFour'] == '' ||
-    //     formMap['hardnessFive'] == null ||
-    //     formMap['hardnessFive'] == '' ||
-    //     formMap['hardnessSix'] == null ||
-    //     formMap['hardnessSix'] == '' ||
-    //     formMap['hardnessSeven'] == null ||
-    //     formMap['hardnessSeven'] == '' ||
-    //     formMap['hardnessEight'] == null ||
-    //     formMap['hardnessEight'] == '' ||
-    //     formMap['hardnessNine'] == null ||
-    //     formMap['hardnessNine'] == '' ||
-    //     formMap['hardnessTen'] == null ||
-    //     formMap['hardnessTen'] == '') {
-    //   errorToast(msg: '请输入蒸豆硬度');
-    //   return;
-    // }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamBeanHardnessUpdate(formMap);

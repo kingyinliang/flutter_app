@@ -58,23 +58,6 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
   }
 
   _submitForm() async {
-    // if (formMap['steamBallNo'] == null || formMap['steamBallNo'] == '') {
-    //   errorToast(msg: '请选择蒸球号');
-    //   return;
-    // }
-    // if (formMap['addSteamStart'] == null || formMap['addSteamStart'] == '') {
-    //   errorToast(msg: '请选择加汽开始时间');
-    //   return;
-    // }
-    // if (formMap['addSteamEnd'] == null || formMap['addSteamEnd'] == '') {
-    //   errorToast(msg: '请选择加汽结束时间');
-    //   return;
-    // }
-    // if (formMap['cookingDuration'] == null ||
-    //     formMap['cookingDuration'] == '') {
-    //   errorToast(msg: '请输入蒸煮时间');
-    //   return;
-    // }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamBeanRecordUpdate(formMap);

@@ -284,10 +284,6 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: pageData,
       addFlg: false,
-      // addFn: () {
-      //   Navigator.pushNamed(context, '/kojiMaking/steamLookRecordAdd',
-      //       arguments: {});
-      // },
       submitFn: () {
         _submit();
       },
