@@ -28,12 +28,22 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
 
   _initState() async {
     try {
+      // 页签状态
+      var res = await KojiMaking.kojiMakingOrder({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_GUARD"
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
+
+    try {
       // 看曲记录
       var res = await KojiMaking.discLookQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
-      status = res['data'][0]['status'];
-      statusName = res['data'][0]['statusName'];
       listData = res['data'];
+//      listData = MapUtil.listNullToEmpty(listData);
       setState(() {});
     } catch (e) {}
     try {
@@ -59,7 +69,6 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
   _submit() async {
     if (listData.length > 0) {
       for (Map planet in listData) {
-        print(planet);
         if (planet['windTemp'] == null || planet['windTemp'] == '') {
           EasyLoading.showError('请填写 `${planet['guardDate']}` 实际风温');
           return;
@@ -165,8 +174,8 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                                     ['kojiOrderNo'],
                                 'onType': 'exception'
                               },
-                            ).then(
-                                (value) => value != null ? _initState() : null);
+                            ).then((value) =>
+                                value != null ? _initState() : _initState());
                           },
                         )
                       : SizedBox(),
@@ -203,7 +212,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                 'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
                 'onType': 'record'
               },
-            ).then((value) => value != null ? _initState() : null);
+            ).then((value) => value != null ? _initState() : _initState());
           },
         ),
       ),
@@ -225,7 +234,7 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
                 context,
                 '/kojiMaking/steamLookRecordAdd',
                 arguments: {'data': listData[index], 'onType': 'record'},
-              ).then((value) => value != null ? _initState() : null);
+              ).then((value) => value != null ? _initState() : _initState());
             },
           ),
           singleButtonWidth: 60,
@@ -275,10 +284,6 @@ class _SteamLookRecordPageState extends State<SteamLookRecordPage> {
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: pageData,
       addFlg: false,
-      // addFn: () {
-      //   Navigator.pushNamed(context, '/kojiMaking/steamLookRecordAdd',
-      //       arguments: {});
-      // },
       submitFn: () {
         _submit();
       },

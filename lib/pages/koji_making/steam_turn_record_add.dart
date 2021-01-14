@@ -18,12 +18,12 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       'kojiOrderNo': '',
       'orderNo': '',
       // 'status': '',
-      'turnAddWaterAmount': 0,
+      'turnAddWaterAmount': '',
       'turnDuration': 0,
       'turnDurationString': '0 H',
       'turnEnd': '',
       'turnMans': '',
-      'turnStage': '一翻',
+      'turnStage': 'ONE',
       'turnStageName': '一翻',
       'turnStart': '',
       'remark': '',
@@ -32,17 +32,19 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       'kojiOrderNo': '',
       'orderNo': '',
       // 'status': '',
-      'turnAddWaterAmount': 0,
+      'turnAddWaterAmount': '',
       'turnDuration': 0,
       'turnDurationString': '0 H',
       'turnEnd': '',
       'turnMans': '',
-      'turnStage': '二翻',
+      'turnStage': 'TWO',
       'turnStageName': '二翻',
       'turnStart': '',
       'remark': '',
     }
   };
+
+  DateTime minGuardTime; // 最早看取记录时间
 
   @override
   void initState() {
@@ -71,12 +73,13 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     formMap['kojiDiscTurn1']['turnDurationString'] =
         '${formMap['kojiDiscTurn1']['turnDuration']} H';
     formMap['kojiDiscTurn2']['turnDurationString'] =
-        '${formMap['kojiDiscTurn1']['turnDuration']} H';
+        '${formMap['kojiDiscTurn2']['turnDuration']} H';
 
     Future.delayed(
       Duration.zero,
       () => setState(() {
         _initState();
+        _getKojiGuardData();
       }),
     );
     super.initState();
@@ -92,7 +95,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
 
   // 获取时长
   _getDuration(String turn) {
-    if (formMap[turn]['turnStart'] != '' && formMap[turn]['turnEnd'] != '') {
+    if (formMap[turn]['turnStart'] != '' && minGuardTime != null) {
       int nowyear =
           int.parse(formMap[turn]['turnStart'].split(" ")[0].split('-')[0]);
       int nowmonth =
@@ -104,20 +107,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
       int nowmin =
           int.parse(formMap[turn]['turnStart'].split(" ")[1].split(':')[1]);
 
-      int oldyear =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[0]);
-      int oldmonth =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[1]);
-      int oldday =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[0].split('-')[2]);
-      int oldhour =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[0]);
-      int oldmin =
-          int.parse(formMap[turn]['turnEnd'].split(" ")[1].split(':')[1]);
-
       var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
-      var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
-      var difference = old.difference(now);
+      var difference = now.difference(minGuardTime);
 
       formMap[turn]['turnDuration'] =
           formatNum((difference.inMinutes / 60), 2); // 时间差
@@ -141,38 +132,34 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
     }
   }
 
-  _submitForm() async {
-    if (formMap['kojiDiscTurn1']['turnStart'] == null ||
-        formMap['kojiDiscTurn1']['turnStart'] == '') {
-      errorToast(msg: '请选择一翻翻曲开始时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn1']['turnEnd'] == null ||
-        formMap['kojiDiscTurn1']['turnEnd'] == '') {
-      errorToast(msg: '请选择一翻翻曲结束时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn1']['turnMans'] == null ||
-        formMap['kojiDiscTurn1']['turnMans'] == '') {
-      errorToast(msg: '请选择一翻翻曲人');
-      return;
-    }
-    if (formMap['kojiDiscTurn2']['turnStart'] == null ||
-        formMap['kojiDiscTurn2']['turnStart'] == '') {
-      errorToast(msg: '请选择二翻翻曲开始时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn2']['turnEnd'] == null ||
-        formMap['kojiDiscTurn2']['turnEnd'] == '') {
-      errorToast(msg: '请选择二翻翻曲结束时间');
-      return;
-    }
-    if (formMap['kojiDiscTurn2']['turnMans'] == null ||
-        formMap['kojiDiscTurn2']['turnMans'] == '') {
-      errorToast(msg: '请选择二翻翻曲人');
-      return;
-    }
+  // 取看曲记录里最早时间
+  _getKojiGuardData() async {
+    try {
+      var res = await KojiMaking.kojiQueryDiscGuard(
+          {'kojiOrderNo': formMap['kojiOrderNo']});
 
+      if (res['data'].length != 0) {
+        minGuardTime = DateTime.parse(res['data'][0]['guardDate']);
+        res['data'].forEach((item) {
+          var d = DateTime.parse(item['guardDate']);
+          if (d.isBefore(minGuardTime)) {
+            minGuardTime = d;
+          }
+        });
+      }
+
+      if (formMap['kojiDiscTurn1']['turnStart'] != '') {
+        _getDuration('kojiDiscTurn1');
+      }
+      if (formMap['kojiDiscTurn2']['turnStart'] != '') {
+        _getDuration('kojiDiscTurn2');
+      }
+
+      setState(() {});
+    } catch (e) {}
+  }
+
+  _submitForm() async {
     if (formMap['kojiDiscTurn1']['id'] != null) {
       try {
         await KojiMaking.steamDiscTurnSave(formMap);
@@ -204,7 +191,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn1']['turnStart'] = val;
-              this._getDuration('kojiDiscTurn1');
+              this._getKojiGuardData();
               setState(() {});
             },
           ),
@@ -214,14 +201,13 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn1']['turnEnd'] = val;
-              this._getDuration('kojiDiscTurn1');
               setState(() {});
             },
           ),
           FormTextWidget(
             label: '制曲时长',
             // requiredFlg: true,
-            prop: formMap['kojiDiscTurn1']['turnDurationString'].toString(),
+            prop: (formMap['kojiDiscTurn1']['turnDurationString']).toString(),
           ),
           InputWidget(
             label: '翻曲加水量',
@@ -243,6 +229,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           InputWidget(
             label: '备注',
+            keyboardType: 'text',
             prop: formMap['kojiDiscTurn1']['remark'].toString(),
             onChange: (val) {
               formMap['kojiDiscTurn1']['remark'] = val;
@@ -264,7 +251,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn2']['turnStart'] = val;
-              this._getDuration('kojiDiscTurn2');
+              this._getKojiGuardData();
+              // this._getDuration('kojiDiscTurn2');
               setState(() {});
             },
           ),
@@ -274,7 +262,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn2']['turnEnd'] = val;
-              this._getDuration('kojiDiscTurn2');
+              // this._getDuration('kojiDiscTurn2');
               setState(() {});
             },
           ),
@@ -303,6 +291,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           InputWidget(
             label: '备注',
+            keyboardType: 'text',
             prop: formMap['kojiDiscTurn2']['remark'].toString(),
             onChange: (val) {
               formMap['kojiDiscTurn2']['remark'] = val;
@@ -315,6 +304,7 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
           ),
           InputWidget(
             label: '异常情况',
+            keyboardType: 'text',
             prop: formMap['exceptionInfo'].toString(),
             onChange: (val) {
               formMap['exceptionInfo'] = val;
@@ -329,7 +319,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MdsAppBarWidget(titleData: formMap['id'] == null ? '新增' : '修改'),
+      appBar: MdsAppBarWidget(
+          titleData: formMap['kojiDiscTurn1']['id'] == null ? '新增' : '修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[

@@ -178,6 +178,7 @@ class _ExceptionAddState extends State<ExceptionAdd> {
     try {
       if (val == 'FAULT' || val == 'SHUTDOWN') {
         var reasonRes = await Common.deviceListQuery({'deptId': workShop});
+        this.reasonResList = [];
         reasonRes['data'].forEach((item) => {
               this.reasonResList.add({
                 'dictValue': item['deviceName'],
@@ -185,12 +186,13 @@ class _ExceptionAddState extends State<ExceptionAdd> {
               })
             });
       } else if (val == 'POOR_PROCESS' || val == 'WAIT') {
-        var reasonRes =
-            await Common.dictDropDownQuery({'dictType': 'POOR_PROCESS_WAIT'});
+        var reasonRes = await Common.dictDropDownQuery({'dictType': 'WAIT'});
         this.reasonResList = reasonRes['data'];
       } else if (val == 'ENERGY') {
         var reasonRes = await Common.dictDropDownQuery({'dictType': 'ENERGY'});
         this.reasonResList = reasonRes['data'];
+      } else {
+        this.reasonResList = [];
       }
       setState(() {});
     } catch (e) {}

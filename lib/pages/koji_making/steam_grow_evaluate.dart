@@ -11,8 +11,8 @@ class SteamGrowEvaluatePage extends StatefulWidget {
 class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
   // tag
   List wrapList = [
-    {'label': '異常描述：', 'value': 'exceptionInfo'},
-    {'label': '生長情況：', 'value': 'growInfo'},
+    {'label': '异常描述：', 'value': 'exceptionInfo'},
+    {'label': '生长情况：', 'value': 'growInfoName'},
     {'label': '备注：', 'value': 'remark'},
     {'label': '', 'value': 'changer'},
     {'label': '', 'value': 'changed'},
@@ -34,20 +34,21 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      // 页签状态
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_EVALUATE"
       });
       status = res['data']['status'];
       statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
+
     try {
-      var res = await KojiMaking.steamDiscEvaluateQuery({
-        // "orderNo": widget.arguments['data']['orderNo'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
-      });
+      var res = await KojiMaking.steamDiscEvaluateQuery(
+          {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       listData = res['data'];
+      listData = MapUtil.listNullToEmpty(listData);
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}
@@ -55,13 +56,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
 
   _submit() async {
     try {
-      // var ids = [];
-      // listData.forEach((element) {
-      //   ids.add(element['id']);
-      // });
       await KojiMaking.steamDiscEvaluateSubmit({
-        // 'id': listData[0]['id'],
-        // 'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
       successToast(msg: '操作成功');
@@ -73,8 +68,6 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
     try {
       await KojiMaking.steamDiscEvaluateDelete({
         'id': listData[index]['id'],
-        // 'orderNo': widget.arguments['data']['orderNo'],
-        // 'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
       successToast(msg: '操作成功');
       listData.removeAt(index);

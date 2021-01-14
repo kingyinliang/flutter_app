@@ -1,4 +1,5 @@
 import '../http/dio.dart';
+import '../http/env.dart';
 
 class KojiMaking {
 // 制曲列表查询
@@ -17,6 +18,12 @@ class KojiMaking {
   static kojiMakingOrderSc(params) {
     return HttpManager.getInstance()
         .get('/kojiOrder/queryScOrder', params: params);
+  }
+
+// 获取看曲记录
+  static kojiQueryDiscGuard(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.PC_API)
+        .get('/kojiDisc/queryDiscGuard', params: params);
   }
 
 // 蒸面记录首页查询
@@ -274,5 +281,23 @@ class KojiMaking {
   static steamDiscEvaluateSubmit(params) {
     return HttpManager.getInstance()
         .get('/koji/discEvaluate/submit', params: params);
+  }
+
+  // 查询页签状态
+  static houseTagQuery(params) {
+    return HttpManager.getInstance()
+        .post('/koji/houseTag/query', params: params);
+  }
+
+  // 制曲车间-订单列表-查询曲房订单数据信息
+  static kojiOrderStatusQuery(params) {
+    return HttpManager.getInstance()
+        .get('/kojiOrder/queryKojiOrder', params: params);
+  }
+
+  // 制曲车间-订单列表-查询SC订单数据信息
+  static kojiSCOrderStatusQuery(params) {
+    return HttpManager.getInstance()
+        .get('/kojiOrder/queryScOrder', params: params);
   }
 }

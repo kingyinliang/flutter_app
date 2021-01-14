@@ -13,6 +13,7 @@ class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
   Map<String, dynamic> formMap = {
     'exceptionInfo': '',
     'growInfo': '',
+    'growInfoName': '',
     'kojiOrderNo': '',
     'kojiStage': '',
     'orderNo': '',
@@ -60,22 +61,6 @@ class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['kojiStage'] == null || formMap['kojiStage'] == '') {
-      errorToast(msg: '请选择评价阶段');
-      return;
-    }
-    if (formMap['recordDate'] == null || formMap['recordDate'] == '') {
-      errorToast(msg: '请选择记录时间');
-      return;
-    }
-    if (formMap['growInfo'] == null || formMap['growInfo'] == '') {
-      errorToast(msg: '请选择生产情况');
-      return;
-    }
-    if (formMap['recordMans'] == null || formMap['recordMans'] == '') {
-      errorToast(msg: '请选择记录人');
-      return;
-    }
     formMap['orderNo'] = widget.arguments['orderNo'];
     formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     if (formMap['id'] != null) {
@@ -128,6 +113,7 @@ class _SteamGrowEvaluateAddPageState extends State<SteamGrowEvaluateAddPage> {
             optionsval: 'dictCode',
             onChange: (val) {
               formMap['growInfo'] = val['dictCode'];
+              formMap['growInfoName'] = val['dictValue'];
               setState(() {});
             },
           ),

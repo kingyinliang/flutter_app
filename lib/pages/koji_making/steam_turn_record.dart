@@ -15,9 +15,9 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
     {'label': '', 'value': 'changed'}
   ];
   List listData = [];
-
   String status = '';
   String statusName = '';
+  bool isSubmited = false; // form style if submitid ?
 
   @override
   void initState() {
@@ -32,14 +32,16 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      // 页签状态
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_TURN"
       });
       status = res['data']['status'];
       statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
+
     try {
       var res = await KojiMaking.steamDiscTurnQuery({
         "orderNo": widget.arguments['data']['orderNo'],
@@ -50,7 +52,9 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
         listData = [];
       } else {
         listData = res['data'];
-        print(listData);
+        isSubmited =
+            res['data'][0]["kojiDiscTurn1"]['status'] == "D" ? true : false;
+        listData = MapUtil.listNullToEmpty(listData);
         if (type) successToast(msg: '操作成功');
       }
       setState(() {});
@@ -59,13 +63,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
 
   _submit() async {
     try {
-      // var ids = [];
-      // listData.forEach((element) {
-      //   ids.add(element['id']);
-      // });
       await KojiMaking.steamDiscTurnSubmit({
-        // 'ids': ids,
-        // 'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
       successToast(msg: '操作成功');
@@ -76,8 +74,6 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
   _del(index) async {
     try {
       await KojiMaking.steamDiscTurnDelet({
-        // 'id': listData[index]['id'],
-        // 'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
       successToast(msg: '操作成功');
@@ -295,14 +291,17 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      status: listData.length > 0 ? '$status' : '',
-      statusName: listData.length > 0 ? '$statusName' : '未录入',
+      // status: listData.length > 0 ? '$status' : '',
+      // statusName: listData.length > 0 ? '$statusName' : '未录入',
+      status: '$status',
+      statusName: '$statusName',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFlg: listData.length > 0 ? false : true,
+      submited: isSubmited,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamTurnRecordAdd',
             arguments: {

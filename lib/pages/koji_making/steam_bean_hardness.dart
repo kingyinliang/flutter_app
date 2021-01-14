@@ -26,19 +26,22 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrderSc({
-        "dataType": widget.arguments['workingType'],
-        "orderNo": widget.arguments['data']['orderNo']
+      // 页签状态
+      var res = await KojiMaking.kojiSCOrderStatusQuery({
+        "orderNo": widget.arguments['data']['orderNo'],
+        "dataType": "STEAM_BEAN_HARDNESS"
       });
       status = res['data']['status'];
       statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
+
     try {
       var res = await KojiMaking.steamBeanHardnessHome({
         "orderNo": widget.arguments['data']['orderNo'],
       });
       listData = res['data'];
+      listData = MapUtil.listNullToEmpty(listData);
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}

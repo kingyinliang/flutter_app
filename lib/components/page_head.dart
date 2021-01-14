@@ -63,7 +63,7 @@ class _PageHeadState extends State<PageHead> {
       color: Colors.white,
       child: Stack(
         children: <Widget>[
-          widget.status == '' || widget.status == 'null'
+          widget.status == 'null'
               ? SizedBox()
               : Positioned(
                   top: 0,

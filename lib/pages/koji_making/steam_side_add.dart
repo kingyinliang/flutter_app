@@ -21,6 +21,7 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
   Map<String, dynamic> formMap = {
     'steamPacketPressure': '',
     'steamFlourSpeed': '',
+    'steamFlow': '',
     'steamFlourMans': '',
     'changed': '',
     'changer': '',
@@ -52,20 +53,6 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['steamPacketPressure'] == null ||
-        formMap['steamPacketPressure'] == '') {
-      errorToast(msg: '请填写气泡压力');
-      return;
-    }
-    if (formMap['steamFlourSpeed'] == null ||
-        formMap['steamFlourSpeed'] == '') {
-      errorToast(msg: '请填写蒸面加水加压');
-      return;
-    }
-    if (formMap['steamFlourMans'] == null || formMap['steamFlourMans'] == '') {
-      errorToast(msg: '请选择蒸面操作人');
-      return;
-    }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamSideUpdate(formMap);
@@ -86,7 +73,7 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(children: <Widget>[
         InputWidget(
-          label: '气泡压力',
+          label: '汽包压力',
           suffix: 'Mpa',
           keyboardType: 'number',
           prop: formMap['steamPacketPressure'].toString(),
@@ -107,9 +94,21 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
             setState(() {});
           },
         ),
+        InputWidget(
+          label: '蒸汽流量',
+          suffix: 'KG/H',
+          keyboardType: 'number',
+          prop: formMap['steamFlow'].toString(),
+          onChange: (val) {
+            formMap['steamFlow'] = val;
+            setState(() {});
+          },
+        ),
         OrgSelectUser(
           label: '蒸面操作人',
-          prop: formMap['steamFlourMans'].split(','),
+          prop: formMap['steamFlourMans'] == ''
+              ? []
+              : formMap['steamFlourMans'].split(','),
           requiredFlg: true,
           onChange: (List val) {
             formMap['steamFlourMans'] = val.join(',');

@@ -27,9 +27,9 @@ class _ExeptionPageState extends State<ExeptionPage> {
   _initState() async {
     try {
       if (widget.arguments['workingType'] == 'STEAM_BEAN_EXCEPTION') {
-        tag = 'YP';
-      } else if (widget.arguments['workingType'] == 'DISC_EXCEPTION') {
         tag = 'ZD';
+      } else if (widget.arguments['workingType'] == 'DISC_EXCEPTION') {
+        tag = 'YP';
       } else if (widget.arguments['workingType'] == 'STEAM_FLOUR_EXCEPTION') {
         tag = 'ZM';
       }
@@ -71,8 +71,6 @@ class _ExeptionPageState extends State<ExeptionPage> {
   Widget build(BuildContext context) {
     return ExeptionWidget(
       title: widget.arguments['title'],
-      // status: exceptionList.length > 0 ? '' : '',
-      // statusName: exceptionList.length > 0 ? '已录入' : '未录入',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',

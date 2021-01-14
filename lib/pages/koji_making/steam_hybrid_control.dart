@@ -10,6 +10,9 @@ class SteamHybridControlPage extends StatefulWidget {
 
 class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
   List listData = [];
+  String status = '';
+  String statusName = '';
+  bool isSubmited = false;
 
   @override
   void initState() {
@@ -24,11 +27,24 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
 
   _initState({type: false}) async {
     try {
+      // 页签状态
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "STEAM_CONTROL"
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
+
+    try {
       var res = await KojiMaking.steamHybridControlHome({
         "orderNo": widget.arguments['data']['orderNo'],
         "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
       });
       listData = res['data'];
+      isSubmited = res['data'][0]['status'] == "D" ? true : false;
+      listData = MapUtil.listNullToEmpty(listData);
       if (type) successToast(msg: '操作成功');
       setState(() {});
     } catch (e) {}
@@ -120,7 +136,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                   Container(
@@ -235,14 +251,15 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      status: listData.length > 0 ? listData[0]['status'] : '',
-      statusName: listData.length > 0 ? listData[0]['statusName'] : '未录入',
+      status: '$status',
+      statusName: '$statusName',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',
       headSubTitle: '${widget.arguments['data']['materialName']}',
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
       headFourTitle: '生产日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFlg: listData.length > 0 ? false : true,
+      submited: isSubmited,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamHybridControlAdd',
             arguments: {

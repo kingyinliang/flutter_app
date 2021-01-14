@@ -100,8 +100,11 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
     }
     var workShop = await SharedUtil.instance.getStorage('workShopId');
     try {
-      if (val == 'FAULT' || val == 'SHUTDOWN') {
+      if (val == 'AB_OTHERS') {
+        this.reasonResList = [];
+      } else if (val == 'FAULT' || val == 'SHUTDOWN') {
         var reasonRes = await Common.deviceListQuery({'deptId': workShop});
+        this.reasonResList = [];
         reasonRes['data'].forEach((item) => {
               this.reasonResList.add({
                 'dictValue': item['deviceName'],
@@ -109,8 +112,7 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
               })
             });
       } else if (val == 'POOR_PROCESS' || val == 'WAIT') {
-        var reasonRes =
-            await Common.dictDropDownQuery({'dictType': 'POOR_PROCESS_WAIT'});
+        var reasonRes = await Common.dictDropDownQuery({'dictType': 'WAIT'});
         this.reasonResList = reasonRes['data'];
       } else if (val == 'ENERGY') {
         var reasonRes = await Common.dictDropDownQuery({'dictType': 'ENERGY'});
@@ -179,7 +181,9 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
           SelectWidget(
             label: '异常原因',
             prop: formMap['exceptionReason'].toString(),
-            requiredFlg: true,
+            requiredFlg: formMap['exceptionSituation'].toString() == 'AB_OTHERS'
+                ? false
+                : true,
             options: reasonResList,
             optionsLabel: 'dictValue',
             optionsval: 'dictCode',
@@ -190,6 +194,7 @@ class _ExeptionAddPageState extends State<ExeptionAddPage> {
           ),
           InputWidget(
               label: '异常描述',
+              keyboardType: 'text',
               prop: formMap['exceptionInfo'].toString(),
               onChange: (val) {
                 formMap['exceptionInfo'] = val;

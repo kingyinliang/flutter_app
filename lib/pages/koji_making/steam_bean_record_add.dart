@@ -24,7 +24,7 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
     'remark': '',
   };
   List steamBallNo = [];
-
+  bool _steamBallPressureVisible = false;
   @override
   void initState() {
     if (widget.arguments['data'] != null) {
@@ -32,6 +32,10 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
     }
     formMap['orderNo'] = widget.arguments['orderNo'];
     formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
+
+    if (widget.arguments['kojiOrderNo'] == '') {
+      _steamBallPressureVisible = true;
+    }
     Future.delayed(
       Duration.zero,
       () => setState(() {
@@ -54,23 +58,6 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['steamBallNo'] == null || formMap['steamBallNo'] == '') {
-      errorToast(msg: '请选择蒸球号');
-      return;
-    }
-    if (formMap['addSteamStart'] == null || formMap['addSteamStart'] == '') {
-      errorToast(msg: '请选择加汽开始时间');
-      return;
-    }
-    if (formMap['addSteamEnd'] == null || formMap['addSteamEnd'] == '') {
-      errorToast(msg: '请选择加汽结束时间');
-      return;
-    }
-    if (formMap['cookingDuration'] == null ||
-        formMap['cookingDuration'] == '') {
-      errorToast(msg: '请输入蒸煮时间');
-      return;
-    }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamBeanRecordUpdate(formMap);
@@ -91,17 +78,18 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(
         children: <Widget>[
-          InputWidget(
-            label: '蒸球压力',
-            suffix: 'Mpa',
-            keyboardType: 'number',
-            prop: formMap['steamBallPressure'].toString(),
-            requiredFlg: true,
-            onChange: (val) {
-              formMap['steamBallPressure'] = val;
-              setState(() {});
-            },
-          ),
+          _steamBallPressureVisible
+              ? InputWidget(
+                  label: '蒸球压力',
+                  suffix: 'Mpa',
+                  keyboardType: 'number',
+                  prop: formMap['steamBallPressure'].toString(),
+                  requiredFlg: true,
+                  onChange: (val) {
+                    formMap['steamBallPressure'] = val;
+                    setState(() {});
+                  })
+              : Container(),
           SelectWidget(
             label: '蒸球号',
             prop: formMap['steamBallNo'].toString(),

@@ -121,20 +121,25 @@ class _LoginPageState extends State<LoginPage> {
                       fillColor: Color(0x7F000000),
                       filled: true,
                       prefixIcon: Icon(Icons.person, color: Colors.white),
-                      suffixIcon: InkWell(
-                        child: Icon(Icons.close, color: Colors.white),
-                        onTap: () => {
-                          setState(() {
-                            _userName.text = '';
-                          })
-                        },
-                      ),
+                      suffixIcon: _userName.text != '' && _userName.text != null
+                          ? InkWell(
+                              child: Icon(Icons.close, color: Colors.white),
+                              onTap: () => {
+                                setState(() {
+                                  _userName.text = '';
+                                })
+                              },
+                            )
+                          : null,
                       contentPadding: EdgeInsets.symmetric(vertical: 15.0),
                       border: OutlineInputBorder(borderSide: BorderSide.none),
                       hintText: '账号/工号',
                       hintStyle: TextStyle(color: Colors.white),
                     ),
                     controller: _userName,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                   SizedBox(height: 10),
                   TextField(
@@ -144,22 +149,29 @@ class _LoginPageState extends State<LoginPage> {
                       fillColor: Color(0x7F000000),
                       filled: true,
                       prefixIcon: Icon(Icons.lock, color: Colors.white),
-                      suffixIcon: InkWell(
-                        child: Icon(
-                            _eye ? Icons.visibility_off : Icons.remove_red_eye,
-                            color: Colors.white),
-                        onTap: () => {
-                          setState(() {
-                            _eye = !_eye;
-                          })
-                        },
-                      ),
+                      suffixIcon: _password.text != '' && _password.text != null
+                          ? InkWell(
+                              child: Icon(
+                                  _eye
+                                      ? Icons.visibility_off
+                                      : Icons.remove_red_eye,
+                                  color: Colors.white),
+                              onTap: () => {
+                                setState(() {
+                                  _eye = !_eye;
+                                })
+                              },
+                            )
+                          : null,
                       contentPadding: EdgeInsets.symmetric(vertical: 15.0),
                       border: OutlineInputBorder(borderSide: BorderSide.none),
                       hintText: '密码',
                       hintStyle: TextStyle(color: Colors.white),
                     ),
                     controller: _password,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                   Row(
                     children: <Widget>[

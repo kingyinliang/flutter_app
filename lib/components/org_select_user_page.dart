@@ -61,8 +61,19 @@ class _OrgSelectUserPageState extends State<OrgSelectUserPage> {
       var res = await Common.orgTreeQuery({'factory': factoryId});
       orgTree = res['data'];
       orgList = orgTree;
+      selectWorkshop(orgList[0]);
       setState(() {});
     } catch (e) {}
+  }
+
+  // 默认车间
+  selectWorkshop(data) {
+    if (data['deptType'] != 'WORK_SHOP') {
+      orgList = data['children'];
+      selectOrg.add(data);
+      selectWorkshop(data['children'][0]);
+      setState(() {});
+    }
   }
 
   // 顶部面包屑
@@ -199,10 +210,8 @@ class _OrgSelectUserPageState extends State<OrgSelectUserPage> {
       var res = await Common.getUserByQuery({
         'workNum': text,
         'deptId': selectOrg[selectOrg.length - 1]['id'],
-        'current': '1',
-        'size': '99999',
       });
-      userList = res['data']['records'] == null ? [] : res['data']['records'];
+      userList = res['data'] == null ? [] : res['data'];
       setState(() {});
     } catch (e) {}
   }

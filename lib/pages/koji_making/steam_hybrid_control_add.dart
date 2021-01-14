@@ -48,20 +48,6 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['beanWindTempOne'] == null ||
-        formMap['beanWindTempOne'] == '') {
-      errorToast(msg: '请填写大豆风冷温度1');
-      return;
-    }
-    if (formMap['mixtureTempOne'] == null || formMap['mixtureTempOne'] == '') {
-      errorToast(msg: '请填写混合料温度1');
-      return;
-    }
-    if (formMap['beanWindFrequency'] == null ||
-        formMap['beanWindFrequency'] == '') {
-      errorToast(msg: '请填写大豆风冷变频');
-      return;
-    }
     if (formMap['id'] != null) {
       try {
         await KojiMaking.steamHybridControlUpdate(formMap);
@@ -84,6 +70,7 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
         children: <Widget>[
           InputWidget(
             label: '蒸面风冷温度',
+            requiredFlg: true,
             suffix: '℃',
             keyboardType: 'number',
             prop: formMap['flourWindTemp'].toString(),
@@ -148,6 +135,7 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
           DataPickerWidget(
             label: '混合开始时间',
             prop: formMap['mixtureStart'],
+            requiredFlg: true,
             onChange: (val) {
               formMap['mixtureStart'] = val;
               setState(() {});
@@ -156,6 +144,7 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
           DataPickerWidget(
             label: '混合结束时间',
             prop: formMap['mixtrueEnd'],
+            requiredFlg: true,
             onChange: (val) {
               formMap['mixtrueEnd'] = val;
               setState(() {});

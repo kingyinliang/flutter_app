@@ -19,6 +19,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
   List listData = [];
   String status = '';
   String statusName = '';
+  bool isSubmited = false; // form style if submitid ?
 
   @override
   void initState() {
@@ -33,14 +34,28 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
 
   _initState() async {
     try {
+      // 页签状态
+      var res = await KojiMaking.kojiMakingOrder({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_IN"
+      });
+      status = res['data']['status'];
+      statusName = res['data']['statusName'];
+      setState(() {});
+    } catch (e) {}
+
+    try {
       var res = await KojiMaking.discInQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       if (res['data'] == null) {
         listData = [];
       } else {
-        listData = [res['data']];
-        status = res['data']['status'];
-        statusName = res['data']['statusName'];
+        // 因为入库会自动带数据，加入判断滤掉
+        if (res['data']['id'] != '') {
+          listData = [res['data']];
+        }
+        isSubmited = res['data']['status'] == "D" ? true : false;
+        listData = MapUtil.listNullToEmpty(listData);
       }
       setState(() {});
     } catch (e) {}
@@ -169,7 +184,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
                     child: Image.asset('lib/assets/images/arrows-to-right.png'),
                   )
                 ],
@@ -218,6 +233,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
       addFlg: listData.length > 0 ? false : true,
+      submited: isSubmited,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamInStatusAdd',
             arguments: {

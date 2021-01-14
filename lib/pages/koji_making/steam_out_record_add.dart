@@ -17,9 +17,8 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
     'outKojiDurationString': '0 H',
     'outKojiEnd': '',
     'outKojiMans': '',
-    'outKojiTemp': 0,
+    'outKojiTemp': '',
     'outKojiStart': '',
-    // 'status': '',
     'changed': '',
     'changer': '',
   };
@@ -116,23 +115,6 @@ class _SteamOutRecordAddPageState extends State<SteamOutRecordAddPage> {
   }
 
   _submitForm() async {
-    if (formMap['outKojiStart'] == null || formMap['outKojiStart'] == '') {
-      errorToast(msg: '请选择出曲开始时间');
-      return;
-    }
-    if (formMap['outKojiEnd'] == null || formMap['outKojiEnd'] == '') {
-      errorToast(msg: '请选择出曲结束时间');
-      return;
-    }
-    if (formMap['outKojiMans'] == null || formMap['outKojiMans'] == '') {
-      errorToast(msg: '请选择出曲操作人');
-      return;
-    }
-    if (formMap['outKojiTemp'] == null || formMap['outKojiTemp'] == '') {
-      errorToast(msg: '请输入出曲温度');
-      return;
-    }
-
     formMap['orderNo'] = widget.arguments['orderNo'];
     formMap['kojiOrderNo'] = widget.arguments['kojiOrderNo'];
     if (formMap['id'] != null) {

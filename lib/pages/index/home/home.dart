@@ -200,7 +200,7 @@ class _HomeHeadState extends State<HomeHead> {
             height: pxUnit(45),
             alignment: Alignment.center,
             child: Text(
-              '首页',
+              '',
               style: TextStyle(color: Colors.white, fontSize: 17),
             ),
           ),

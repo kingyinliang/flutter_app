@@ -19,6 +19,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
   List listData = [];
   String status = '';
   String statusName = '';
+  bool isSubmited = false; // form style if submitid ?
 
   @override
   void initState() {
@@ -33,14 +34,16 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
 
   _initState({type: false}) async {
     try {
-      var res = await KojiMaking.kojiMakingOrder({
-        "dataType": widget.arguments['workingType'],
-        "kojiOrderNo": widget.arguments['data']['kojiOrderNo']
+      // 页签状态
+      var res = await KojiMaking.kojiOrderStatusQuery({
+        "kojiOrderNo": widget.arguments['data']['kojiOrderNo'],
+        "dataType": "DISC_OUT"
       });
       status = res['data']['status'];
       statusName = res['data']['statusName'];
       setState(() {});
     } catch (e) {}
+
     try {
       var res = await KojiMaking.steamDiscOutQuery(
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
@@ -48,6 +51,8 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
         listData = [];
       } else {
         listData = [res['data']];
+        isSubmited = res['data']['status'] == "D" ? true : false;
+        listData = MapUtil.listNullToEmpty(listData);
         if (type) successToast(msg: '操作成功');
       }
       setState(() {});
@@ -218,6 +223,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
       headThreeTitle: '生产订单：${widget.arguments['data']['orderNo']}',
       headFourTitle: '入曲日期：${widget.arguments['data']['productDate']}',
       listData: listData,
+      submited: isSubmited,
       addFlg: listData.length > 0 ? false : true,
       addFn: () {
         Navigator.pushNamed(context, '/kojiMaking/steamOutRecordAdd',

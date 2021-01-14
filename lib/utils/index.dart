@@ -24,6 +24,8 @@ export 'package:dfmdsapp/api/api/index.dart';
 export 'package:dfmdsapp/utils/storage.dart';
 export 'package:dfmdsapp/utils/toast.dart';
 
+import 'dart:convert';
+
 int getColorFromHex(String hexColor) {
   hexColor = hexColor.toUpperCase().replaceAll("#", "");
   hexColor = hexColor.replaceAll('0X', '');
@@ -31,4 +33,26 @@ int getColorFromHex(String hexColor) {
     hexColor = "FF" + hexColor;
   }
   return int.parse(hexColor, radix: 16);
+}
+
+class MapUtil {
+  static mapNullToEmpty(Map map) {
+    map.forEach((key, value) {
+      if (value == null) {
+        map[key] = '';
+      }
+      if (value.runtimeType.toString() ==
+          '_InternalLinkedHashMap<String, dynamic>') {
+        mapNullToEmpty(value);
+      }
+    });
+    return map;
+  }
+
+  static listNullToEmpty(List list) {
+    list.forEach((element) {
+      element = mapNullToEmpty(element);
+    });
+    return list;
+  }
 }
