@@ -136,7 +136,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                   Container(

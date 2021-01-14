@@ -70,6 +70,7 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
         children: <Widget>[
           InputWidget(
             label: '蒸面风冷温度',
+            requiredFlg: true,
             suffix: '℃',
             keyboardType: 'number',
             prop: formMap['flourWindTemp'].toString(),
@@ -134,6 +135,7 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
           DataPickerWidget(
             label: '混合开始时间',
             prop: formMap['mixtureStart'],
+            requiredFlg: true,
             onChange: (val) {
               formMap['mixtureStart'] = val;
               setState(() {});
@@ -142,6 +144,7 @@ class _SteamHybridControlAddPageState extends State<SteamHybridControlAddPage> {
           DataPickerWidget(
             label: '混合结束时间',
             prop: formMap['mixtrueEnd'],
+            requiredFlg: true,
             onChange: (val) {
               formMap['mixtrueEnd'] = val;
               setState(() {});

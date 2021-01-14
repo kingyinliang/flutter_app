@@ -73,7 +73,7 @@ class _SteamSideAddPageState extends State<SteamSideAddPage> {
       padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
       child: Column(children: <Widget>[
         InputWidget(
-          label: '气包压力',
+          label: '汽包压力',
           suffix: 'Mpa',
           keyboardType: 'number',
           prop: formMap['steamPacketPressure'].toString(),
