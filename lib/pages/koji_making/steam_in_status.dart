@@ -57,7 +57,6 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
         isSubmited = res['data']['status'] == "D" ? true : false;
         listData = MapUtil.listNullToEmpty(listData);
       }
-      print(listData);
       setState(() {});
     } catch (e) {}
   }

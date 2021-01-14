@@ -35,8 +35,6 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   }
 
   _initState({type: false}) async {
-    print('widget.arguments');
-    print(widget.arguments);
     try {
       // 判断来自蒸豆还是蒸面
       if (widget.arguments['data']['kojiOrderNo'] == '') {

@@ -136,7 +136,7 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    '10min',
+                    '',
                     style: TextStyle(color: Color(0xFF333333), fontSize: 12),
                   ),
                   Container(
@@ -251,8 +251,6 @@ class _SteamHybridControlPageState extends State<SteamHybridControlPage> {
     return HomePageWidget(
       type: '制曲',
       title: widget.arguments['title'],
-      // status: listData.length > 0 ? listData[0]['status'] : '',
-      // statusName: listData.length > 0 ? listData[0]['statusName'] : '未录入',
       status: '$status',
       statusName: '$statusName',
       headTitle: '${widget.arguments['data']['kojiHouseName']}',

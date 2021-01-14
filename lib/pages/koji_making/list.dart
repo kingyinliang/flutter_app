@@ -18,7 +18,6 @@ class _KojiMakingListPageState extends State<KojiMakingListPage> {
     if (widget.arguments['workingType'] == 'STEAM_FLOUR_EXCEPTION' ||
         widget.arguments['workingType'] == 'DISC_EXCEPTION' ||
         widget.arguments['workingType'] == 'STEAM_BEAN_EXCEPTION') {
-      print(11);
       tabs = [
         {'label': '未录入', 'type': 'N'},
         {'label': '已录入', 'type': 'S'},

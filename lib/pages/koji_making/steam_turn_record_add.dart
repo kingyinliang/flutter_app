@@ -96,7 +96,6 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
   // 获取时长
   _getDuration(String turn) {
     if (formMap[turn]['turnStart'] != '' && minGuardTime != null) {
-      print('minGuardTime:' + minGuardTime.toString());
       int nowyear =
           int.parse(formMap[turn]['turnStart'].split(" ")[0].split('-')[0]);
       int nowmonth =
@@ -141,10 +140,8 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
 
       if (res['data'].length != 0) {
         minGuardTime = DateTime.parse(res['data'][0]['guardDate']);
-        print(minGuardTime.toString());
         res['data'].forEach((item) {
           var d = DateTime.parse(item['guardDate']);
-          print(d.toString());
           if (d.isBefore(minGuardTime)) {
             minGuardTime = d;
           }
@@ -163,37 +160,6 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
   }
 
   _submitForm() async {
-    // if (formMap['kojiDiscTurn1']['turnStart'] == null ||
-    //     formMap['kojiDiscTurn1']['turnStart'] == '') {
-    //   errorToast(msg: '请选择一翻翻曲开始时间');
-    //   return;
-    // }
-    // if (formMap['kojiDiscTurn1']['turnEnd'] == null ||
-    //     formMap['kojiDiscTurn1']['turnEnd'] == '') {
-    //   errorToast(msg: '请选择一翻翻曲结束时间');
-    //   return;
-    // }
-    // if (formMap['kojiDiscTurn1']['turnMans'] == null ||
-    //     formMap['kojiDiscTurn1']['turnMans'] == '') {
-    //   errorToast(msg: '请选择一翻翻曲人');
-    //   return;
-    // }
-    // if (formMap['kojiDiscTurn2']['turnStart'] == null ||
-    //     formMap['kojiDiscTurn2']['turnStart'] == '') {
-    //   errorToast(msg: '请选择二翻翻曲开始时间');
-    //   return;
-    // }
-    // if (formMap['kojiDiscTurn2']['turnEnd'] == null ||
-    //     formMap['kojiDiscTurn2']['turnEnd'] == '') {
-    //   errorToast(msg: '请选择二翻翻曲结束时间');
-    //   return;
-    // }
-    // if (formMap['kojiDiscTurn2']['turnMans'] == null ||
-    //     formMap['kojiDiscTurn2']['turnMans'] == '') {
-    //   errorToast(msg: '请选择二翻翻曲人');
-    //   return;
-    // }
-
     if (formMap['kojiDiscTurn1']['id'] != null) {
       try {
         await KojiMaking.steamDiscTurnSave(formMap);
@@ -226,7 +192,6 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             onChange: (val) {
               formMap['kojiDiscTurn1']['turnStart'] = val;
               this._getKojiGuardData();
-              // this._getDuration('kojiDiscTurn1');
               setState(() {});
             },
           ),
@@ -236,7 +201,6 @@ class _SteamTurnRecordAddPageState extends State<SteamTurnRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['kojiDiscTurn1']['turnEnd'] = val;
-              // this._getDuration('kojiDiscTurn1');
               setState(() {});
             },
           ),
