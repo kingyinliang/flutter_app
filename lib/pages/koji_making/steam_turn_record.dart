@@ -53,7 +53,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
       } else {
         listData = res['data'];
         isSubmited =
-            res['data']['"kojiDiscTurn1"']['status'] == "D" ? true : false;
+            res['data'][0]["kojiDiscTurn1"]['status'] == "D" ? true : false;
         listData = MapUtil.listNullToEmpty(listData);
         if (type) successToast(msg: '操作成功');
       }
