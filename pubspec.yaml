@@ -45,6 +45,7 @@ dependencies:
   flutter_svg: ^0.17.3
   english_words: ^3.1.5
   honeywell_scanner: ^2.0.0+4
+  webview_flutter: ^0.3.24
 
 dev_dependencies:
     flutter_test:

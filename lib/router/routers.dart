@@ -12,8 +12,11 @@ import 'package:dfmdsapp/components/search.dart';
 import 'package:dfmdsapp/components/pagesComponents/text_add.dart';
 import 'package:dfmdsapp/components/pagesComponents/exeption_add.dart';
 
+import 'package:dfmdsapp/components/web_view.dart';
+
 Map<String, Function> commonRouters = {
   '/noNet': (contxt, {arguments}) => NoNetPage(),
+  '/webview': (contxt, {arguments}) => WebViewPage(arguments: arguments),
   '/login': (contxt, {arguments}) => LoginPage(),
   '/home': (contxt, {arguments}) => IndexPage(arguments: arguments),
   '/list': (contxt, {arguments}) => IndexPage(arguments: arguments),

@@ -73,6 +73,12 @@ class App extends StatelessWidget {
     }
 }
 ```
-
+## mac模拟器无法联网
+```
+cd /Users/shinho/Library/Android/sdk/emulator
+```
+```
+./emulator @Pixel_3_XL_API_30 -dns-server 8.8.8.8,114.114.114.114
+```
 
 

@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     
     <application
+        android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
         android:label="MDS-DEV"
         tools:replace="android:label"
