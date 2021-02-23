@@ -19,6 +19,7 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
     'steamPocketPressure': '',
     'turnCount': '',
     'cookingDuration': '',
+    'cookingDurationString': '',
     'pressureDuration': '',
     'addBeanDate': '',
     'remark': '',
@@ -55,6 +56,57 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
       steamBallNo = res['data'];
       setState(() {});
     } catch (e) {}
+  }
+
+  // 获取时长
+  _getDuration() {
+    if (formMap['addSteamStart'] != '' && formMap['addSteamEnd'] != '') {
+      int nowyear =
+          int.parse(formMap['addSteamStart'].split(" ")[0].split('-')[0]);
+      int nowmonth =
+          int.parse(formMap['addSteamStart'].split(" ")[0].split('-')[1]);
+      int nowday =
+          int.parse(formMap['addSteamStart'].split(" ")[0].split('-')[2]);
+      int nowhour =
+          int.parse(formMap['addSteamStart'].split(" ")[1].split(':')[0]);
+      int nowmin =
+          int.parse(formMap['addSteamStart'].split(" ")[1].split(':')[1]);
+
+      int oldyear =
+          int.parse(formMap['addSteamEnd'].split(" ")[0].split('-')[0]);
+      int oldmonth =
+          int.parse(formMap['addSteamEnd'].split(" ")[0].split('-')[1]);
+      int oldday =
+          int.parse(formMap['addSteamEnd'].split(" ")[0].split('-')[2]);
+      int oldhour =
+          int.parse(formMap['addSteamEnd'].split(" ")[1].split(':')[0]);
+      int oldmin =
+          int.parse(formMap['addSteamEnd'].split(" ")[1].split(':')[1]);
+
+      var now = new DateTime(nowyear, nowmonth, nowday, nowhour, nowmin);
+      var old = new DateTime(oldyear, oldmonth, oldday, oldhour, oldmin);
+      var difference = old.difference(now);
+
+      formMap['cookingDuration'] =
+          formatNum((difference.inMinutes / 1), 2); // 时间差
+      formMap['cookingDurationString'] =
+          '${formMap['cookingDuration']} min'; // 时间差
+
+    }
+  }
+
+  formatNum(double num, int postion) {
+    if ((num.toString().length - num.toString().lastIndexOf(".") - 1) <
+        postion) {
+      //小数点后有几位小数
+      return num.toStringAsFixed(postion)
+          .substring(0, num.toString().lastIndexOf(".") + postion + 1)
+          .toString();
+    } else {
+      return num.toString()
+          .substring(0, num.toString().lastIndexOf(".") + postion + 1)
+          .toString();
+    }
   }
 
   _submitForm() async {
@@ -110,6 +162,7 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['addSteamStart'] = val;
+              this._getDuration();
               setState(() {});
             },
           ),
@@ -119,6 +172,7 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
             requiredFlg: true,
             onChange: (val) {
               formMap['addSteamEnd'] = val;
+              this._getDuration();
               setState(() {});
             },
           ),
@@ -141,16 +195,17 @@ class _SteamBeanRecordAddPageState extends State<SteamBeanRecordAddPage> {
               setState(() {});
             },
           ),
-          InputWidget(
+          FormTextWidget(
             label: '蒸煮时间',
-            suffix: 'min',
-            keyboardType: 'number',
-            requiredFlg: true,
-            prop: formMap['cookingDuration'].toString(),
-            onChange: (val) {
-              formMap['cookingDuration'] = val;
-              setState(() {});
-            },
+            prop: formMap['cookingDurationString'].toString(),
+            // suffix: 'min',
+            // keyboardType: 'number',
+            // requiredFlg: true,
+            // prop: formMap['cookingDuration'].toString(),
+            // onChange: (val) {
+            //   formMap['cookingDuration'] = val;
+            //   setState(() {});
+            // },
           ),
           InputWidget(
             label: '保压时间',

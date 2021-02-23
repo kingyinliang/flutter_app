@@ -10,7 +10,7 @@ class SteamBeanRecordPage extends StatefulWidget {
 
 class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
   List wrapList = [
-    {'label': '气泡压力：', 'value': 'steamPocketPressure', 'endlabel': 'Mpa'},
+    {'label': '汽包压力：', 'value': 'steamPocketPressure', 'endlabel': 'Mpa'},
     {'label': '蒸煮', 'value': 'cookingDuration', 'endlabel': 'min'},
     {'label': '圈数', 'value': 'turnCount'},
     {'label': '保压', 'value': 'pressureDuration', 'endlabel': 'min'},
