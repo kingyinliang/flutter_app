@@ -136,6 +136,10 @@ class Sterilize {
         .post('/ste/steProcessorControl/query', params: params);
   }
 
+  static sterilizeCraftMaterialListApi2(params) {
+    return HttpManager.getInstance().post('/steCraft/query', params: params);
+  }
+
   // 提交
   static sterilizeCraftMaterialTimeSubmitApi(params) {
     return HttpManager.getInstance()

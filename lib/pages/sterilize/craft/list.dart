@@ -33,9 +33,10 @@ class _CraftListState extends State<CraftList> {
 //      _floatingActionButtonFlag = true;
 //      _submitButtonFlag = true;
 //    } else {
-      _floatingActionButtonFlag =
-          getFloatingActionButtonFlag(index, 0, materialInfo, potList);
-      _submitButtonFlag = getFloatingActionButtonFlag(index, 1, materialInfo, potList);
+    _floatingActionButtonFlag =
+        getFloatingActionButtonFlag(index, 0, materialInfo, potList);
+    _submitButtonFlag =
+        getFloatingActionButtonFlag(index, 1, materialInfo, potList);
 //    }
     _tabIndex = index;
     setState(() {});
@@ -49,7 +50,8 @@ class _CraftListState extends State<CraftList> {
   _initState() async {
     var res1 = await Common.getDictDropAll(['COOL', 'HEAT', 'DISCHARGE']);
     this.StageList = res1['data'];
-    var res = await Sterilize.sterilizeCraftMaterialListApi({"potOrderNo": widget.arguments['potNum']['potNo']});
+    var res = await Sterilize.sterilizeCraftMaterialListApi(
+        {"potOrderNo": widget.arguments['potNum']['potNo']});
     setState(() {
       // 入料&升温
       if (res['data']['id'] == '') {
@@ -69,12 +71,17 @@ class _CraftListState extends State<CraftList> {
       }
       // 时间&温度
       potList = res['data']['item'];
-      for(int i=0; i<potList.length; i++) {
-        var testFirstWhere = this.StageList[potList[i]['controlType']].firstWhere((item) => item["dictCode"] == potList[i]['controlStage']);
+      for (int i = 0; i < potList.length; i++) {
+        var testFirstWhere = this
+            .StageList[potList[i]['controlType']]
+            .firstWhere(
+                (item) => item["dictCode"] == potList[i]['controlStage']);
         potList[i]['controlStageName'] = testFirstWhere['dictValue'];
       }
-      _floatingActionButtonFlag = getFloatingActionButtonFlag(_tabIndex, 0, materialInfo, potList);
-      _submitButtonFlag = getFloatingActionButtonFlag(_tabIndex, 1, materialInfo, potList);
+      _floatingActionButtonFlag =
+          getFloatingActionButtonFlag(_tabIndex, 0, materialInfo, potList);
+      _submitButtonFlag =
+          getFloatingActionButtonFlag(_tabIndex, 1, materialInfo, potList);
     });
   }
 
@@ -88,9 +95,10 @@ class _CraftListState extends State<CraftList> {
         if (type == 1) {
           ButtonFlag = data[0]['checkStatus'] == 'D' ? false : true;
         } else {
-          ButtonFlag = (materialInfo.length == 1 || data[0]['checkStatus'] == 'D')
-              ? false
-              : true;
+          ButtonFlag =
+              (materialInfo.length == 1 || data[0]['checkStatus'] == 'D')
+                  ? false
+                  : true;
         }
       }
     } else {
@@ -108,7 +116,9 @@ class _CraftListState extends State<CraftList> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () => setState(() {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
         _initState();
       }),
     );
@@ -136,8 +146,11 @@ class _CraftListState extends State<CraftList> {
         errorToast(msg: '请填写杀菌时间&温度');
         return;
       } else {
-        for(int i=0; i<potList.length; i++) {
-          if (potList[i]['controlStage'] == 'HEAT_START' || potList[i]['controlStage'] == 'HEAT_END' || potList[i]['controlStage'] == 'DISCHARGE_START' || potList[i]['controlStage'] == 'DISCHARGE_END') {
+        for (int i = 0; i < potList.length; i++) {
+          if (potList[i]['controlStage'] == 'HEAT_START' ||
+              potList[i]['controlStage'] == 'HEAT_END' ||
+              potList[i]['controlStage'] == 'DISCHARGE_START' ||
+              potList[i]['controlStage'] == 'DISCHARGE_END') {
             isStage++;
           }
         }
@@ -333,6 +346,7 @@ class _CraftListState extends State<CraftList> {
                   arguments: {
                     'potOrderNo': widget.arguments['potNum']['potNo'],
                     'potOrderId': widget.arguments['potNum']['potOrderId'],
+                    'materialCode': widget.arguments['potNum']['materialCode'],
                   },
                   delFn: _delPot,
                   submitButtonFlag: _submitButtonFlag),
@@ -367,8 +381,11 @@ class _CraftListState extends State<CraftList> {
                               context,
                               '/sterilize/craft/timeAdd',
                               arguments: {
+                                'isFirst': potList.length > 0 ? false : true,
                                 'potOrderNo': widget.arguments['potNum']
                                     ['potNo'],
+                                'materialCode': widget.arguments['potNum']
+                                    ['materialCode'],
                                 'potOrderId': widget.arguments['potNum']
                                     ['potOrderId'],
                               },
@@ -452,6 +469,7 @@ class _PotListWidgetState extends State<PotListWidget>
                 arguments: {
                   'potOrderNo': widget.arguments['potOrderNo'],
                   'potOrderId': widget.arguments['potOrderId'],
+                  'materialCode': widget.arguments['materialCode'],
                   'data': widget.data[index],
                 },
               ).then((value) => value != null ? widget.updataFn() : null);
