@@ -152,7 +152,7 @@ class _SteamSidePageState extends State<SteamSidePage> {
                         ),
                         SizedBox(width: 5),
                         Text(
-                          '气泡压力',
+                          '汽包压力',
                           style: TextStyle(
                             color: Color(0xFF666666),
                             fontSize: 14,
