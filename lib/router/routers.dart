@@ -1,5 +1,6 @@
 import './sterilize.dart';
 import './koji_making.dart';
+import './wheat.dart';
 
 import 'package:dfmdsapp/pages/common/no_net.dart';
 import 'package:dfmdsapp/pages/login/login.dart';
@@ -44,6 +45,7 @@ class RoutersManager {
     allRouters.addAll(commonRouters);
     allRouters.addAll(steilizeRouters);
     allRouters.addAll(kojiMakingRouters);
+    allRouters.addAll(wheatRouters);
   }
 
   static RoutersManager _getInstance() {

@@ -22,6 +22,7 @@ export 'package:dfmdsapp/assets/iconfont/IconFont.dart';
 export 'package:dfmdsapp/api/api/index.dart';
 
 export 'package:dfmdsapp/utils/storage.dart';
+export 'package:dfmdsapp/utils/pxunit.dart';
 export 'package:dfmdsapp/utils/toast.dart';
 
 import 'dart:convert';

@@ -73,6 +73,41 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
     }
   }
 
+  _dataChange(row, index) {
+    if (craftTable[index + 1] != null &&
+        craftTable[index + 1]['controlType'] == 'HEAT' &&
+        craftTable[index + 1]['recordDate'] != '') {
+      var val = craftTable[index + 1];
+      var date = craftTable[index]['recordDate'];
+      var finalTimes = DateTime.parse(date);
+      String valueFormat = 'yyyy-mm-dd HH:nn';
+      List<String> valueFormatArr = [];
+      RegExp reg = new RegExp(r"(.)\1*");
+      Iterable<Match> a = reg.allMatches(valueFormat);
+      a.forEach((element) {
+        String match = element.group(0);
+        valueFormatArr.add(match);
+      });
+      if (val == 'HEAT_10MIN' && row['recordDate'] == '') {
+        print('保温10分钟');
+        var newTime = finalTimes.add(Duration(minutes: 10));
+        row['recordDate'] = formatDate(newTime, valueFormatArr);
+      } else if (val == 'HEAT_15MIN' && row['recordDate'] == '') {
+        var newTime = finalTimes.add(Duration(minutes: 15));
+        row['recordDate'] = formatDate(newTime, valueFormatArr);
+      } else if (val == 'HEAT_20MIN' && row['recordDate'] == '') {
+        var newTime = finalTimes.add(Duration(minutes: 20));
+        row['recordDate'] = formatDate(newTime, valueFormatArr);
+      } else if (val == 'HEAT_30MIN' && row['recordDate'] == '') {
+        var newTime = finalTimes.add(Duration(minutes: 30));
+        row['recordDate'] = formatDate(newTime, valueFormatArr);
+      } else if (val == 'HEAT_35MIN' && row['recordDate'] == '') {
+        var newTime = finalTimes.add(Duration(minutes: 35));
+        row['recordDate'] = formatDate(newTime, valueFormatArr);
+      }
+    }
+  }
+
   // 类型下拉
   _getTypeList() async {
     try {
@@ -107,7 +142,9 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
   _superLongNauseaJudgment1(val, row) {
     if (val == 'HEAT_START') {
       // 保温开始 默认 = 升温结束
-      if (!row['recordDate'] && craftInfo['riseEndDate']) {
+      if (row['recordDate'] == '' &&
+          craftInfo['riseEndDate'] != '' &&
+          craftInfo['riseEndDate'] != null) {
         row['recordDate'] = craftInfo['riseEndDate'];
       }
     } else if (val != 'HEAT_TWO' && val != 'HEAT_END') {
@@ -190,7 +227,7 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
     setState(() {});
   }
 
-  Widget formWidget(row) {
+  Widget formWidget(row, index) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
@@ -229,6 +266,9 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
             requiredFlg: true,
             onChange: (val) {
               row['recordDate'] = val;
+              if (row['controlStage'] == 'HEAT_TWO') {
+                _dataChange(row, index);
+              }
               setState(() {});
             },
           ),
@@ -255,8 +295,8 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
 
   List<Widget> _getListView() {
     List<Widget> listWidget = [];
-    listWidget = craftTable.map((e) {
-      return formWidget(e);
+    listWidget = craftTable.asMap().keys.map((index) {
+      return formWidget(craftTable[index], index);
     }).toList();
     listWidget.add(SizedBox(height: 34));
     listWidget.add(MdsWidthButton(
@@ -285,8 +325,9 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
         };
         _getStageList(obj, obj['controlType']);
         craftTable.add(obj);
-        // _getStageList(craftTable[index], craftTable[index]['controlType']);
-        // _changeStage(craftTable[index]);
+      });
+      craftTable.forEach((item) {
+        _changeStage(item);
       });
       setState(() {});
     } catch (e) {}
@@ -310,9 +351,11 @@ class _CraftTimeAddState extends State<CraftTimeAdd> {
             craftTable[0]['temp'] = '';
           }
         } else if (widget.arguments['isFirst'] == true) {
+          craftInfo = jsonDecode(jsonEncode(widget.arguments['craftInfo']));
           isFirst = true;
           _init();
         } else {
+          craftInfo = jsonDecode(jsonEncode(widget.arguments['craftInfo']));
           _getTypeList();
         }
       }),

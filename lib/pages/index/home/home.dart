@@ -69,10 +69,16 @@ class _HomePageState extends State<HomePage>
       value: 'id',
       selectVal: workShopId,
       data: workShopList,
-      clickCallBack: (val) {
+      clickCallBack: (val) async {
         workShopName = val['deptName'];
         workShopId = val['id'];
         parentName = val['parentName'];
+        await SharedUtil.instance
+            .saveStringStorage('workShopCode', val['deptCode']);
+        if (val['children'].length > 0) {
+          await SharedUtil.instance.saveStringStorage(
+              'productLineCode', val['children'][0]['deptCode']);
+        }
         setMenu();
       },
     );
@@ -379,6 +385,7 @@ class _MenuItemState extends State<MenuItem> {
       ),
       onTap: () async {
         String urlString = '';
+        urlString = widget.url;
 
         if (widget.menuItem['parentName'] == '制曲车间') {
           urlString = '/kojiMaking/List';

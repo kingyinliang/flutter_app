@@ -381,6 +381,9 @@ class _CraftListState extends State<CraftList> {
                               context,
                               '/sterilize/craft/timeAdd',
                               arguments: {
+                                'craftInfo': materialInfo.length > 0
+                                    ? materialInfo[0]
+                                    : {},
                                 'isFirst': potList.length > 0 ? false : true,
                                 'potOrderNo': widget.arguments['potNum']
                                     ['potNo'],

@@ -172,6 +172,9 @@ class HttpManager {
     if (response.data['code'] == ResultCode.SUCCESS) {
       _com.complete(response.data);
       return _future;
+    } else if (response.data['code'] == 0) {
+      _com.complete(response.data);
+      return _future;
     } else if (response.data['code'] == ResultCode.EXPIRED_TOKEN) {
       endLoading();
       WebSocketManager.dispos();
