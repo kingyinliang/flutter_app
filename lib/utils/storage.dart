@@ -44,6 +44,9 @@ class SharedUtil {
   }
 
   Future getMapStorage(key) async {
+    if (ConfigInt.sp.get(key) == null) {
+      return null;
+    }
     return jsonDecode(ConfigInt.sp.get(key));
   }
 

@@ -18,6 +18,7 @@ export 'package:dfmdsapp/components/slide_button.dart';
 export 'package:dfmdsapp/components/sliver_tab_bar.dart';
 export 'package:dfmdsapp/components/confirm.dart';
 export 'package:dfmdsapp/components/toast.dart';
+export 'package:dfmdsapp/components/no_data.dart';
 
 export 'package:dfmdsapp/assets/iconfont/icon_font.dart';
 

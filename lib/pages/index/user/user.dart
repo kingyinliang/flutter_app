@@ -312,9 +312,9 @@ class _StorageDialogState extends State<StorageDialog> {
   Widget build(BuildContext context) {
     return DiaLogContainer(
       success: () async {
-        clearFileCache(() {
+        clearCache(() async {
           Navigator.of(context, rootNavigator: true).pop();
-          $successToast(context, msg: '操作成功');
+          await $successToast(context, msg: '清除成功，请重新登陆');
         });
       },
       child: Column(

@@ -16,7 +16,6 @@ class _WheatListPageState extends State<WheatListPage> {
   // 同步
   _syncOrder() async {
     var ruleList = dataList.where((e) => e['isModified'] == true).toList();
-    print(ruleList.length);
     if (ruleList.length > 0) {
       $confirm(
         context,
@@ -26,6 +25,8 @@ class _WheatListPageState extends State<WheatListPage> {
           _getOrderList();
         },
       );
+    } else {
+      _getOrderList();
     }
   }
 
@@ -93,7 +94,7 @@ class _WheatListPageState extends State<WheatListPage> {
             height: 60,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('lib/assets/images/qufang.png'),
+                image: AssetImage('lib/assets/images/wheat.png'),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.all(Radius.circular(4.0)),
@@ -360,8 +361,13 @@ class _WheatListPageState extends State<WheatListPage> {
     List<Widget> widgetArr = dataList.asMap().keys.map((index) {
       return _getSlide(dataList[index], index);
     }).toList();
-    return ListView(
-        padding: EdgeInsets.fromLTRB(0, 10, 0, 60), children: widgetArr);
+    if (widgetArr.length > 0) {
+      return ListView(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 60), children: widgetArr);
+    }
+    return Center(
+      child: NoDataWidget(),
+    );
   }
 
   // 底部按钮
@@ -442,7 +448,10 @@ class _WheatListPageState extends State<WheatListPage> {
   }
 
   _init() async {
-    dataList = await SharedUtil.instance.getMapStorage('orderList');
+    var data = await SharedUtil.instance.getMapStorage('orderList');
+    if (data != null) {
+      dataList = data;
+    }
     setState(() {});
   }
 
