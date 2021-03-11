@@ -1,9 +1,9 @@
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:dfmdsapp/utils/index.dart';
 import 'package:dfmdsapp/utils/pxunit.dart';
 import 'package:dfmdsapp/api/api/index.dart';
-import 'package:dfmdsapp/components/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,21 +33,7 @@ varsionUpdateInit(BuildContext context, {flag: false}) async {
       },
     );
   } else if (flag) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return DiaLogContainer(
-          success: () {
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-          child: Container(
-            alignment: Alignment.center,
-            child: Text('已经是最新版'),
-          ),
-        );
-      },
-    );
+    $successToast(context, msg: '已经是最新版');
   }
 }
 

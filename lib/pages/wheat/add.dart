@@ -11,9 +11,9 @@ class WheatAddPage extends StatefulWidget {
 
 class _WheatAddPageState extends State<WheatAddPage> {
   Map<String, dynamic> formMap = {
-    'wheatDeviceVal': '',
+    'wheatDeviceId': '',
     'wheatDeviceName': '',
-    'flourDeviceVal': '',
+    'flourDeviceId': '',
     'flourDeviceName': '',
     'inPortBatch': '',
     'startWeight': '',
@@ -21,19 +21,64 @@ class _WheatAddPageState extends State<WheatAddPage> {
     'inPortWeight': '',
   };
   List orderList = [];
+  List batchList = [];
   List wheatDeviceList = [];
   List flourDeviceList = [];
 
   _submitForm() async {
+    if (formMap['wheatDeviceId'] == null ||
+        formMap['wheatDeviceId'] == '' ||
+        formMap['flourDeviceId'] == null ||
+        formMap['flourDeviceId'] == '' ||
+        formMap['inPortBatch'] == null ||
+        formMap['inPortBatch'] == '' ||
+        formMap['startWeight'] == null ||
+        formMap['startWeight'] == '' ||
+        formMap['endWeight'] == null ||
+        formMap['endWeight'] == '') {
+      $warningToast(context, msg: '请填写必填项');
+      return;
+    }
+    formMap['endWeight'] = formMap['endWeight'].toString();
+    formMap['startWeight'] = formMap['startWeight'].toString();
+    if (int.parse(formMap['endWeight']) - int.parse(formMap['startWeight']) <
+        0) {
+      EasyLoading.showError('起始数不能大于结束数');
+      return;
+    }
+    formMap['inPortWeight'] =
+        int.parse(formMap['endWeight']) - int.parse(formMap['startWeight']);
+    var userData = await SharedUtil.instance.getMapStorage('userData');
+    formMap['changer'] = userData['realName'] + '（' + userData['workNum'] + '）';
+    orderList[widget.arguments['orderIndex']]['isModified'] = true;
+    // 新增修改
     if (widget.arguments['tableIndex'] != null) {
-      orderList[widget.arguments['orderIndex']]['table']
+      // 修改
+      orderList[widget.arguments['orderIndex']]['inList']
           [widget.arguments['tableIndex']] = formMap;
       await SharedUtil.instance.saveMapStorage('orderList', orderList);
       Navigator.pop(context, true);
     } else {
-      orderList[widget.arguments['orderIndex']]['table'].add(formMap);
+      // 新增
+      formMap['orderId'] = orderList[widget.arguments['orderIndex']]
+          ['pkgOrderEntity']['orderId'];
+      formMap['creator'] =
+          userData['realName'] + '（' + userData['workNum'] + '）';
+      orderList[widget.arguments['orderIndex']]['inList'].add(formMap);
       await SharedUtil.instance.saveMapStorage('orderList', orderList);
       Navigator.pop(context, true);
+    }
+  }
+
+  _setBatch() {
+    if (formMap['flourDeviceId'] != '' && formMap['wheatDeviceId'] != '') {
+      List sole = batchList
+          .where((e) =>
+              e['littleHolderId'] == formMap['flourDeviceId'] &&
+              e['holderId'] == formMap['wheatDeviceId'])
+          .toList();
+      formMap['inPortBatch'] = sole[0]['batch'];
+      setState(() {});
     }
   }
 
@@ -46,25 +91,39 @@ class _WheatAddPageState extends State<WheatAddPage> {
         children: <Widget>[
           SelectWidget(
             label: '麦粉罐',
-            prop: formMap['wheatDeviceVal'].toString(),
-            requiredFlg: true,
-            options: wheatDeviceList,
-            optionsLabel: 'holderName',
-            optionsval: 'holderId',
-            onChange: (val) {
-              formMap['wheatDeviceVal'] = val['holderId'];
-              setState(() {});
-            },
-          ),
-          SelectWidget(
-            label: '粮仓号',
-            prop: formMap['flourDeviceVal'].toString(),
+            prop: formMap['flourDeviceId'].toString(),
             requiredFlg: true,
             options: flourDeviceList,
             optionsLabel: 'holderName',
             optionsval: 'holderId',
             onChange: (val) {
-              formMap['flourDeviceVal'] = val['holderId'];
+              formMap['flourDeviceId'] = val['holderId'];
+              formMap['flourDeviceName'] = val['holderName'];
+              _setBatch();
+              setState(() {});
+            },
+          ),
+          SelectWidget(
+            label: '粮仓号',
+            prop: formMap['wheatDeviceId'].toString(),
+            requiredFlg: true,
+            options: wheatDeviceList,
+            optionsLabel: 'holderName',
+            optionsval: 'holderId',
+            onChange: (val) {
+              formMap['wheatDeviceId'] = val['holderId'];
+              formMap['wheatDeviceName'] = val['holderName'];
+              _setBatch();
+              setState(() {});
+            },
+          ),
+          InputWidget(
+            label: '入库批次',
+            keyboardType: 'number',
+            prop: formMap['inPortBatch'].toString(),
+            requiredFlg: true,
+            onChange: (val) {
+              formMap['inPortBatch'] = val;
               setState(() {});
             },
           ),
@@ -94,6 +153,7 @@ class _WheatAddPageState extends State<WheatAddPage> {
   }
 
   _init() async {
+    batchList = await SharedUtil.instance.getMapStorage('batchList');
     wheatDeviceList =
         await SharedUtil.instance.getMapStorage('wheatDeviceList');
     flourDeviceList =
@@ -101,7 +161,7 @@ class _WheatAddPageState extends State<WheatAddPage> {
     orderList = await SharedUtil.instance.getMapStorage('orderList');
     if (widget.arguments['tableIndex'] != null) {
       formMap = jsonDecode(jsonEncode(orderList[widget.arguments['orderIndex']]
-          ['table'][widget.arguments['tableIndex']]));
+          ['inList'][widget.arguments['tableIndex']]));
     }
   }
 
@@ -119,8 +179,8 @@ class _WheatAddPageState extends State<WheatAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          MdsAppBarWidget(titleData: formMap['id'] == null ? '入库新增' : '入库修改'),
+      appBar: MdsAppBarWidget(
+          titleData: widget.arguments['tableIndex'] == null ? '入库新增' : '入库修改'),
       backgroundColor: Color(0xFFF5F5F5),
       body: ListView(
         children: <Widget>[

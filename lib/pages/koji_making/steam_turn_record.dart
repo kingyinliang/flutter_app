@@ -55,7 +55,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
         isSubmited =
             res['data'][0]["kojiDiscTurn1"]['status'] == "D" ? true : false;
         listData = MapUtil.listNullToEmpty(listData);
-        if (type) successToast(msg: '操作成功');
+        if (type) $successToast(context, msg: '操作成功');
       }
       setState(() {});
     } catch (e) {}
@@ -66,7 +66,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
       await KojiMaking.steamDiscTurnSubmit({
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
-      successToast(msg: '操作成功');
+      await $successToast(context, msg: '操作成功');
       _initState(type: true);
     } catch (e) {}
   }
@@ -76,7 +76,7 @@ class _SteamTurnRecordPageState extends State<SteamTurnRecordPage> {
       await KojiMaking.steamDiscTurnDelet({
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
     } catch (e) {}

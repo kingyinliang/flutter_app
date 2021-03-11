@@ -7,7 +7,7 @@ import '../common/page_head.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import '../common/exception_card.dart';
 import '../../../components/remove_btn.dart';
-import 'package:dfmdsapp/utils/toast.dart';
+import 'package:dfmdsapp/components/toast.dart';
 import '../common/text_card.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 
@@ -88,7 +88,7 @@ class _ExceptionListState extends State<ExceptionList> {
     try {
       await Sterilize.sterilizeExceptionDetailDeleteApi(
           [this.exceptionList[index]['id']]);
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       this.exceptionList.removeAt(index);
       setState(() {});
     } catch (e) {}

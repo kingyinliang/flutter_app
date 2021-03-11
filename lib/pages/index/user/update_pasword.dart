@@ -3,7 +3,7 @@ import 'package:dfmdsapp/components/appBar.dart';
 import 'package:dfmdsapp/components/form.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
-import 'package:dfmdsapp/utils/toast.dart';
+import 'package:dfmdsapp/utils/index.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 
 class UpdatePaswordPage extends StatefulWidget {
@@ -31,20 +31,20 @@ class _UpdatePaswordPageState extends State<UpdatePaswordPage> {
   _submitForm() async {
     RegExp exp = new RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,12}$");
     if (formMap['password'].length == 0) {
-      warningToast(msg: '请输入原始密码');
+      $warningToast(context, msg: '请输入原始密码');
       return;
     }
     if (exp.hasMatch(formMap['newPassword']) == false) {
-      warningToast(msg: '请输入8-12位数字大小写字母组合');
+      $warningToast(context, msg: '请输入8-12位数字大小写字母组合');
       return;
     }
     if (formMap['newPassword'] != formMap['conPassword']) {
-      warningToast(msg: '两次输入密码不一致');
+      $warningToast(context, msg: '两次输入密码不一致');
       return;
     }
     try {
       await Common.updatePasswordApi(formMap);
-      successToast(msg: '密码修改成功');
+      $successToast(context, msg: '密码修改成功');
     } catch (e) {}
   }
 

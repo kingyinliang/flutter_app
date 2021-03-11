@@ -45,7 +45,7 @@ class _SteamSidePageState extends State<SteamSidePage> {
       listData = res['data'];
       isSubmited = res['data'][0]['status'] == "D" ? true : false;
       listData = MapUtil.listNullToEmpty(listData);
-      if (type) successToast(msg: '操作成功');
+      if (type) $successToast(context, msg: '操作成功');
       setState(() {});
     } catch (e) {}
   }
@@ -57,7 +57,7 @@ class _SteamSidePageState extends State<SteamSidePage> {
         'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
-      successToast(msg: '操作成功');
+      await $successToast(context, msg: '操作成功');
       _initState(type: true);
     } catch (e) {}
   }

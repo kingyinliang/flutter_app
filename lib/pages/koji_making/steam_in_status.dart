@@ -89,7 +89,7 @@ class _SteamInStatusPageState extends State<SteamInStatusPage> {
         await KojiMaking.discInSubmitQuery({
           'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
         });
-        successToast(msg: '操作成功');
+        await $successToast(context, msg: '操作成功');
         _initState();
       } else {
         EasyLoading.showError('请先添加数据');

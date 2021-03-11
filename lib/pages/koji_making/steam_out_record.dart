@@ -53,7 +53,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
         listData = [res['data']];
         isSubmited = res['data']['status'] == "D" ? true : false;
         listData = MapUtil.listNullToEmpty(listData);
-        if (type) successToast(msg: '操作成功');
+        if (type) $successToast(context, msg: '操作成功');
       }
       setState(() {});
     } catch (e) {}
@@ -65,7 +65,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
         await KojiMaking.steamDiscOutSubmit({
           'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
         });
-        successToast(msg: '操作成功');
+        await $successToast(context, msg: '操作成功');
         _initState(type: true);
       } else {
         EasyLoading.showError('请先添加数据');
@@ -76,7 +76,7 @@ class _SteamOutRecordPageState extends State<SteamOutRecordPage> {
   _del(index) async {
     try {
       await KojiMaking.steamDiscOutDelete({'id': listData[index]['id']});
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
     } catch (e) {}

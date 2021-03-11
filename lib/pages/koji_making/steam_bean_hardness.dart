@@ -42,7 +42,7 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
       });
       listData = res['data'];
       listData = MapUtil.listNullToEmpty(listData);
-      if (type) successToast(msg: '操作成功');
+      if (type) $successToast(context, msg: '操作成功');
       setState(() {});
     } catch (e) {}
   }
@@ -57,7 +57,7 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
         'ids': ids,
         'orderNo': widget.arguments['data']['orderNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       _initState(type: true);
     } catch (e) {}
   }
@@ -68,7 +68,7 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
         'id': listData[index]['id'],
         'orderNo': widget.arguments['data']['orderNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
     } catch (e) {}

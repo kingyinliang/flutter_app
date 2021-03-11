@@ -6,7 +6,7 @@ import 'package:dfmdsapp/components/slide_button.dart';
 import 'package:dfmdsapp/components/sliver_tab_bar.dart';
 import 'package:dfmdsapp/components/no_data.dart';
 import 'package:dfmdsapp/api/api/index.dart';
-import 'package:dfmdsapp/utils/toast.dart';
+import 'package:dfmdsapp/components/toast.dart';
 
 import '../common/page_head.dart';
 import '../common/item_card.dart';
@@ -96,7 +96,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         acceStatus = getStatus(acceList);
         setFloatingActionButtonFlag(_tabIndex);
       });
-      if (type) successToast(msg: '操作成功');
+      if (type) $successToast(context, msg: '操作成功');
     } catch (e) {}
   }
 
@@ -148,7 +148,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         'ids': [potList[index]['id']],
         'potOrderNo': widget.arguments['potNum']['potNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       potList.removeAt(index);
       setState(() {});
     } catch (e) {}
@@ -164,7 +164,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         'ids': [acceList[index]['child'][childIndex]['id']],
         'potOrderNo': widget.arguments['potNum']['potNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       acceList[index]['child'].removeAt(childIndex);
       setState(() {});
     } catch (e) {}
@@ -176,7 +176,7 @@ class _AcceAddHomePageState extends State<AcceAddHomePage> {
         'ids': [materialList[index]['id']],
         'potOrderNo': widget.arguments['potNum']['potNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       materialList.removeAt(index);
       setState(() {});
     } catch (e) {}

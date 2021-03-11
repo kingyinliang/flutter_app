@@ -61,7 +61,7 @@ class _ExeptionPageState extends State<ExeptionPage> {
   _delPot(index) async {
     try {
       await KojiMaking.steamExeptionDel([this.exceptionList[index]['id']]);
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       this.exceptionList.removeAt(index);
       setState(() {});
     } catch (e) {}

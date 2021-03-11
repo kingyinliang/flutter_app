@@ -16,16 +16,16 @@ export 'package:dfmdsapp/components/wrap_home.dart';
 export 'package:dfmdsapp/components/page_head.dart';
 export 'package:dfmdsapp/components/slide_button.dart';
 export 'package:dfmdsapp/components/sliver_tab_bar.dart';
+export 'package:dfmdsapp/components/confirm.dart';
+export 'package:dfmdsapp/components/toast.dart';
 
-export 'package:dfmdsapp/assets/iconfont/IconFont.dart';
+export 'package:dfmdsapp/assets/iconfont/icon_font.dart';
 
 export 'package:dfmdsapp/api/api/index.dart';
 
 export 'package:dfmdsapp/utils/storage.dart';
 export 'package:dfmdsapp/utils/pxunit.dart';
 export 'package:dfmdsapp/utils/toast.dart';
-
-import 'dart:convert';
 
 int getColorFromHex(String hexColor) {
   hexColor = hexColor.toUpperCase().replaceAll("#", "");

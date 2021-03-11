@@ -9,6 +9,7 @@ import '../common/item_card.dart';
 import '../../../components/remove_btn.dart';
 import 'package:dfmdsapp/utils/toast.dart';
 import 'package:dfmdsapp/components/raisedButton.dart';
+import 'package:dfmdsapp/components/toast.dart';
 
 class CraftList extends StatefulWidget {
   final arguments;
@@ -127,7 +128,7 @@ class _CraftListState extends State<CraftList> {
   _delPot(index) async {
     try {
       await Sterilize.sterilizeCraftMaterialTimeDelApi([potList[index]['id']]);
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       potList.removeAt(index);
       setState(() {});
     } catch (e) {}
@@ -166,7 +167,7 @@ class _CraftListState extends State<CraftList> {
         'type': type,
       });
       _initState();
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
     } catch (e) {}
   }
 

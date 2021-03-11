@@ -49,7 +49,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
           {"kojiOrderNo": widget.arguments['data']['kojiOrderNo']});
       listData = res['data'];
       listData = MapUtil.listNullToEmpty(listData);
-      if (type) successToast(msg: '操作成功');
+      if (type) $successToast(context, msg: '操作成功');
       setState(() {});
     } catch (e) {}
   }
@@ -59,7 +59,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
       await KojiMaking.steamDiscEvaluateSubmit({
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
-      successToast(msg: '操作成功');
+      await $successToast(context, msg: '操作成功');
       _initState(type: true);
     } catch (e) {}
   }
@@ -69,7 +69,7 @@ class _SteamGrowEvaluatePageState extends State<SteamGrowEvaluatePage> {
       await KojiMaking.steamDiscEvaluateDelete({
         'id': listData[index]['id'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
     } catch (e) {}

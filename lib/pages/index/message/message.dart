@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:dfmdsapp/utils/pxunit.dart' show pxUnit;
+import 'package:dfmdsapp/utils/index.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/utils/toast.dart';
@@ -38,7 +39,7 @@ class _MessagePageState extends State<MessagePage>
       });
       messageOne = resOne['data']['records'];
       messageTwo = resTwo['data']['records'];
-      if (type) successToast(msg: '操作成功');
+      if (type) $successToast(context, msg: '操作成功');
       setState(() {});
     } catch (e) {}
   }

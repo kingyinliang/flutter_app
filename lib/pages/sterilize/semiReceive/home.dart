@@ -7,6 +7,7 @@ import 'package:dfmdsapp/components/no_data.dart';
 import 'package:dfmdsapp/utils/pxunit.dart' show pxUnit;
 import 'package:dfmdsapp/utils/toast.dart';
 import 'package:dfmdsapp/components/slide_button.dart';
+import 'package:dfmdsapp/components/toast.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 
 import '../common/page_head.dart';
@@ -116,7 +117,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         "orderNo": widget.arguments['potNum']['orderNo'],
         'type': '',
       });
-      successToast(msg: '操作成功');
+      await $successToast(context, msg: '操作成功');
       _initState(type: true);
     } catch (e) {}
   }
@@ -127,7 +128,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
         'ids': [semiList[index]['id']],
         'potOrderNo': widget.arguments['potNum']['potNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       semiList.removeAt(index);
       setState(() {});
     } catch (e) {}
@@ -143,7 +144,7 @@ class _SemiReceivePageState extends State<SemiReceivePage>
       if (semiList.length != 0) {
         status = res['data'][0]['checkStatus'];
       }
-      if (type) successToast(msg: '操作成功');
+      if (type) $successToast(context, msg: '操作成功');
       setState(() {});
     } catch (e) {}
   }

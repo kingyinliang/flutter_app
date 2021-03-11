@@ -71,7 +71,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
         listData = MapUtil.listNullToEmpty(listData);
       }
 
-      if (type) successToast(msg: '操作成功');
+      if (type) $successToast(context, msg: '操作成功');
       setState(() {});
     } catch (e) {}
   }
@@ -90,7 +90,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
           'orderNo': widget.arguments['data']['orderNo'],
           'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
         });
-        successToast(msg: '操作成功');
+        $successToast(context, msg: '操作成功');
         _initState(type: true);
       } else {
         infoToast(msg: "无数据可提交");
@@ -105,7 +105,7 @@ class _SteamBeanRecordPageState extends State<SteamBeanRecordPage> {
         'orderNo': widget.arguments['data']['orderNo'],
         'kojiOrderNo': widget.arguments['data']['kojiOrderNo'],
       });
-      successToast(msg: '操作成功');
+      $successToast(context, msg: '操作成功');
       listData.removeAt(index);
       setState(() {});
     } catch (e) {}

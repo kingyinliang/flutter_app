@@ -6,8 +6,8 @@ import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/api/http/socket.dart';
 import 'package:dfmdsapp/utils/path_provider.dart';
-import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
-import 'package:dfmdsapp/utils/toast.dart';
+import 'package:dfmdsapp/assets/iconfont/icon_font.dart';
+import 'package:dfmdsapp/utils/index.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -314,7 +314,7 @@ class _StorageDialogState extends State<StorageDialog> {
       success: () async {
         clearFileCache(() {
           Navigator.of(context, rootNavigator: true).pop();
-          successToast(msg: '操作成功');
+          $successToast(context, msg: '操作成功');
         });
       },
       child: Column(

@@ -11,4 +11,9 @@ class Wheat {
     return HttpManager.getInstance(baseUrl: HostAddress.APP_OLD_API)
         .post('/uploadDataOnApp', params: params);
   }
+
+  static wheatBatchApi(params) {
+    return HttpManager.getInstance(baseUrl: HostAddress.APP_OLD_API)
+        .post('/createBatch', params: params);
+  }
 }

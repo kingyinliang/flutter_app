@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dfmdsapp/api/api/index.dart';
 import 'package:dfmdsapp/utils/storage.dart';
 import 'package:dfmdsapp/utils/pxunit.dart';
-import 'package:dfmdsapp/assets/iconfont/IconFont.dart';
+import 'package:dfmdsapp/assets/iconfont/icon_font.dart';
 import 'package:dfmdsapp/utils/picker.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:dfmdsapp/utils/version_update.dart';
