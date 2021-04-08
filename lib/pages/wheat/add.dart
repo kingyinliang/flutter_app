@@ -46,6 +46,11 @@ class _WheatAddPageState extends State<WheatAddPage> {
       EasyLoading.showError('起始数不能大于结束数');
       return;
     }
+    if (int.parse(formMap['endWeight']) - int.parse(formMap['startWeight']) <=
+        0) {
+      EasyLoading.showError('入库数应该大于0');
+      return;
+    }
     formMap['inPortWeight'] =
         int.parse(formMap['endWeight']) - int.parse(formMap['startWeight']);
     var userData = await SharedUtil.instance.getMapStorage('userData');
