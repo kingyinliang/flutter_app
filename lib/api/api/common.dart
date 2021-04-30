@@ -3,9 +3,14 @@ import '../http/env.dart';
 
 class Common {
   // 登录
+  // static loginApi(params) {
+  //   return HttpManager.getInstance()
+  //       .post('/sysUser/mobile/login', params: params);
+  // }
   static loginApi(params) {
-    return HttpManager.getInstance()
-        .post('/sysUser/mobile/login', params: params);
+    return HttpManager.getInstance(baseUrl: HostAddress.SYSTEM_API).post(
+        '/oauth2/authorize?clientId=bab8aedd8f0111eb9c21026438001fa4&responseType=client',
+        params: params);
   }
 
 // 退出

@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
       var res = await Common.loginApi({
         'userName': this._userName.text,
         'password': this._password.text,
-        'loginSystem': 'MDS'
+        'terminal': 'APP'
       });
       String deptName = '';
       res['data']['sysDept'].forEach((element) {
