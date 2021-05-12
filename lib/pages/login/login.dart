@@ -5,6 +5,7 @@ import '../../api/api/common.dart';
 import '../../utils/storage.dart';
 import '../../components/raisedButton.dart';
 import '../../api/http/dio.dart';
+import 'package:dfmdsapp/utils/version_update.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -31,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   _initState() async {
     _userName.text = await SharedUtil.instance.getStorage('userName');
     _password.text = await SharedUtil.instance.getStorage('password');
+    varsionUpdateInit(context);
   }
 
   _login() async {
