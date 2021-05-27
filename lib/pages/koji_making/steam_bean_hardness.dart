@@ -57,7 +57,6 @@ class _SteamBeanHardnessPageState extends State<SteamBeanHardnessPage> {
         'ids': ids,
         'orderNo': widget.arguments['data']['orderNo'],
       });
-      $successToast(context, msg: '操作成功');
       _initState(type: true);
     } catch (e) {}
   }

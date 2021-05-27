@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:dfmdsapp/utils/pxunit.dart';
 import 'package:dfmdsapp/assets/iconfont/icon_font.dart';
 
+bool dialogStatus = false;
+
 $successToast(BuildContext context, {msg: '提交成功'}) async {
+  if (dialogStatus == true) {
+    return;
+  }
+  dialogStatus = true;
   await showDialog(
     context: context,
     barrierDismissible: false,
@@ -16,6 +22,10 @@ $successToast(BuildContext context, {msg: '提交成功'}) async {
 }
 
 $errorToast(BuildContext context, {msg: '出现错误'}) async {
+  if (dialogStatus == true) {
+    return;
+  }
+  dialogStatus = true;
   await showDialog(
     context: context,
     barrierDismissible: false,
@@ -29,6 +39,10 @@ $errorToast(BuildContext context, {msg: '出现错误'}) async {
 }
 
 $warningToast(BuildContext context, {msg: '出现警告'}) async {
+  if (dialogStatus == true) {
+    return;
+  }
+  dialogStatus = true;
   await showDialog(
     context: context,
     barrierDismissible: false,
@@ -55,6 +69,7 @@ class _ToastWidgetState extends State<ToastWidget> {
   @override
   void initState() {
     Future.delayed(Duration(milliseconds: 1000), () {
+      dialogStatus = false;
       Navigator.of(context, rootNavigator: true).pop();
     });
 
