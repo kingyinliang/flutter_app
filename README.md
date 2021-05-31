@@ -80,5 +80,31 @@ cd /Users/shinho/Library/Android/sdk/emulator
 ```
 ./emulator @Pixel_3_XL_API_30 -dns-server 8.8.8.8,114.114.114.114
 ```
-
+## 文件下载问题
+源码在flutter_downloader/android/src/main/java/vn/hunghd/flutterdownloader/FlutterDownloaderPlugin.java 124
+```
+private WorkRequest buildRequest(String url, String savedDir, String filename, String headers, boolean showNotification, boolean openFileFromNotification, boolean isResume, boolean requiresStorageNotLow) {
+    WorkRequest request = new OneTimeWorkRequest.Builder(DownloadWorker.class)
+            .setConstraints(new Constraints.Builder()
+                    .setRequiresStorageNotLow(requiresStorageNotLow)
+                    // .setRequiredNetworkType(NetworkType.CONNECTED)  // 这里
+                    .build())
+            .addTag(TAG)
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5, TimeUnit.SECONDS)
+            .setInputData(new Data.Builder()
+                    .putString(DownloadWorker.ARG_URL, url)
+                    .putString(DownloadWorker.ARG_SAVED_DIR, savedDir)
+                    .putString(DownloadWorker.ARG_FILE_NAME, filename)
+                    .putString(DownloadWorker.ARG_HEADERS, headers)
+                    .putBoolean(DownloadWorker.ARG_SHOW_NOTIFICATION, showNotification)
+                    .putBoolean(DownloadWorker.ARG_OPEN_FILE_FROM_NOTIFICATION, openFileFromNotification)
+                    .putBoolean(DownloadWorker.ARG_IS_RESUME, isResume)
+                    .putLong(DownloadWorker.ARG_CALLBACK_HANDLE, callbackHandle)
+                    .putBoolean(DownloadWorker.ARG_DEBUG, debugMode == 1)
+                    .build()
+            )
+            .build();
+    return request;
+}
+```
 
