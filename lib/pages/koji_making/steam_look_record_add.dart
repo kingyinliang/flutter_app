@@ -80,6 +80,10 @@ class _SteamLookRecordAddPageState extends State<SteamLookRecordAddPage> {
   }
 
   _submitForm() async {
+    if (int.parse(formMap['windDoor']) > 100) {
+      EasyLoading.showError('风门开度不能大于100');
+      return;
+    }
     if (widget.arguments['onType'] == 'exception') {
       try {
         formMap['orderNo'] = widget.arguments['orderNo'];
